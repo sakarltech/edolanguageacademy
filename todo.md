@@ -76,3 +76,25 @@
 - [x] Add database schema for course materials and student progress
 - [x] Create student router with progress tracking API
 - [x] Build dashboard UI with progress overview, materials access, and certificate download
+
+## Admin Panel
+- [x] Create admin dashboard with authentication
+- [x] Add course materials upload and management
+- [x] Implement enrollment management interface
+- [x] Add student progress update functionality
+- [x] Create certificate generation and issuance system
+- [x] Add analytics dashboard for enrollment and completion trends
+
+## Automated Reminders
+- [x] Set up email notification system
+- [x] Implement class reminder emails (24 hours before)
+- [x] Add weekly progress summary emails
+- [x] Create incomplete week alert notifications
+- [x] Add milestone congratulations emails
+
+## Discussion Forum
+- [x] Create forum database schema
+- [x] Build forum router with CRUD operations
+- [x] Implement forum UI with threads and replies
+- [x] Add instructor Q&A functionality (instructor badge on replies)
+- [x] Build thread detail page with reply functionality

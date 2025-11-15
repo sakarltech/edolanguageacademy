@@ -17,6 +17,9 @@ import Contact from "./pages/Contact";
 import Register from "./pages/Register";
 import EnrollmentSuccess from "./pages/EnrollmentSuccess";
 import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/Admin";
+import Forum from "./pages/Forum";
+import ForumThread from "./pages/ForumThread";
 
 function Router() {
   return (
@@ -34,6 +37,9 @@ function Router() {
       <Route path={"/register"} component={Register} />
       <Route path={"/enrollment/success"} component={EnrollmentSuccess} />
       <Route path={"/dashboard"} component={Dashboard} />
+      <Route path={"/admin"} component={Admin} />
+      <Route path={"/forum"} component={Forum} />
+      <Route path={"/forum/:id"} component={ForumThread} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

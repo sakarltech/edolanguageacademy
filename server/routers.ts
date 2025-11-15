@@ -5,6 +5,9 @@ import { publicProcedure, router } from "./_core/trpc";
 import { chatbotRouter } from "./routers/chatbot";
 import { enrollmentRouter } from "./routers/enrollment";
 import { studentRouter } from "./routers/student";
+import { adminRouter } from "./routers/admin";
+import { forumRouter } from "./routers/forum";
+import { notificationsRouter } from "./routers/notifications";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -28,6 +31,15 @@ export const appRouter = router({
   
   // Student router for dashboard and progress tracking
   student: studentRouter,
+  
+  // Admin router for managing academy
+  admin: adminRouter,
+  
+  // Forum router for student discussions
+  forum: forumRouter,
+  
+  // Notifications router for automated emails
+  notifications: notificationsRouter,
 });
 
 export type AppRouter = typeof appRouter;

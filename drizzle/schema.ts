@@ -102,3 +102,39 @@ export const studentProgress = mysqlTable("studentProgress", {
 
 export type StudentProgress = typeof studentProgress.$inferSelect;
 export type InsertStudentProgress = typeof studentProgress.$inferInsert;
+
+/**
+ * Forum threads for student discussions
+ */
+export const forumThreads = mysqlTable("forumThreads", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  courseLevel: varchar("courseLevel", { length: 50 }), // Optional: filter by course
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  isPinned: int("isPinned").default(0).notNull(),
+  isLocked: int("isLocked").default(0).notNull(),
+  viewCount: int("viewCount").default(0).notNull(),
+  replyCount: int("replyCount").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ForumThread = typeof forumThreads.$inferSelect;
+export type InsertForumThread = typeof forumThreads.$inferInsert;
+
+/**
+ * Forum replies to threads
+ */
+export const forumReplies = mysqlTable("forumReplies", {
+  id: int("id").autoincrement().primaryKey(),
+  threadId: int("threadId").notNull(),
+  userId: int("userId").notNull(),
+  content: text("content").notNull(),
+  isInstructorReply: int("isInstructorReply").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ForumReply = typeof forumReplies.$inferSelect;
+export type InsertForumReply = typeof forumReplies.$inferInsert;

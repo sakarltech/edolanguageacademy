@@ -21,6 +21,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: "About", href: "/about" },
     { name: "FAQ", href: "/faq" },
     { name: "Contact", href: "/contact" },
+    { name: "Forum", href: "/forum" },
     { name: "Dashboard", href: "/dashboard" },
   ];
 
