@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Chatbot from "@/components/Chatbot";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
+    <>
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -198,5 +200,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </footer>
     </div>
+    <Chatbot />
+    </>
   );
 }

@@ -3,13 +3,13 @@
 ## Core Pages
 - [x] Home page with hero section and course overview
 - [x] Courses main page with level comparison
-- [ ] Course detail pages (Beginner, Intermediary, Proficient)
-- [ ] Pricing page with clear pricing tiers and bundle offer
-- [ ] Schedule page with class timetable and upcoming cohorts
-- [ ] About page with mission and instructor information
-- [ ] FAQ page with common questions
-- [ ] Contact page with contact form
-- [ ] Registration page with enrollment form and payment integration
+- [x] Course detail pages (Beginner, Intermediary, Proficient)
+- [x] Pricing page with clear pricing tiers and bundle offer
+- [x] Schedule page with class timetable and upcoming cohorts
+- [x] About page with mission and instructor information
+- [x] FAQ page with common questions
+- [x] Contact page with contact form
+- [x] Registration page with enrollment form and payment integration
 
 ## Design & Styling
 - [ ] Implement modern color palette (white, deep reds, warm golds)
@@ -42,3 +42,23 @@
 - [ ] Form validation
 - [ ] Error handling
 - [ ] Performance optimization
+
+## Current Focus
+- [x] Build detailed course pages with full content (Beginner, Intermediary, Proficient)
+
+## Next Phase
+- [x] Build Pricing, Schedule, About, FAQ, Contact, and Register pages with full content
+
+## New Feature Request
+- [x] Implement AI chatbot that answers questions based on website content
+- [x] Configure chatbot to send out-of-scope questions to owner's email
+- [x] Add chatbot UI component that appears on all pages
+
+## Design Updates
+- [x] Rename chatbot to "Efosa"
+- [x] Update color scheme: white and warm gold predominant, deep red as accent only
+
+## Payment Integration
+- [ ] Add Stripe payment feature to the project
+- [ ] Integrate Stripe checkout in registration page
+- [ ] Set up payment confirmation and email notifications
