@@ -59,6 +59,9 @@
 - [x] Update color scheme: white and warm gold predominant, deep red as accent only
 
 ## Payment Integration
-- [ ] Add Stripe payment feature to the project
-- [ ] Integrate Stripe checkout in registration page
-- [ ] Set up payment confirmation and email notifications
+- [x] Add Stripe payment feature to the project
+- [x] Integrate Stripe checkout in registration page
+- [x] Set up payment confirmation and email notifications
+- [x] Create enrollment database schema
+- [x] Set up Stripe webhook handler
+- [x] Create enrollment success page

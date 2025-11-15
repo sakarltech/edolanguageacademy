@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
+import { trpc } from "@/lib/trpc";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,8 @@ export default function Register() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const createCheckoutMutation = trpc.enrollment.createCheckoutSession.useMutation();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -32,13 +35,30 @@ export default function Register() {
 
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const result = await createCheckoutMutation.mutateAsync({
+        learnerName: formData.learnerName,
+        learnerAge: parseInt(formData.learnerAge),
+        parentName: formData.parentName || undefined,
+        email: formData.email,
+        phone: formData.phone,
+        courseLevel: formData.level as any,
+        ageGroup: formData.ageGroup as any,
+      });
 
-    toast.success("Registration successful! Redirecting to payment...");
-    setIsSubmitting(false);
-    
-    // In production, this would redirect to Stripe checkout
+      if (result.success && result.checkoutUrl) {
+        toast.success("Redirecting to secure payment...");
+        // Open Stripe checkout in new tab
+        window.open(result.checkoutUrl, '_blank');
+      } else {
+        toast.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("Failed to process registration. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -17,6 +17,8 @@ export const users = mysqlTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  /** Stripe customer ID for payment processing */
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -25,4 +27,37 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Enrollments table to track course registrations
+ * Stores only essential Stripe identifiers and business-specific data
+ */
+export const enrollments = mysqlTable("enrollments", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  
+  // Learner information
+  learnerName: varchar("learnerName", { length: 255 }).notNull(),
+  learnerAge: int("learnerAge").notNull(),
+  parentName: varchar("parentName", { length: 255 }),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 50 }).notNull(),
+  
+  // Course details
+  courseLevel: varchar("courseLevel", { length: 50 }).notNull(), // beginner, intermediary, proficient, bundle
+  ageGroup: varchar("ageGroup", { length: 50 }).notNull(), // kids, teens, adults
+  
+  // Payment information (Stripe IDs only)
+  stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),
+  stripeCheckoutSessionId: varchar("stripeCheckoutSessionId", { length: 255 }),
+  
+  // Enrollment status
+  status: mysqlEnum("status", ["pending", "paid", "active", "completed", "cancelled"]).default("pending").notNull(),
+  
+  // Timestamps
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  paidAt: timestamp("paidAt"),
+});
+
+export type Enrollment = typeof enrollments.$inferSelect;
+export type InsertEnrollment = typeof enrollments.$inferInsert;
