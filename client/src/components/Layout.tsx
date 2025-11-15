@@ -21,6 +21,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: "About", href: "/about" },
     { name: "FAQ", href: "/faq" },
     { name: "Contact", href: "/contact" },
+    { name: "Dashboard", href: "/dashboard" },
   ];
 
   const isActive = (href: string) => {

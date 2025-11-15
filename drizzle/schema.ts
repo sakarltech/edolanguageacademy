@@ -61,3 +61,44 @@ export const enrollments = mysqlTable("enrollments", {
 
 export type Enrollment = typeof enrollments.$inferSelect;
 export type InsertEnrollment = typeof enrollments.$inferInsert;
+
+/**
+ * Course materials table for storing learning resources
+ */
+export const courseMaterials = mysqlTable("courseMaterials", {
+  id: int("id").autoincrement().primaryKey(),
+  courseLevel: varchar("courseLevel", { length: 50 }).notNull(),
+  week: int("week").notNull(), // 1-8
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  type: mysqlEnum("type", ["video", "pdf", "worksheet", "recording"]).notNull(),
+  fileUrl: varchar("fileUrl", { length: 500 }),
+  isPublished: int("isPublished").default(1).notNull(), // 1 = published, 0 = draft
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CourseMaterial = typeof courseMaterials.$inferSelect;
+export type InsertCourseMaterial = typeof courseMaterials.$inferInsert;
+
+/**
+ * Student progress tracking
+ */
+export const studentProgress = mysqlTable("studentProgress", {
+  id: int("id").autoincrement().primaryKey(),
+  enrollmentId: int("enrollmentId").notNull(),
+  userId: int("userId").notNull(),
+  currentWeek: int("currentWeek").default(1).notNull(),
+  completedWeeks: varchar("completedWeeks", { length: 255 }), // Comma-separated: "1,2,3"
+  attendanceCount: int("attendanceCount").default(0).notNull(),
+  assessmentScore: int("assessmentScore"), // Percentage 0-100
+  assessmentPassed: int("assessmentPassed").default(0), // 1 = passed, 0 = not passed
+  certificateIssued: int("certificateIssued").default(0), // 1 = issued, 0 = not issued
+  certificateUrl: varchar("certificateUrl", { length: 500 }),
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type StudentProgress = typeof studentProgress.$inferSelect;
+export type InsertStudentProgress = typeof studentProgress.$inferInsert;

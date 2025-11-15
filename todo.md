@@ -65,3 +65,14 @@
 - [x] Create enrollment database schema
 - [x] Set up Stripe webhook handler
 - [x] Create enrollment success page
+
+## Student Dashboard
+- [x] Create protected student dashboard with authentication
+- [x] Display enrolled courses and current progress
+- [x] Add access to class recordings and materials
+- [x] Show upcoming classes and schedule
+- [x] Display assessment results and certificates
+- [x] Add course completion tracking
+- [x] Add database schema for course materials and student progress
+- [x] Create student router with progress tracking API
+- [x] Build dashboard UI with progress overview, materials access, and certificate download
