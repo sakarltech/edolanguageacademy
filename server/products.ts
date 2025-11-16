@@ -8,7 +8,7 @@ export interface CourseProduct {
   name: string;
   description: string;
   price: number; // in GBP (pounds)
-  stripePriceId?: string; // Will be created in Stripe
+  stripePriceId: string; // Stripe Price ID
 }
 
 export const COURSE_PRODUCTS: Record<string, CourseProduct> = {
@@ -16,31 +16,29 @@ export const COURSE_PRODUCTS: Record<string, CourseProduct> = {
     id: "beginner",
     name: "Edo Beginner Course",
     description: "8-week beginner level Edo language course with live classes, materials, and certificate",
-    price: 19.99,
+    price: 29.99,
+    stripePriceId: "price_1STuz1H2oBnqcEomh4WSJRIl",
   },
   intermediary: {
     id: "intermediary",
     name: "Edo Intermediary Course",
     description: "8-week intermediary level Edo language course with live classes, materials, and certificate",
-    price: 24.99,
+    price: 29.99,
+    stripePriceId: "price_1STuzuH2oBnqcEomhyAwrSzO",
   },
   proficient: {
     id: "proficient",
     name: "Edo Proficient Course",
     description: "8-week proficient level Edo language course with live classes, materials, and certificate",
     price: 29.99,
+    stripePriceId: "price_1STv0RH2oBnqcEomz8GFluWi",
   },
   bundle: {
     id: "bundle",
     name: "Complete Edo Language Bundle",
     description: "All three levels (Beginner, Intermediary, Proficient) - Save £9.97!",
-    price: 65.00,
-  },
-  private: {
-    id: "private",
-    name: "Private 1-to-1 Tutoring",
-    description: "One-on-one Edo language tutoring session",
-    price: 39.99,
+    price: 79.99,
+    stripePriceId: "price_1STv14H2oBnqcEomPdWXNq6H",
   },
 };
 

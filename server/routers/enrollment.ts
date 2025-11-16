@@ -58,14 +58,7 @@ export const enrollmentRouter = router({
         payment_method_types: ["card"],
         line_items: [
           {
-            price_data: {
-              currency: "gbp",
-              product_data: {
-                name: product.name,
-                description: product.description,
-              },
-              unit_amount: Math.round(product.price * 100), // Convert to pence
-            },
+            price: product.stripePriceId, // Use the actual Stripe Price ID
             quantity: 1,
           },
         ],

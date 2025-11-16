@@ -98,3 +98,6 @@
 - [x] Implement forum UI with threads and replies
 - [x] Add instructor Q&A functionality (instructor badge on replies)
 - [x] Build thread detail page with reply functionality
+
+## Stripe Integration Update
+- [x] Update Stripe Price IDs to use customer's actual Stripe products
