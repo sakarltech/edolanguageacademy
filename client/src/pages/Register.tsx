@@ -13,12 +13,12 @@ import { toast } from "sonner";
 export default function Register() {
   const [formData, setFormData] = useState({
     learnerName: "",
-    learnerAge: "",
     parentName: "",
     email: "",
     phone: "",
+    whatsappNumber: "",
     level: "",
-    ageGroup: "",
+    timeSlot: "",
     agreedToTerms: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,12 +38,12 @@ export default function Register() {
     try {
       const result = await createCheckoutMutation.mutateAsync({
         learnerName: formData.learnerName,
-        learnerAge: parseInt(formData.learnerAge),
         parentName: formData.parentName || undefined,
         email: formData.email,
         phone: formData.phone,
+        whatsappNumber: formData.whatsappNumber || undefined,
         courseLevel: formData.level as any,
-        ageGroup: formData.ageGroup as any,
+        timeSlot: formData.timeSlot as any,
       });
 
       if (result.success && result.checkoutUrl) {
@@ -163,21 +163,21 @@ export default function Register() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="ageGroup">Age Group *</Label>
+                      <Label htmlFor="timeSlot">Preferred Time Slot *</Label>
                       <Select
-                        value={formData.ageGroup}
-                        onValueChange={(value) => handleSelectChange("ageGroup", value)}
+                        value={formData.timeSlot}
+                        onValueChange={(value) => handleSelectChange("timeSlot", value)}
                         required
                       >
-                        <SelectTrigger id="ageGroup">
-                          <SelectValue placeholder="Select age group" />
+                        <SelectTrigger id="timeSlot">
+                          <SelectValue placeholder="Select your preferred class time" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="kids">Kids (5-12 years)</SelectItem>
-                          <SelectItem value="teens">Teens (13-17 years)</SelectItem>
-                          <SelectItem value="adults">Adults (18+ years)</SelectItem>
+                          <SelectItem value="11AM_GMT">11:00 AM GMT (UK, Nigeria, Europe)</SelectItem>
+                          <SelectItem value="11AM_CST">11:00 AM CST (North America)</SelectItem>
                         </SelectContent>
                       </Select>
+                      <p className="text-sm text-muted-foreground">You only need to attend ONE time slot per week. Choose the time that works best for your timezone.</p>
                     </div>
                   </div>
 
@@ -197,20 +197,7 @@ export default function Register() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="learnerAge">Learner's Age *</Label>
-                      <Input
-                        id="learnerAge"
-                        name="learnerAge"
-                        type="number"
-                        min="5"
-                        max="120"
-                        value={formData.learnerAge}
-                        onChange={handleInputChange}
-                        placeholder="Age"
-                        required
-                      />
-                    </div>
+
                   </div>
 
                   {/* Contact Information */}
@@ -219,7 +206,7 @@ export default function Register() {
                     
                     <div className="space-y-2">
                       <Label htmlFor="parentName">
-                        Parent/Guardian Name {formData.ageGroup === "adults" ? "(Optional)" : "*"}
+                        Parent/Guardian Name (Optional)
                       </Label>
                       <Input
                         id="parentName"
@@ -227,7 +214,6 @@ export default function Register() {
                         value={formData.parentName}
                         onChange={handleInputChange}
                         placeholder="For minors: Parent/Guardian name"
-                        required={formData.ageGroup !== "adults"}
                       />
                     </div>
 
@@ -245,7 +231,7 @@ export default function Register() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number (WhatsApp) *</Label>
+                      <Label htmlFor="phone">Phone Number *</Label>
                       <Input
                         id="phone"
                         name="phone"
@@ -255,8 +241,20 @@ export default function Register() {
                         placeholder="+44 7XXX XXXXXX"
                         required
                       />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="whatsappNumber">WhatsApp Number (Optional)</Label>
+                      <Input
+                        id="whatsappNumber"
+                        name="whatsappNumber"
+                        type="tel"
+                        value={formData.whatsappNumber}
+                        onChange={handleInputChange}
+                        placeholder="+44 7XXX XXXXXX (if different from phone)"
+                      />
                       <p className="text-xs text-muted-foreground">
-                        We'll add you to the class WhatsApp group
+                        We'll add you to your course's WhatsApp group for community support and updates
                       </p>
                     </div>
                   </div>

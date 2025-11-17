@@ -37,14 +37,14 @@ export const enrollments = mysqlTable("enrollments", {
   
   // Learner information
   learnerName: varchar("learnerName", { length: 255 }).notNull(),
-  learnerAge: int("learnerAge").notNull(),
   parentName: varchar("parentName", { length: 255 }),
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 50 }).notNull(),
+  whatsappNumber: varchar("whatsappNumber", { length: 50 }),
   
   // Course details
   courseLevel: varchar("courseLevel", { length: 50 }).notNull(), // beginner, intermediary, proficient, bundle
-  ageGroup: varchar("ageGroup", { length: 50 }).notNull(), // kids, teens, adults
+  timeSlot: varchar("timeSlot", { length: 20 }).notNull(), // "11AM_GMT" or "11AM_CST"
   
   // Payment information (Stripe IDs only)
   stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 255 }),

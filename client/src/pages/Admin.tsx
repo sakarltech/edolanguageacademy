@@ -220,7 +220,9 @@ export default function Admin() {
                                     {enrollment.courseLevel.charAt(0).toUpperCase() +
                                       enrollment.courseLevel.slice(1)}
                                   </Badge>
-                                  <Badge variant="outline">{enrollment.ageGroup}</Badge>
+                                  <Badge variant="outline">
+                                    {enrollment.timeSlot === "11AM_GMT" ? "11 AM GMT" : "11 AM CST"}
+                                  </Badge>
                                   <Badge
                                     variant={
                                       enrollment.status === "active"

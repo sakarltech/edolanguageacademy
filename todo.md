@@ -140,3 +140,11 @@
 - [x] Clarify that materials are non-downloadable and accessed through dashboard
 - [x] Update cohort information (new cohorts every 10 weeks starting Dec 6th)
 - [x] Add new FAQ categories for Learning Materials & Access and Community & Support
+
+## Registration Form Updates
+- [x] Remove "Learner's Age" field from registration form
+- [x] Add "Preferred Time Slot" dropdown (11 AM GMT or 11 AM CST)
+- [x] Add optional WhatsApp number field for group link delivery
+- [x] Update enrollment database schema to include timeSlot and whatsappNumber
+- [x] Update enrollment router to handle new fields
+- [x] Update Admin page to display timeSlot instead of ageGroup

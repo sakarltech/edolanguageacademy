@@ -16,12 +16,12 @@ export const enrollmentRouter = router({
     .input(
       z.object({
         learnerName: z.string().min(1),
-        learnerAge: z.number().min(5).max(120),
         parentName: z.string().optional(),
         email: z.string().email(),
         phone: z.string().min(1),
-        courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle", "private"]),
-        ageGroup: z.enum(["kids", "teens", "adults"]),
+        whatsappNumber: z.string().optional(),
+        courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle"]),
+        timeSlot: z.enum(["11AM_GMT", "11AM_CST"]),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -39,12 +39,12 @@ export const enrollmentRouter = router({
       const [enrollment] = await db.insert(enrollments).values({
         userId: ctx.user?.id || 0, // 0 for guest users
         learnerName: input.learnerName,
-        learnerAge: input.learnerAge,
         parentName: input.parentName || null,
         email: input.email,
         phone: input.phone,
+        whatsappNumber: input.whatsappNumber || null,
         courseLevel: input.courseLevel,
-        ageGroup: input.ageGroup,
+        timeSlot: input.timeSlot,
         status: "pending",
       });
 
@@ -68,7 +68,7 @@ export const enrollmentRouter = router({
           enrollment_id: enrollmentId.toString(),
           user_id: ctx.user?.id?.toString() || "guest",
           course_level: input.courseLevel,
-          age_group: input.ageGroup,
+          time_slot: input.timeSlot,
           learner_name: input.learnerName,
           customer_email: input.email,
         },
