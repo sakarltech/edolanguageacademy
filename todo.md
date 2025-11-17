@@ -197,3 +197,9 @@
 - [x] Update enrollment success flow to send confirmation email
 - [x] Create EMAIL_SETUP.md documentation for SMTP configuration
 - [ ] Test email sending with Namecheap SMTP credentials (requires user to add credentials)
+
+## Stripe Pricing Error Fix
+- [x] Debug "No such pricing" error in Stripe checkout
+- [ ] Restart server to load updated environment variables
+- [ ] Verify new Price IDs are loaded correctly
+- [ ] Test checkout flow with user's Stripe Price IDs

@@ -26,6 +26,14 @@ export interface CourseProduct {
   stripePriceId: string; // Stripe Price ID (from environment variables)
 }
 
+// Log loaded Price IDs for debugging
+console.log("[Stripe Products] Loaded Price IDs:", {
+  beginner: ENV.stripePriceBeginner,
+  intermediary: ENV.stripePriceIntermediary,
+  proficient: ENV.stripePriceProficient,
+  bundle: ENV.stripePriceBundle,
+});
+
 export const COURSE_PRODUCTS: Record<string, CourseProduct> = {
   beginner: {
     id: "beginner",
