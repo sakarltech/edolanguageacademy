@@ -101,3 +101,21 @@
 
 ## Stripe Integration Update
 - [x] Update Stripe Price IDs to use customer's actual Stripe products
+
+## Website Refinement Updates
+- [x] Add smooth scroll animations (fade-in/slide-up effects)
+- [x] Create curriculum data structure with all module-week mappings
+- [x] Update Beginner curriculum with module-week mapping
+- [x] Update Intermediary curriculum with module-week mapping
+- [x] Update Proficient curriculum with module-week mapping
+- [ ] Restructure dashboard to show module-based content (notes, videos, workbooks, assessments)
+- [ ] Make all teaching content non-downloadable (view-only/stream-only)
+- [ ] Implement admin-triggered certificate generation with PDF template
+- [ ] Add automatic certificate email delivery to students
+- [ ] Remove "Most Popular" tags from pricing page
+- [ ] Update schedule with 11 AM GMT and 11 AM CST time slots
+- [ ] Add timezone conversions for UK, Nigeria, Europe, North America
+- [ ] Implement automatic rolling cohort logic (Dec 6th start, then every 10 weeks)
+- [ ] Update FAQs with new class duration, schedule, and access information
+- [ ] Remove learner's age field from registration form
+- [ ] Add WhatsApp group link automation in enrollment confirmation emails

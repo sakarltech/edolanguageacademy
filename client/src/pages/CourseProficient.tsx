@@ -3,52 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Award, Clock, Calendar, CheckCircle2, Users, Video } from "lucide-react";
+import { PROFICIENT_CURRICULUM } from "@shared/curriculum";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function CourseProficient() {
-  const modules = [
+  useScrollAnimation();
+  
+  const modules = PROFICIENT_CURRICULUM.modules;
+  
+  const allWeeks = [
+    ...modules.map(module => ({
+      moduleNumber: module.moduleNumber,
+      weeks: module.weeks,
+      title: module.title,
+      description: module.description,
+      topics: module.learningOutcomes,
+    })),
     {
-      week: "Weeks 1-2",
-      title: "Advanced Numbers in Edo (51-100)",
-      topics: [
-        "Counting from 51 to 100",
-        "Complex numerical expressions",
-        "Financial and commercial vocabulary",
-        "Advanced mathematical concepts",
-      ],
-    },
-    {
-      week: "Weeks 3-4",
-      title: "Advanced Sentence Formulation",
-      topics: [
-        "Complex sentence structures",
-        "Compound and complex sentences",
-        "Advanced grammar rules",
-        "Idiomatic expressions",
-      ],
-    },
-    {
-      week: "Week 5",
-      title: "Edo History, Proverbs & Cultural Expressions",
-      topics: [
-        "In-depth Edo history and traditions",
-        "Advanced proverbs and their applications",
-        "Cultural ceremonies and protocols",
-        "Traditional wisdom and philosophy",
-      ],
-    },
-    {
-      week: "Week 6",
-      title: "Edo Language Fluency (Reading and Writing)",
-      topics: [
-        "Reading comprehension of complex texts",
-        "Essay writing in Edo",
-        "Public speaking and presentations",
-        "Translation skills",
-      ],
-    },
-    {
-      week: "Week 7",
+      moduleNumber: null,
+      weeks: [7],
       title: "Revision Week",
+      description: "Comprehensive fluency review and final assessment preparation.",
       topics: [
         "Comprehensive fluency review",
         "Advanced conversation practice",
@@ -57,8 +32,10 @@ export default function CourseProficient() {
       ],
     },
     {
-      week: "Week 8",
+      moduleNumber: null,
+      weeks: [8],
       title: "Final Assessment",
+      description: "Demonstrate mastery-level proficiency in Edo language and culture.",
       topics: [
         "Comprehensive written examination",
         "Fluency oral assessment",
@@ -71,7 +48,7 @@ export default function CourseProficient() {
   const features = [
     {
       icon: Clock,
-      title: "60-75 Minutes",
+      title: "60 Minutes",
       description: "Weekly live sessions",
     },
     {
@@ -172,21 +149,23 @@ export default function CourseProficient() {
               8-week structured programme with 6 weeks of instruction, 1 week revision, and final assessment
             </p>
             <div className="space-y-4">
-              {modules.map((module, index) => (
-                <Card key={index}>
+              {allWeeks.map((item, index) => (
+                <Card key={index} className="scroll-fade-in">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="text-sm text-primary font-semibold mb-2">
-                          {module.week}
+                          {item.moduleNumber ? `Module ${item.moduleNumber} • ` : ""}
+                          Week{item.weeks.length > 1 ? "s" : ""} {item.weeks.join(" & ")}
                         </div>
-                        <CardTitle className="text-xl">{module.title}</CardTitle>
+                        <CardTitle className="text-xl">{item.title}</CardTitle>
+                        <CardDescription className="mt-2">{item.description}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {module.topics.map((topic, topicIndex) => (
+                      {item.topics.map((topic: string, topicIndex: number) => (
                         <li key={topicIndex} className="flex items-start gap-2">
                           <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                           <span className="text-sm text-muted-foreground">{topic}</span>

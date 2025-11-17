@@ -3,52 +3,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { BookOpen, Clock, Calendar, Award, CheckCircle2, Users, Video } from "lucide-react";
+import { BEGINNER_CURRICULUM } from "@shared/curriculum";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function CourseBeginner() {
-  const modules = [
+  useScrollAnimation();
+  
+  const modules = BEGINNER_CURRICULUM.modules;
+  
+  // Add revision and assessment weeks
+  const allWeeks = [
+    ...modules.map(module => ({
+      moduleNumber: module.moduleNumber,
+      weeks: module.weeks,
+      title: module.title,
+      description: module.description,
+      topics: module.learningOutcomes,
+    })),
     {
-      week: "Weeks 1-2",
-      title: "Alphabets and Sounds in Edo",
-      topics: [
-        "Introduction to Edo alphabet system",
-        "Pronunciation of vowels and consonants",
-        "Tone marks and their importance",
-        "Practice reading simple words",
-      ],
-    },
-    {
-      week: "Weeks 3-4",
-      title: "Numbers in Edo (1-20)",
-      topics: [
-        "Counting from 1 to 20",
-        "Using numbers in everyday contexts",
-        "Age, time, and quantity expressions",
-        "Practice exercises and games",
-      ],
-    },
-    {
-      week: "Week 5",
-      title: "Basic Greetings and Responses",
-      topics: [
-        "Common greetings for different times of day",
-        "Formal and informal greetings",
-        "Appropriate responses and etiquette",
-        "Cultural context of greetings",
-      ],
-    },
-    {
-      week: "Week 6",
-      title: "Basic Vocabularies in Edo",
-      topics: [
-        "Family members and relationships",
-        "Common objects and everyday items",
-        "Basic verbs and actions",
-        "Building simple phrases",
-      ],
-    },
-    {
-      week: "Week 7",
+      moduleNumber: null,
+      weeks: [7],
       title: "Revision Week",
+      description: "Comprehensive review of all modules and assessment preparation.",
       topics: [
         "Review all modules",
         "Practice conversations",
@@ -57,8 +33,10 @@ export default function CourseBeginner() {
       ],
     },
     {
-      week: "Week 8",
+      moduleNumber: null,
+      weeks: [8],
       title: "Final Assessment",
+      description: "Demonstrate your learning through written and oral assessments.",
       topics: [
         "Written test on alphabets and vocabulary",
         "Oral assessment on greetings and numbers",
@@ -71,7 +49,7 @@ export default function CourseBeginner() {
   const features = [
     {
       icon: Clock,
-      title: "60-75 Minutes",
+      title: "60 Minutes",
       description: "Weekly live sessions",
     },
     {
@@ -172,21 +150,23 @@ export default function CourseBeginner() {
               8-week structured programme with 6 weeks of instruction, 1 week revision, and final assessment
             </p>
             <div className="space-y-4">
-              {modules.map((module, index) => (
-                <Card key={index}>
+              {allWeeks.map((item, index) => (
+                <Card key={index} className="scroll-fade-in">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="text-sm text-primary font-semibold mb-2">
-                          {module.week}
+                          {item.moduleNumber ? `Module ${item.moduleNumber} • ` : ""}
+                          Week{item.weeks.length > 1 ? "s" : ""} {item.weeks.join(" & ")}
                         </div>
-                        <CardTitle className="text-xl">{module.title}</CardTitle>
+                        <CardTitle className="text-xl">{item.title}</CardTitle>
+                        <CardDescription className="mt-2">{item.description}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {module.topics.map((topic, topicIndex) => (
+                      {item.topics.map((topic: string, topicIndex: number) => (
                         <li key={topicIndex} className="flex items-start gap-2">
                           <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                           <span className="text-sm text-muted-foreground">{topic}</span>

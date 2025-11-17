@@ -3,52 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Users, Clock, Calendar, Award, CheckCircle2, Video } from "lucide-react";
+import { INTERMEDIARY_CURRICULUM } from "@shared/curriculum";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function CourseIntermediary() {
-  const modules = [
+  useScrollAnimation();
+  
+  const modules = INTERMEDIARY_CURRICULUM.modules;
+  
+  const allWeeks = [
+    ...modules.map(module => ({
+      moduleNumber: module.moduleNumber,
+      weeks: module.weeks,
+      title: module.title,
+      description: module.description,
+      topics: module.learningOutcomes,
+    })),
     {
-      week: "Weeks 1-2",
-      title: "Advanced Alphabets and Pronunciations",
-      topics: [
-        "Complex sound combinations",
-        "Mastering tonal variations",
-        "Reading fluency exercises",
-        "Pronunciation correction techniques",
-      ],
-    },
-    {
-      week: "Weeks 3-4",
-      title: "Numbers in Edo (21-50)",
-      topics: [
-        "Counting from 21 to 50",
-        "Using larger numbers in context",
-        "Money, dates, and measurements",
-        "Mathematical expressions in Edo",
-      ],
-    },
-    {
-      week: "Week 5",
-      title: "Sentence Formulation (Reading and Writing)",
-      topics: [
-        "Basic sentence structure",
-        "Subject-verb-object patterns",
-        "Asking and answering questions",
-        "Writing simple paragraphs",
-      ],
-    },
-    {
-      week: "Week 6",
-      title: "Introduction to Edo History and Proverbs",
-      topics: [
-        "Brief history of the Edo people",
-        "Common Edo proverbs and their meanings",
-        "Cultural significance of language",
-        "Traditional stories and folklore",
-      ],
-    },
-    {
-      week: "Week 7",
+      moduleNumber: null,
+      weeks: [7],
       title: "Revision Week",
+      description: "Comprehensive review of all modules and cultural knowledge preparation.",
       topics: [
         "Comprehensive review of all modules",
         "Practice conversations and writing",
@@ -57,8 +32,10 @@ export default function CourseIntermediary() {
       ],
     },
     {
-      week: "Week 8",
+      moduleNumber: null,
+      weeks: [8],
       title: "Final Assessment",
+      description: "Demonstrate your intermediary-level proficiency through comprehensive assessments.",
       topics: [
         "Written test on grammar and vocabulary",
         "Oral conversation assessment",
@@ -71,7 +48,7 @@ export default function CourseIntermediary() {
   const features = [
     {
       icon: Clock,
-      title: "60-75 Minutes",
+      title: "60 Minutes",
       description: "Weekly live sessions",
     },
     {
@@ -172,21 +149,23 @@ export default function CourseIntermediary() {
               8-week structured programme with 6 weeks of instruction, 1 week revision, and final assessment
             </p>
             <div className="space-y-4">
-              {modules.map((module, index) => (
-                <Card key={index}>
+              {allWeeks.map((item, index) => (
+                <Card key={index} className="scroll-fade-in">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="text-sm text-primary font-semibold mb-2">
-                          {module.week}
+                          {item.moduleNumber ? `Module ${item.moduleNumber} • ` : ""}
+                          Week{item.weeks.length > 1 ? "s" : ""} {item.weeks.join(" & ")}
                         </div>
-                        <CardTitle className="text-xl">{module.title}</CardTitle>
+                        <CardTitle className="text-xl">{item.title}</CardTitle>
+                        <CardDescription className="mt-2">{item.description}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-2">
-                      {module.topics.map((topic, topicIndex) => (
+                      {item.topics.map((topic: string, topicIndex: number) => (
                         <li key={topicIndex} className="flex items-start gap-2">
                           <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                           <span className="text-sm text-muted-foreground">{topic}</span>
