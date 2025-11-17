@@ -131,3 +131,12 @@
 ## Pricing Page Update
 - [x] Remove "Most Popular" badges from all course cards
 - [x] Ensure all course levels are presented equally
+
+## FAQ Page Updates
+- [x] Update class duration to 60 minutes (remove 60-75 minute references)
+- [x] Add information about dual time slot options (11 AM GMT and 11 AM CST)
+- [x] Clarify that students only need to attend one time slot
+- [x] Update information about module-based curriculum structure
+- [x] Clarify that materials are non-downloadable and accessed through dashboard
+- [x] Update cohort information (new cohorts every 10 weeks starting Dec 6th)
+- [x] Add new FAQ categories for Learning Materials & Access and Community & Support
