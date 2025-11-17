@@ -73,8 +73,34 @@ export const studentRouter = router({
 
   // Get course materials for enrolled course
   getCourseMaterials: protectedProcedure
-    .input(z.object({ enrollmentId: z.number() }))
-    .query(async ({ input, ctx }) => {
+    .input(z.object({ courseLevel: z.enum(["beginner", "intermediary", "proficient"]) }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Get materials for the course level
+      const materials = await db
+        .select()
+        .from(courseMaterials)
+        .where(
+          and(
+            eq(courseMaterials.courseLevel, input.courseLevel),
+            eq(courseMaterials.isPublished, 1)
+          )
+        );
+
+      return materials;
+    }),
+
+  // Toggle module completion
+  toggleModuleCompletion: protectedProcedure
+    .input(
+      z.object({
+        enrollmentId: z.number(),
+        moduleNumber: z.number().min(1).max(4),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
 
@@ -94,27 +120,46 @@ export const studentRouter = router({
         throw new Error("Enrollment not found");
       }
 
-      // Get materials for the course level
-      const materials = await db
+      // Get current progress
+      const progress = await db
         .select()
-        .from(courseMaterials)
-        .where(
-          and(
-            eq(courseMaterials.courseLevel, enrollment[0].courseLevel),
-            eq(courseMaterials.isPublished, 1)
-          )
-        );
+        .from(studentProgress)
+        .where(eq(studentProgress.enrollmentId, input.enrollmentId))
+        .limit(1);
 
-      // Group materials by week
-      const materialsByWeek: Record<number, typeof materials> = {};
-      materials.forEach((material) => {
-        if (!materialsByWeek[material.week]) {
-          materialsByWeek[material.week] = [];
-        }
-        materialsByWeek[material.week].push(material);
-      });
+      if (progress.length === 0) {
+        throw new Error("Progress record not found");
+      }
 
-      return materialsByWeek;
+      const completedModules = progress[0].completedModules
+        ? progress[0].completedModules.split(",").map(Number)
+        : [];
+
+      // Toggle module completion
+      if (completedModules.includes(input.moduleNumber)) {
+        // Remove module
+        const newCompleted = completedModules.filter((m) => m !== input.moduleNumber);
+        await db
+          .update(studentProgress)
+          .set({
+            completedModules: newCompleted.join(","),
+            currentModule: newCompleted.length > 0 ? Math.max(...newCompleted) : 1,
+          })
+          .where(eq(studentProgress.id, progress[0].id));
+      } else {
+        // Add module
+        completedModules.push(input.moduleNumber);
+        completedModules.sort((a, b) => a - b);
+        await db
+          .update(studentProgress)
+          .set({
+            completedModules: completedModules.join(","),
+            currentModule: Math.max(...completedModules),
+          })
+          .where(eq(studentProgress.id, progress[0].id));
+      }
+
+      return { success: true };
     }),
 
   // Mark week as completed

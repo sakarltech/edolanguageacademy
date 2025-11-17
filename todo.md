@@ -155,3 +155,13 @@
 - [x] Build admin UI for adding/editing WhatsApp group links
 - [x] Update enrollment confirmation email to include WhatsApp group link
 - [x] Add WhatsApp group link to enrollment success page
+
+## Enhanced Student Dashboard with Module Structure
+- [x] Restructure dashboard to display 4 modules instead of 8 weeks
+- [x] Update database schema to track module completion (4 modules)
+- [x] Implement view-only access for teaching notes (no downloads)
+- [x] Implement stream-only access for videos (no downloads)
+- [x] Add visual progress tracking with module completion checkboxes
+- [x] Update admin interface to upload materials by module instead of week
+- [x] Create module-based content tabs in student dashboard
+- [x] Add progress percentage indicator based on module completion

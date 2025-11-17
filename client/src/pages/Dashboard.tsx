@@ -1,62 +1,59 @@
-import Layout from "@/components/Layout";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  BookOpen, 
-  Calendar, 
-  CheckCircle2, 
-  Download, 
-  FileText, 
-  GraduationCap, 
-  PlayCircle, 
-  TrendingUp,
-  Users
-} from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import Layout from "@/components/Layout";
+import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
+import { BookOpen, Video, FileText, Download, CheckCircle2, Circle, Award } from "lucide-react";
+import { toast } from "sonner";
+import { ALL_CURRICULA } from "@shared/curriculum";
 
 export default function Dashboard() {
   const { user, loading, isAuthenticated } = useAuth();
-  const [selectedEnrollment, setSelectedEnrollment] = useState<number | null>(null);
+  const { data: enrollments, isLoading: enrollmentsLoading } = trpc.student.getMyEnrollments.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
 
-  const { data: enrollments, isLoading: enrollmentsLoading } = trpc.student.getMyEnrollments.useQuery(
-    undefined,
-    { enabled: isAuthenticated }
-  );
-
-  const { data: progressData } = trpc.student.getMyProgress.useQuery(
-    { enrollmentId: selectedEnrollment! },
-    { enabled: !!selectedEnrollment }
+  const activeEnrollment = enrollments?.find((e) => e.status === "paid" || e.status === "active");
+  
+  const { data: progress } = trpc.student.getMyProgress.useQuery(
+    { enrollmentId: activeEnrollment?.id || 0 },
+    { enabled: !!activeEnrollment }
   );
 
   const { data: materials } = trpc.student.getCourseMaterials.useQuery(
-    { enrollmentId: selectedEnrollment! },
-    { enabled: !!selectedEnrollment }
+    { courseLevel: (activeEnrollment?.courseLevel as "beginner" | "intermediary" | "proficient") || "beginner" },
+    { enabled: !!activeEnrollment }
   );
 
-  const markWeekCompletedMutation = trpc.student.markWeekCompleted.useMutation({
+  const toggleModuleCompletion = trpc.student.toggleModuleCompletion.useMutation({
     onSuccess: () => {
-      toast.success("Week marked as completed!");
+      toast.success("Progress updated!");
     },
   });
 
-  // Redirect to login if not authenticated
-  if (!loading && !isAuthenticated) {
+  if (loading || enrollmentsLoading) {
+    return (
+      <Layout>
+        <div className="container py-16 text-center">
+          <p>Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!isAuthenticated) {
     return (
       <Layout>
         <div className="container py-16">
           <Card className="max-w-md mx-auto">
             <CardHeader>
               <CardTitle>Login Required</CardTitle>
-              <CardDescription>
-                Please log in to access your student dashboard
-              </CardDescription>
+              <CardDescription>Please log in to access your dashboard</CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
@@ -69,326 +66,266 @@ export default function Dashboard() {
     );
   }
 
-  // Auto-select first enrollment if available
-  if (enrollments && enrollments.length > 0 && !selectedEnrollment) {
-    setSelectedEnrollment(enrollments[0].id);
+  if (!activeEnrollment) {
+    return (
+      <Layout>
+        <div className="container py-16">
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>No Active Enrollment</CardTitle>
+              <CardDescription>
+                You don't have an active course enrollment yet. Enroll in a course to access learning materials.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild>
+                <a href="/courses">Browse Courses</a>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
+    );
   }
 
-  const enrollment = progressData?.enrollment;
-  const progress = progressData?.progress;
-  const completedWeeks = progress?.completedWeeks 
-    ? progress.completedWeeks.split(",").map(Number).filter(Boolean)
-    : [];
-  const progressPercentage = (completedWeeks.length / 8) * 100;
+  const completedModules = progress?.progress?.completedModules?.split(",").filter(Boolean).map(Number) || [];
+  const progressPercentage = (completedModules.length / 4) * 100;
+  
+  const courseCurriculum = ALL_CURRICULA[activeEnrollment.courseLevel as keyof typeof ALL_CURRICULA];
+  
+  // Group materials by module
+  const materialsByModule = materials?.reduce((acc, material) => {
+    if (!acc[material.moduleNumber]) {
+      acc[material.moduleNumber] = [];
+    }
+    acc[material.moduleNumber].push(material);
+    return acc;
+  }, {} as Record<number, typeof materials>);
 
-  const handleMarkWeekCompleted = async (week: number) => {
-    if (!selectedEnrollment) return;
-    await markWeekCompletedMutation.mutateAsync({
-      enrollmentId: selectedEnrollment,
-      week,
+  const handleToggleModule = async (moduleNumber: number) => {
+    if (!activeEnrollment) return;
+    await toggleModuleCompletion.mutateAsync({
+      enrollmentId: activeEnrollment.id,
+      moduleNumber,
     });
+  };
+
+  const getModuleIcon = (moduleNumber: number) => {
+    return completedModules.includes(moduleNumber) ? (
+      <CheckCircle2 className="h-5 w-5 text-green-600" />
+    ) : (
+      <Circle className="h-5 w-5 text-gray-400" />
+    );
+  };
+
+  const getMaterialIcon = (type: string) => {
+    switch (type) {
+      case "video":
+        return <Video className="h-4 w-4" />;
+      case "teaching_note":
+        return <FileText className="h-4 w-4" />;
+      case "pdf":
+      case "worksheet":
+        return <FileText className="h-4 w-4" />;
+      case "recording":
+        return <Video className="h-4 w-4" />;
+      default:
+        return <BookOpen className="h-4 w-4" />;
+    }
   };
 
   return (
     <Layout>
-      {/* Dashboard Header */}
-      <section className="bg-gradient-to-b from-muted to-background py-12">
-        <div className="container">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">
-                My Dashboard
-              </h1>
-              <p className="text-muted-foreground">
-                Welcome back, {user?.name || "Student"}! Track your learning progress.
-              </p>
-            </div>
-            <GraduationCap className="w-16 h-16 text-primary opacity-20" />
-          </div>
+      <div className="container py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-display font-bold mb-2">My Learning Dashboard</h1>
+          <p className="text-muted-foreground">
+            {activeEnrollment.courseLevel.charAt(0).toUpperCase() + activeEnrollment.courseLevel.slice(1)} Level
+          </p>
         </div>
-      </section>
 
-      {/* Dashboard Content */}
-      <section className="py-12 bg-background">
-        <div className="container">
-          {enrollmentsLoading ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading your courses...</p>
+        {/* Progress Overview */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Award className="h-5 w-5" />
+              Course Progress
+            </CardTitle>
+            <CardDescription>
+              Complete all 4 modules to earn your certificate
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="text-sm font-medium">
+                  {completedModules.length} of 4 modules completed
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {Math.round(progressPercentage)}%
+                </span>
+              </div>
+              <Progress value={progressPercentage} className="h-3" />
             </div>
-          ) : !enrollments || enrollments.length === 0 ? (
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader>
-                <CardTitle>No Enrollments Found</CardTitle>
-                <CardDescription>
-                  You haven't enrolled in any courses yet. Browse our courses and get started!
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild>
-                  <a href="/courses">Browse Courses</a>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-8">
-              {/* Course Selector */}
-              {enrollments.length > 1 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>My Courses</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {enrollments.map((enr) => (
-                        <Button
-                          key={enr.id}
-                          variant={selectedEnrollment === enr.id ? "default" : "outline"}
-                          onClick={() => setSelectedEnrollment(enr.id)}
-                        >
-                          {enr.courseLevel.charAt(0).toUpperCase() + enr.courseLevel.slice(1)}
-                        </Button>
-                      ))}
+
+            {/* Module Completion Checklist */}
+            <div className="grid md:grid-cols-4 gap-4 pt-4">
+              {[1, 2, 3, 4].map((moduleNum) => {
+                const module = courseCurriculum.modules.find((m: any) => m.number === moduleNum);
+                const isCompleted = completedModules.includes(moduleNum);
+                return (
+                  <div
+                    key={moduleNum}
+                    className={`p-4 border rounded-lg ${
+                      isCompleted ? "bg-green-50 border-green-200" : "bg-gray-50"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2">
+                      <Checkbox
+                        checked={isCompleted}
+                        onCheckedChange={() => handleToggleModule(moduleNum)}
+                        className="mt-1"
+                      />
+                      <div>
+                        <p className="font-medium text-sm">Module {moduleNum}</p>
+                        <p className="text-xs text-muted-foreground">{module?.title}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Weeks {module?.weeks.join(" & ")}
+                        </p>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
+                );
+              })}
+            </div>
 
-              {/* Progress Overview */}
-              {enrollment && progress && (
-                <div className="grid md:grid-cols-4 gap-4">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardDescription>Current Week</CardDescription>
-                      <CardTitle className="text-3xl">{progress.currentWeek}/8</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="w-4 h-4" />
-                        <span>Week {progress.currentWeek}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardDescription>Completion</CardDescription>
-                      <CardTitle className="text-3xl">{Math.round(progressPercentage)}%</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Progress value={progressPercentage} className="h-2" />
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardDescription>Attendance</CardDescription>
-                      <CardTitle className="text-3xl">{progress.attendanceCount}/8</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="w-4 h-4" />
-                        <span>Classes attended</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardDescription>Status</CardDescription>
-                      <CardTitle className="text-xl">
-                        <Badge variant={enrollment.status === "active" ? "default" : "secondary"}>
-                          {enrollment.status.charAt(0).toUpperCase() + enrollment.status.slice(1)}
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {progress.certificateIssued ? (
-                        <div className="flex items-center gap-2 text-sm text-primary">
-                          <GraduationCap className="w-4 h-4" />
-                          <span>Certificate earned!</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <TrendingUp className="w-4 h-4" />
-                          <span>In progress</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
+            {/* Certificate Status */}
+            {progress?.progress?.certificateIssued === 1 && (
+              <div className="pt-4 border-t">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-yellow-600" />
+                    <span className="font-medium">Certificate Earned!</span>
+                  </div>
+                  {progress?.progress?.certificateUrl && (
+                    <Button asChild variant="outline" size="sm">
+                      <a href={progress.progress.certificateUrl} target="_blank" rel="noopener noreferrer">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download Certificate
+                      </a>
+                    </Button>
+                  )}
                 </div>
-              )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-              {/* Main Dashboard Tabs */}
-              <Tabs defaultValue="progress" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="progress">Progress</TabsTrigger>
-                  <TabsTrigger value="materials">Materials</TabsTrigger>
-                  <TabsTrigger value="certificate">Certificate</TabsTrigger>
-                </TabsList>
+        {/* Module Content Tabs */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Course Materials</CardTitle>
+            <CardDescription>
+              Access teaching notes, videos, and resources for each module. Materials are view-only and cannot be downloaded.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="1" className="w-full">
+              <TabsList className="grid w-full grid-cols-4">
+                {[1, 2, 3, 4].map((moduleNum) => {
+                  const isCompleted = completedModules.includes(moduleNum);
+                  return (
+                    <TabsTrigger key={moduleNum} value={moduleNum.toString()} className="flex items-center gap-2">
+                      {getModuleIcon(moduleNum)}
+                      Module {moduleNum}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
 
-                {/* Progress Tab */}
-                <TabsContent value="progress" className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Weekly Progress</CardTitle>
-                      <CardDescription>
-                        Track your progress through the 8-week course
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map((week) => {
-                          const isCompleted = completedWeeks.includes(week);
-                          const isCurrent = week === progress?.currentWeek;
+              {[1, 2, 3, 4].map((moduleNum) => {
+                const module = courseCurriculum.modules.find((m: any) => m.number === moduleNum);
+                const moduleMaterials = materialsByModule?.[moduleNum] || [];
 
-                          return (
-                            <Card key={week} className={isCurrent ? "border-primary" : ""}>
-                              <CardHeader className="pb-3">
-                                <div className="flex items-center justify-between">
-                                  <CardTitle className="text-lg">Week {week}</CardTitle>
-                                  {isCompleted && (
-                                    <CheckCircle2 className="w-5 h-5 text-primary" />
-                                  )}
-                                </div>
-                              </CardHeader>
-                              <CardContent>
-                                {!isCompleted && week <= (progress?.currentWeek || 1) && (
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => handleMarkWeekCompleted(week)}
-                                    disabled={markWeekCompletedMutation.isPending}
-                                  >
-                                    Mark as Complete
-                                  </Button>
-                                )}
-                                {isCompleted && (
-                                  <Badge variant="secondary">Completed</Badge>
-                                )}
-                              </CardContent>
-                            </Card>
-                          );
-                        })}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                return (
+                  <TabsContent key={moduleNum} value={moduleNum.toString()} className="space-y-4 mt-6">
+                    {/* Module Info */}
+                    <div className="mb-6">
+                      <h3 className="text-xl font-display font-bold mb-2">{module?.title}</h3>
+                      <p className="text-muted-foreground mb-2">{module?.description}</p>
+                      <Badge variant="outline">Weeks {module?.weeks.join(" & ")}</Badge>
+                    </div>
 
-                {/* Materials Tab */}
-                <TabsContent value="materials" className="space-y-4">
-                  {materials && Object.keys(materials).length > 0 ? (
-                    Object.entries(materials).map(([week, weekMaterials]) => (
-                      <Card key={week}>
-                        <CardHeader>
-                          <CardTitle>Week {week} Materials</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-3">
-                            {weekMaterials.map((material) => (
-                              <div
-                                key={material.id}
-                                className="flex items-center justify-between p-3 border rounded-lg"
-                              >
-                                <div className="flex items-center gap-3">
-                                  {material.type === "video" && <PlayCircle className="w-5 h-5 text-primary" />}
-                                  {material.type === "pdf" && <FileText className="w-5 h-5 text-primary" />}
-                                  {material.type === "worksheet" && <BookOpen className="w-5 h-5 text-primary" />}
-                                  {material.type === "recording" && <PlayCircle className="w-5 h-5 text-primary" />}
+                    {/* Learning Outcomes */}
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Learning Outcomes</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2">
+                          {module?.learningOutcomes.map((outcome: string, idx: number) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">{outcome}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+
+                    {/* Materials */}
+                    {moduleMaterials.length > 0 ? (
+                      <div className="space-y-3">
+                        <h4 className="font-semibold">Course Materials</h4>
+                        {moduleMaterials.map((material: any) => (
+                          <Card key={material.id}>
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-start gap-3">
+                                  <div className="p-2 bg-primary/10 rounded-lg">
+                                    {getMaterialIcon(material.type)}
+                                  </div>
                                   <div>
-                                    <p className="font-medium">{material.title}</p>
+                                    <h5 className="font-medium">{material.title}</h5>
                                     {material.description && (
-                                      <p className="text-sm text-muted-foreground">
+                                      <p className="text-sm text-muted-foreground mt-1">
                                         {material.description}
                                       </p>
                                     )}
+                                    <Badge variant="secondary" className="mt-2">
+                                      {material.type.replace("_", " ").toUpperCase()}
+                                    </Badge>
                                   </div>
                                 </div>
                                 {material.fileUrl && (
-                                  <Button size="sm" variant="outline" asChild>
+                                  <Button asChild size="sm" variant="outline">
                                     <a href={material.fileUrl} target="_blank" rel="noopener noreferrer">
-                                      <Download className="w-4 h-4 mr-2" />
-                                      Download
+                                      View
                                     </a>
                                   </Button>
                                 )}
                               </div>
-                            ))}
-                          </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card>
+                        <CardContent className="p-8 text-center text-muted-foreground">
+                          <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                          <p>No materials available yet for this module.</p>
+                          <p className="text-sm mt-1">Check back soon!</p>
                         </CardContent>
                       </Card>
-                    ))
-                  ) : (
-                    <Card>
-                      <CardContent className="py-12 text-center">
-                        <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground">
-                          Course materials will be available once the course starts.
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-                </TabsContent>
-
-                {/* Certificate Tab */}
-                <TabsContent value="certificate">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Course Certificate</CardTitle>
-                      <CardDescription>
-                        Your certificate of completion
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="py-12">
-                      {progress?.certificateIssued ? (
-                        <div className="text-center space-y-6">
-                          <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                            <GraduationCap className="w-12 h-12 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="text-2xl font-display font-bold mb-2">
-                              Congratulations!
-                            </h3>
-                            <p className="text-muted-foreground mb-4">
-                              You've successfully completed the course with a score of{" "}
-                              {progress.assessmentScore}%
-                            </p>
-                            {progress.certificateUrl && (
-                              <Button size="lg" asChild>
-                                <a href={progress.certificateUrl} download>
-                                  <Download className="w-5 h-5 mr-2" />
-                                  Download Certificate
-                                </a>
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-center space-y-4">
-                          <GraduationCap className="w-16 h-16 text-muted-foreground mx-auto opacity-50" />
-                          <div>
-                            <h3 className="text-xl font-semibold mb-2">
-                              Certificate Not Yet Available
-                            </h3>
-                            <p className="text-muted-foreground">
-                              Complete all 8 weeks and pass the final assessment to earn your certificate.
-                            </p>
-                          </div>
-                          <div className="max-w-md mx-auto">
-                            <Progress value={progressPercentage} className="h-3" />
-                            <p className="text-sm text-muted-foreground mt-2">
-                              {completedWeeks.length} of 8 weeks completed
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
-          )}
-        </div>
-      </section>
+                    )}
+                  </TabsContent>
+                );
+              })}
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
     </Layout>
   );
 }

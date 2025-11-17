@@ -43,6 +43,13 @@
       "when": 1763341807593,
       "tag": "0005_strange_cammi",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1763342279011,
+      "tag": "0006_moaning_shatterstar",
+      "breakpoints": true
     }
   ]
 }

@@ -68,10 +68,11 @@ export type InsertEnrollment = typeof enrollments.$inferInsert;
 export const courseMaterials = mysqlTable("courseMaterials", {
   id: int("id").autoincrement().primaryKey(),
   courseLevel: varchar("courseLevel", { length: 50 }).notNull(),
-  week: int("week").notNull(), // 1-8
+  moduleNumber: int("moduleNumber").notNull(), // 1-4
+  week: int("week").notNull(), // 1-8 (for backward compatibility)
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
-  type: mysqlEnum("type", ["video", "pdf", "worksheet", "recording"]).notNull(),
+  type: mysqlEnum("type", ["video", "pdf", "worksheet", "recording", "teaching_note"]).notNull(),
   fileUrl: varchar("fileUrl", { length: 500 }),
   isPublished: int("isPublished").default(1).notNull(), // 1 = published, 0 = draft
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -88,6 +89,8 @@ export const studentProgress = mysqlTable("studentProgress", {
   id: int("id").autoincrement().primaryKey(),
   enrollmentId: int("enrollmentId").notNull(),
   userId: int("userId").notNull(),
+  currentModule: int("currentModule").default(1).notNull(), // 1-4
+  completedModules: varchar("completedModules", { length: 255 }), // Comma-separated: "1,2,3,4"
   currentWeek: int("currentWeek").default(1).notNull(),
   completedWeeks: varchar("completedWeeks", { length: 255 }), // Comma-separated: "1,2,3"
   attendanceCount: int("attendanceCount").default(0).notNull(),

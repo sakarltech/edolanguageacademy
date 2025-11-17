@@ -27,6 +27,7 @@ export default function Admin() {
   const { user, loading, isAuthenticated } = useAuth();
   const [materialForm, setMaterialForm] = useState({
     courseLevel: "beginner",
+    moduleNumber: 1,
     week: 1,
     title: "",
     description: "",
@@ -51,6 +52,7 @@ export default function Admin() {
       toast.success("Material uploaded successfully!");
       setMaterialForm({
         courseLevel: "beginner",
+        moduleNumber: 1,
         week: 1,
         title: "",
         description: "",
@@ -99,6 +101,7 @@ export default function Admin() {
     e.preventDefault();
     await uploadMaterialMutation.mutateAsync({
       courseLevel: materialForm.courseLevel as any,
+      moduleNumber: materialForm.moduleNumber,
       week: materialForm.week,
       title: materialForm.title,
       description: materialForm.description || undefined,
@@ -283,7 +286,7 @@ export default function Admin() {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleUploadMaterial} className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-3 gap-4">
                       <div>
                         <Label>Course Level</Label>
                         <Select
@@ -299,6 +302,26 @@ export default function Admin() {
                             <SelectItem value="beginner">Beginner</SelectItem>
                             <SelectItem value="intermediary">Intermediary</SelectItem>
                             <SelectItem value="proficient">Proficient</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Module</Label>
+                        <Select
+                          value={materialForm.moduleNumber.toString()}
+                          onValueChange={(value) =>
+                            setMaterialForm({ ...materialForm, moduleNumber: parseInt(value) })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[1, 2, 3, 4].map((module) => (
+                              <SelectItem key={module} value={module.toString()}>
+                                Module {module}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
@@ -358,6 +381,7 @@ export default function Admin() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
+                            <SelectItem value="teaching_note">Teaching Note</SelectItem>
                             <SelectItem value="video">Video</SelectItem>
                             <SelectItem value="pdf">PDF</SelectItem>
                             <SelectItem value="worksheet">Worksheet</SelectItem>

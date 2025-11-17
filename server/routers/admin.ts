@@ -138,10 +138,11 @@ export const adminRouter = router({
     .input(
       z.object({
         courseLevel: z.enum(["beginner", "intermediary", "proficient"]),
+        moduleNumber: z.number().min(1).max(4),
         week: z.number().min(1).max(8),
         title: z.string().min(1),
         description: z.string().optional(),
-        type: z.enum(["video", "pdf", "worksheet", "recording"]),
+        type: z.enum(["video", "pdf", "worksheet", "recording", "teaching_note"]),
         fileUrl: z.string().url().optional(),
         isPublished: z.boolean().default(true),
       })
@@ -152,6 +153,7 @@ export const adminRouter = router({
 
       await db.insert(courseMaterials).values({
         courseLevel: input.courseLevel,
+        moduleNumber: input.moduleNumber,
         week: input.week,
         title: input.title,
         description: input.description || null,
