@@ -36,6 +36,29 @@ export default function Dashboard() {
     },
   });
 
+  const createCheckout = trpc.enrollment.createCheckoutSession.useMutation({
+    onSuccess: (data) => {
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create checkout session");
+    },
+  });
+
+  const handleEnrollCourse = (courseLevel: "beginner" | "intermediary" | "proficient" | "bundle") => {
+    createCheckout.mutate({
+      courseLevel,
+      learnerName: user?.name || "",
+      parentName: "",
+      email: user?.email || "",
+      phone: "",
+      whatsappNumber: "",
+      timeSlot: "11AM_GMT" as "11AM_GMT" | "11AM_CST",
+    });
+  };
+
   if (loading || enrollmentsLoading) {
     return (
       <Layout>
@@ -65,29 +88,6 @@ export default function Dashboard() {
       </Layout>
     );
   }
-
-  const createCheckout = trpc.enrollment.createCheckoutSession.useMutation({
-    onSuccess: (data) => {
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      }
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to create checkout session");
-    },
-  });
-
-  const handleEnrollCourse = (courseLevel: "beginner" | "intermediary" | "proficient" | "bundle") => {
-    createCheckout.mutate({
-      courseLevel,
-      learnerName: user?.name || "",
-      parentName: "",
-      email: user?.email || "",
-      phone: "",
-      whatsappNumber: "",
-      timeSlot: "11AM_GMT" as "11AM_GMT" | "11AM_CST",
-    });
-  };
 
   if (!activeEnrollment) {
     return (

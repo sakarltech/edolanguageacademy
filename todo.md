@@ -184,3 +184,6 @@
 - [x] Update enrollment system to support multiple courses per user (already supported)
 - [x] Show only purchased/unlocked courses in dashboard materials section
 - [x] Database schema already supports multiple enrollments per user
+
+## Dashboard Hooks Error Fix
+- [x] Move createCheckout mutation outside conditional rendering to fix React hooks error
