@@ -36,29 +36,6 @@ export default function Dashboard() {
     },
   });
 
-  const createCheckout = trpc.enrollment.createCheckoutSession.useMutation({
-    onSuccess: (data) => {
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
-      }
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to create checkout session");
-    },
-  });
-
-  const handleEnrollCourse = (courseLevel: "beginner" | "intermediary" | "proficient" | "bundle") => {
-    createCheckout.mutate({
-      courseLevel,
-      learnerName: user?.name || "",
-      parentName: "",
-      email: user?.email || "",
-      phone: "",
-      whatsappNumber: "",
-      timeSlot: "11AM_GMT" as "11AM_GMT" | "11AM_CST",
-    });
-  };
-
   if (loading || enrollmentsLoading) {
     return (
       <Layout>
@@ -93,89 +70,19 @@ export default function Dashboard() {
     return (
       <Layout>
         <div className="container py-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl font-display font-bold mb-4">Choose Your Learning Path</h1>
-              <p className="text-lg text-muted-foreground">
-                Select a course level to begin your Edo language journey
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  level: "beginner",
-                  title: "Edo Beginner",
-                  description: "Perfect for absolute beginners. Learn the Edo alphabet, basic greetings, and everyday phrases.",
-                  price: "£29.99",
-                },
-                {
-                  level: "intermediary",
-                  title: "Edo Intermediary",
-                  description: "Build on your basics. Form sentences, ask questions, and explore Edo culture and traditions.",
-                  price: "£29.99",
-                },
-                {
-                  level: "proficient",
-                  title: "Edo Proficient",
-                  description: "Achieve fluency. Master advanced grammar, cultural expressions, and confident communication.",
-                  price: "£29.99",
-                },
-              ].map((course) => (
-                <Card key={course.level} className="flex flex-col">
-                  <CardHeader>
-                    <CardTitle>{course.title}</CardTitle>
-                    <CardDescription>{course.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <div className="text-3xl font-bold text-primary mb-4">{course.price}</div>
-                    <ul className="space-y-2 text-sm text-muted-foreground mb-6">
-                      <li>✓ 8-week structured programme</li>
-                      <li>✓ Live classes (60 minutes)</li>
-                      <li>✓ 4 comprehensive modules</li>
-                      <li>✓ Certificate upon completion</li>
-                    </ul>
-                  </CardContent>
-                  <CardContent className="pt-0">
-                    <Button
-                      className="w-full"
-                      onClick={() => handleEnrollCourse(course.level as "beginner" | "intermediary" | "proficient")}
-                      disabled={createCheckout.isPending}
-                    >
-                      {createCheckout.isPending ? "Processing..." : "Enroll Now"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <Card className="mt-8 bg-primary/5 border-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Bundle Offer - Best Value!
-                </CardTitle>
-                <CardDescription>
-                  Get all three levels and save £9.97
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-3xl font-bold text-primary">£79.99</div>
-                    <div className="text-sm text-muted-foreground line-through">£89.97</div>
-                  </div>
-                  <Button
-                    size="lg"
-                    onClick={() => handleEnrollCourse("bundle")}
-                    disabled={createCheckout.isPending}
-                  >
-                    {createCheckout.isPending ? "Processing..." : "Get Bundle"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>No Active Enrollment</CardTitle>
+              <CardDescription>
+                You don't have an active course enrollment yet. Enroll in a course to access learning materials.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild>
+                <a href="/courses">Browse Courses</a>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </Layout>
     );

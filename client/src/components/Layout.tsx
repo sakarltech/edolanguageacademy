@@ -60,6 +60,11 @@ export default function Layout({ children }: LayoutProps) {
                   </Button>
                 </Link>
               ))}
+              <Link href="/register">
+                <Button size="sm" className="ml-4">
+                  Enroll Now
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -89,6 +94,11 @@ export default function Layout({ children }: LayoutProps) {
                   </Button>
                 </Link>
               ))}
+              <Link href="/register">
+                <Button className="w-full" onClick={() => setMobileMenuOpen(false)}>
+                  Enroll Now
+                </Button>
+              </Link>
             </div>
           )}
         </nav>
@@ -176,9 +186,9 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/dashboard">
+                  <Link href="/register">
                     <span className="text-muted-foreground hover:text-foreground cursor-pointer">
-                      Dashboard
+                      Register
                     </span>
                   </Link>
                 </li>
