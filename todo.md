@@ -188,3 +188,12 @@
 - [ ] Test complete enrollment flow: Register → Login → Dashboard → Select Course → Pay → Unlock
 - [ ] Update enrollment success page to redirect to dashboard
 - [ ] Add success message in dashboard after enrollment
+
+## SMTP Email Integration (Namecheap)
+- [x] Install nodemailer package for email sending
+- [x] Add SMTP environment variables to env.ts (host, port, user, password, from address)
+- [x] Create email utility service with Nodemailer configuration
+- [x] Create email templates for enrollment confirmation
+- [x] Update enrollment success flow to send confirmation email
+- [x] Create EMAIL_SETUP.md documentation for SMTP configuration
+- [ ] Test email sending with Namecheap SMTP credentials (requires user to add credentials)

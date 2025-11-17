@@ -14,4 +14,11 @@ export const ENV = {
   stripePriceIntermediary: process.env.STRIPE_PRICE_INTERMEDIARY ?? "price_1STuzuH2oBnqcEomhyAwrSzO",
   stripePriceProficient: process.env.STRIPE_PRICE_PROFICIENT ?? "price_1STv0RH2oBnqcEomz8GFluWi",
   stripePriceBundle: process.env.STRIPE_PRICE_BUNDLE ?? "price_1STv14H2oBnqcEomPdWXNq6H",
+  // SMTP Email Configuration
+  smtpHost: process.env.SMTP_HOST ?? "",
+  smtpPort: parseInt(process.env.SMTP_PORT ?? "587", 10),
+  smtpUser: process.env.SMTP_USER ?? "",
+  smtpPassword: process.env.SMTP_PASSWORD ?? "",
+  smtpFromEmail: process.env.SMTP_FROM_EMAIL ?? "",
+  smtpFromName: process.env.SMTP_FROM_NAME ?? "Edo Language Academy",
 };

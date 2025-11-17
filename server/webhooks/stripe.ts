@@ -5,6 +5,9 @@ import { getDb } from "../db";
 import { enrollments } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifyOwner } from "../_core/notification";
+import { sendEnrollmentConfirmationEmail } from "../_core/email";
+import { whatsappGroups } from "../../drizzle/schema";
+import { and } from "drizzle-orm";
 
 const stripe = new Stripe(ENV.stripeSecretKey, {
   apiVersion: "2025-10-29.clover",
@@ -122,4 +125,36 @@ Please add them to the appropriate WhatsApp group within 24 hours.
   });
 
   console.log("[Webhook] Enrollment updated successfully:", enrollmentId);
+
+  // Get enrollment details for email
+  const [enrollment] = await db
+    .select()
+    .from(enrollments)
+    .where(eq(enrollments.id, parseInt(enrollmentId)))
+    .limit(1);
+
+  if (enrollment) {
+    // Get WhatsApp group link
+    const [whatsappGroup] = await db
+      .select()
+      .from(whatsappGroups)
+      .where(
+        and(
+          eq(whatsappGroups.courseLevel, enrollment.courseLevel),
+          eq(whatsappGroups.timeSlot, enrollment.timeSlot),
+          eq(whatsappGroups.isActive, 1)
+        )
+      )
+      .limit(1);
+
+    // Send enrollment confirmation email
+    await sendEnrollmentConfirmationEmail({
+      to: enrollment.email,
+      learnerName: enrollment.learnerName,
+      courseLevel: enrollment.courseLevel,
+      timeSlot: enrollment.timeSlot,
+      whatsappGroupLink: whatsappGroup?.groupLink || undefined,
+      whatsappGroupName: whatsappGroup?.groupName || undefined,
+    });
+  }
 }
