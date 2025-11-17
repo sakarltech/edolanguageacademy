@@ -80,12 +80,31 @@ export default function EnrollmentSuccess() {
                     <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                       <MessageCircle className="w-6 h-6 text-primary" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <CardTitle className="text-xl mb-2">Join Your WhatsApp Group</CardTitle>
                       <CardContent className="p-0">
-                        <p className="text-muted-foreground">
-                          Within 24 hours, we'll add you to your class WhatsApp group where you'll connect with your instructor and classmates.
-                        </p>
+                        {enrollmentStatus?.whatsappGroup ? (
+                          <>
+                            <p className="text-muted-foreground mb-4">
+                              Click the button below to join your class WhatsApp group and connect with your instructor and classmates.
+                            </p>
+                            <a
+                              href={enrollmentStatus.whatsappGroup.groupLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block"
+                            >
+                              <Button className="bg-green-600 hover:bg-green-700">
+                                <MessageCircle className="w-4 h-4 mr-2" />
+                                Join {enrollmentStatus.whatsappGroup.groupName}
+                              </Button>
+                            </a>
+                          </>
+                        ) : (
+                          <p className="text-muted-foreground">
+                            Your WhatsApp group link will be sent to your email within 24 hours. You'll connect with your instructor and classmates there.
+                          </p>
+                        )}
                       </CardContent>
                     </div>
                   </div>

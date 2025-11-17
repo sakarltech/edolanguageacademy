@@ -148,3 +148,10 @@
 - [x] Update enrollment database schema to include timeSlot and whatsappNumber
 - [x] Update enrollment router to handle new fields
 - [x] Update Admin page to display timeSlot instead of ageGroup
+
+## WhatsApp Group Link Management
+- [x] Create database schema for storing WhatsApp group links
+- [x] Create admin router for managing WhatsApp group links
+- [x] Build admin UI for adding/editing WhatsApp group links
+- [x] Update enrollment confirmation email to include WhatsApp group link
+- [x] Add WhatsApp group link to enrollment success page

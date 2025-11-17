@@ -21,6 +21,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { getLoginUrl } from "@/const";
+import { WhatsAppGroupsManager } from "@/components/WhatsAppGroupsManager";
 
 export default function Admin() {
   const { user, loading, isAuthenticated } = useAuth();
@@ -191,9 +192,10 @@ export default function Admin() {
       <section className="py-8 bg-background">
         <div className="container">
           <Tabs defaultValue="enrollments" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="enrollments">Enrollments</TabsTrigger>
               <TabsTrigger value="materials">Materials</TabsTrigger>
+              <TabsTrigger value="whatsapp">WhatsApp Groups</TabsTrigger>
               <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
@@ -425,6 +427,11 @@ export default function Admin() {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* WhatsApp Groups Tab */}
+            <TabsContent value="whatsapp" className="space-y-4">
+              <WhatsAppGroupsManager />
             </TabsContent>
 
             {/* Notifications Tab */}

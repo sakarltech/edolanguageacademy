@@ -104,10 +104,46 @@ export const enrollmentRouter = router({
       // Retrieve the checkout session from Stripe
       const session = await stripe.checkout.sessions.retrieve(input.sessionId);
 
+      // Get enrollment details to fetch WhatsApp group link
+      const [enrollment] = await db
+        .select()
+        .from(enrollments)
+        .where(eq(enrollments.stripeCheckoutSessionId, input.sessionId))
+        .limit(1);
+
+      let whatsappGroupLink = null;
+      if (enrollment) {
+        // Import whatsappGroups from schema
+        const { whatsappGroups } = await import("../../drizzle/schema");
+        const { and } = await import("drizzle-orm");
+        
+        const [whatsappGroup] = await db
+          .select()
+          .from(whatsappGroups)
+          .where(
+            and(
+              eq(whatsappGroups.courseLevel, enrollment.courseLevel),
+              eq(whatsappGroups.timeSlot, enrollment.timeSlot),
+              eq(whatsappGroups.isActive, 1)
+            )
+          )
+          .limit(1);
+
+        if (whatsappGroup) {
+          whatsappGroupLink = {
+            groupName: whatsappGroup.groupName,
+            groupLink: whatsappGroup.groupLink,
+          };
+        }
+      }
+
       return {
         status: session.payment_status,
         customerEmail: session.customer_email,
         amountTotal: session.amount_total ? session.amount_total / 100 : 0,
+        whatsappGroup: whatsappGroupLink,
+        courseLevel: enrollment?.courseLevel,
+        timeSlot: enrollment?.timeSlot,
       };
     }),
 });

@@ -138,3 +138,19 @@ export const forumReplies = mysqlTable("forumReplies", {
 
 export type ForumReply = typeof forumReplies.$inferSelect;
 export type InsertForumReply = typeof forumReplies.$inferInsert;
+/**
+ * WhatsApp group links for each course level and time slot
+ */
+export const whatsappGroups = mysqlTable("whatsappGroups", {
+  id: int("id").autoincrement().primaryKey(),
+  courseLevel: varchar("courseLevel", { length: 50 }).notNull(), // beginner, intermediary, proficient
+  timeSlot: varchar("timeSlot", { length: 20 }).notNull(), // 11AM_GMT or 11AM_CST
+  groupLink: varchar("groupLink", { length: 500 }).notNull(),
+  groupName: varchar("groupName", { length: 255 }).notNull(),
+  isActive: int("isActive").default(1).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WhatsAppGroup = typeof whatsappGroups.$inferSelect;
+export type InsertWhatsAppGroup = typeof whatsappGroups.$inferInsert;
