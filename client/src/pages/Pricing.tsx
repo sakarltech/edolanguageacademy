@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { Check, Star, BookOpen, Users, Award } from "lucide-react";
+import { Check, BookOpen, Users, Award } from "lucide-react";
 
 export default function Pricing() {
   const courses = [
@@ -21,7 +21,6 @@ export default function Pricing() {
         "Certificate of completion",
       ],
       href: "/courses/beginner",
-      popular: false,
     },
     {
       level: "Intermediary",
@@ -39,7 +38,6 @@ export default function Pricing() {
         "Certificate of completion",
       ],
       href: "/courses/intermediary",
-      popular: true,
     },
     {
       level: "Proficient",
@@ -57,7 +55,6 @@ export default function Pricing() {
         "Certificate of proficiency",
       ],
       href: "/courses/proficient",
-      popular: false,
     },
   ];
 
@@ -89,18 +86,8 @@ export default function Pricing() {
               return (
                 <Card
                   key={course.level}
-                  className={`flex flex-col relative ${
-                    course.popular ? "border-primary shadow-lg" : ""
-                  }`}
+                  className="flex flex-col relative"
                 >
-                  {course.popular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                        <Star className="w-4 h-4" />
-                        Most Popular
-                      </div>
-                    </div>
-                  )}
                   <CardHeader className="text-center pb-8">
                     <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-4">
                       <Icon className="w-8 h-8 text-primary" />
@@ -134,7 +121,7 @@ export default function Pricing() {
                     <Link href={course.href}>
                       <Button
                         className="w-full"
-                        variant={course.popular ? "default" : "outline"}
+                        variant="outline"
                       >
                         Learn More
                       </Button>
@@ -154,7 +141,7 @@ export default function Pricing() {
             <Card className="border-primary/30 shadow-xl">
               <CardHeader className="text-center pb-8">
                 <div className="w-20 h-20 rounded-full bg-secondary/20 flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-10 h-10 text-secondary" />
+                  <Award className="w-10 h-10 text-secondary" />
                 </div>
                 <CardTitle className="text-3xl font-display">
                   Complete Bundle - Best Value!

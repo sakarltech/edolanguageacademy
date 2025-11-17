@@ -127,3 +127,7 @@
 - [x] Update schedule page with new time slot information
 - [x] Clarify that learners only need to attend one time slot
 - [x] Remove age-specific class time differences (same for all ages)
+
+## Pricing Page Update
+- [x] Remove "Most Popular" badges from all course cards
+- [x] Ensure all course levels are presented equally
