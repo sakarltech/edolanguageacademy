@@ -2,53 +2,15 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { Calendar, Clock, Users, Globe } from "lucide-react";
+import { Calendar, Clock, Users, Globe, AlertCircle } from "lucide-react";
+import { TIME_SLOTS, getUpcomingCohorts, formatCohortDate } from "@shared/scheduleUtils";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Schedule() {
-  const upcomingCohorts = [
-    {
-      level: "Beginner",
-      startDate: "January 11, 2025",
-      endDate: "March 1, 2025",
-      ageGroups: ["Kids (5-12)", "Teens (13-17)", "Adults (18+)"],
-      spotsLeft: 15,
-    },
-    {
-      level: "Intermediary",
-      startDate: "January 18, 2025",
-      endDate: "March 8, 2025",
-      ageGroups: ["Kids (5-12)", "Teens (13-17)", "Adults (18+)"],
-      spotsLeft: 12,
-    },
-    {
-      level: "Proficient",
-      startDate: "January 25, 2025",
-      endDate: "March 15, 2025",
-      ageGroups: ["Teens (13-17)", "Adults (18+)"],
-      spotsLeft: 8,
-    },
-  ];
-
-  const classSchedule = [
-    {
-      ageGroup: "Kids (5-12)",
-      time: "10:00 AM UK Time",
-      cstTime: "4:00 AM CST",
-      duration: "60 minutes",
-    },
-    {
-      ageGroup: "Teens (13-17)",
-      time: "12:00 PM UK Time",
-      cstTime: "6:00 AM CST",
-      duration: "75 minutes",
-    },
-    {
-      ageGroup: "Adults (18+)",
-      time: "2:00 PM UK Time",
-      cstTime: "8:00 AM CST",
-      duration: "75 minutes",
-    },
-  ];
+  useScrollAnimation();
+  
+  const upcomingCohorts = getUpcomingCohorts(3);
 
   return (
     <Layout>
@@ -60,8 +22,24 @@ export default function Schedule() {
               Class Schedule
             </h1>
             <p className="text-lg text-muted-foreground">
-              All classes are held live on Zoom every Saturday. Choose the time slot that works best for your age group and timezone.
+              All classes are held live on Zoom every Saturday. Choose the time slot that works best for your timezone.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Important Notice */}
+      <section className="py-8 bg-background">
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <Alert className="scroll-fade-in">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Two time options available:</strong> We offer classes at 11 AM GMT and 11 AM CST. 
+                You only need to attend <strong>one</strong> of these time slots, not both. Choose whichever time suits your timezone best.
+                All age groups (Kids, Teens, Adults) have the same class time and duration.
+              </AlertDescription>
+            </Alert>
           </div>
         </div>
       </section>
@@ -69,43 +47,74 @@ export default function Schedule() {
       {/* Class Times */}
       <section className="py-16 bg-background">
         <div className="container">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-display font-bold text-center mb-4">
               Weekly Class Times
             </h2>
             <p className="text-center text-muted-foreground mb-12">
-              All classes meet every Saturday at the following times
+              All classes meet every Saturday • 60 minutes duration • Same time for all age groups
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {classSchedule.map((schedule, index) => (
-                <Card key={index}>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {TIME_SLOTS.map((slot, index) => (
+                <Card key={slot.id} className="scroll-fade-in">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Users className="w-6 h-6 text-primary" />
+                      <Globe className="w-6 h-6 text-primary" />
                     </div>
-                    <CardTitle>{schedule.ageGroup}</CardTitle>
+                    <CardTitle className="text-2xl">
+                      {slot.time} {slot.timezone}
+                    </CardTitle>
+                    <CardDescription>
+                      Suitable for: {slot.suitableFor.join(", ")}
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <Clock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <div className="font-semibold text-sm">{schedule.time}</div>
-                        <div className="text-xs text-muted-foreground">
-                          ({schedule.cstTime})
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-sm mb-3 text-muted-foreground">
+                        Timezone Conversions:
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2">
+                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <div className="text-sm">
+                            <strong>UK:</strong> {slot.conversions.uk}
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <div className="text-sm">
+                            <strong>Nigeria:</strong> {slot.conversions.nigeria}
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <div className="text-sm">
+                            <strong>Central Europe:</strong> {slot.conversions.centralEurope}
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <div className="text-sm">
+                            <strong>North America:</strong> {slot.conversions.northAmerica}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-primary flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">
-                        {schedule.duration}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-5 h-5 text-primary flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">
-                        Every Saturday
-                      </span>
+                    
+                    <div className="pt-4 border-t">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar className="w-4 h-4" />
+                        <span>Every Saturday</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                        <Clock className="w-4 h-4" />
+                        <span>60 minutes</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                        <Users className="w-4 h-4" />
+                        <span>All age groups (Kids, Teens, Adults)</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -116,62 +125,66 @@ export default function Schedule() {
       </section>
 
       {/* Upcoming Cohorts */}
-      <section className="py-16 bg-muted">
+      <section className="py-16 bg-muted/30">
         <div className="container">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-display font-bold text-center mb-4">
               Upcoming Cohorts
             </h2>
             <p className="text-center text-muted-foreground mb-12">
-              Enroll now to secure your spot in the next cohort
+              New cohorts start every 10 weeks. Enroll now to secure your spot!
             </p>
-            <div className="space-y-6">
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {upcomingCohorts.map((cohort, index) => (
-                <Card key={index}>
+                <Card key={index} className="scroll-slide-up">
                   <CardHeader>
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div>
-                        <CardTitle className="text-2xl font-display">
-                          Edo {cohort.level}
-                        </CardTitle>
-                        <CardDescription className="text-base mt-2">
-                          {cohort.startDate} - {cohort.endDate}
-                        </CardDescription>
-                      </div>
-                      <div className="text-left md:text-right">
-                        <div className="text-sm font-semibold text-primary">
-                          {cohort.spotsLeft} spots left
-                        </div>
-                        <div className="text-xs text-muted-foreground">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <Calendar className="w-6 h-6 text-primary" />
+                    </div>
+                    <CardTitle>
+                      {index === 0 ? "Next Cohort" : `Cohort ${index + 1}`}
+                    </CardTitle>
+                    <CardDescription>
+                      {index === 0 && (
+                        <span className="inline-flex items-center gap-1 text-accent font-semibold">
+                          <AlertCircle className="w-3 h-3" />
                           Limited availability
-                        </div>
-                      </div>
-                    </div>
+                        </span>
+                      )}
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div>
-                        <div className="text-sm font-semibold mb-2">
-                          Available for:
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {cohort.ageGroups.map((group, groupIndex) => (
-                            <span
-                              key={groupIndex}
-                              className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full"
-                            >
-                              {group}
-                            </span>
-                          ))}
+                  <CardContent className="space-y-4">
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">Start Date</div>
+                      <div className="font-semibold">{formatCohortDate(cohort.startDate)}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">End Date</div>
+                      <div className="font-semibold">{formatCohortDate(cohort.endDate)}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">Duration</div>
+                      <div className="font-semibold">8 weeks</div>
+                    </div>
+                    {index === 0 && (
+                      <div className="pt-4 border-t">
+                        <div className="text-sm text-accent font-semibold">
+                          Only {cohort.spotsRemaining} spots left!
                         </div>
                       </div>
-                      <Link href="/register">
-                        <Button>Enroll Now</Button>
-                      </Link>
-                    </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
+            </div>
+            
+            <div className="text-center mt-12">
+              <Link href="/register">
+                <Button size="lg" className="text-lg px-8">
+                  Enroll Now
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -180,47 +193,53 @@ export default function Schedule() {
       {/* Programme Structure */}
       <section className="py-16 bg-background">
         <div className="container">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-display font-bold text-center mb-12">
               8-Week Programme Structure
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="scroll-fade-in">
                 <CardHeader>
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mb-4">
-                    6
-                  </div>
-                  <CardTitle>Instruction Weeks</CardTitle>
+                  <CardTitle>Weeks 1-6: Core Learning</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Six weeks of structured learning with new content each week
+                  <p className="text-muted-foreground">
+                    Four comprehensive modules covering all essential aspects of the Edo language,
+                    from alphabets and pronunciation to conversation and cultural understanding.
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              
+              <Card className="scroll-fade-in">
                 <CardHeader>
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mb-4">
-                    1
-                  </div>
-                  <CardTitle>Revision Week</CardTitle>
+                  <CardTitle>Week 7: Revision</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    One week dedicated to reviewing all course material
+                  <p className="text-muted-foreground">
+                    Comprehensive review of all modules with practice sessions and assessment preparation.
                   </p>
                 </CardContent>
               </Card>
-              <Card>
+              
+              <Card className="scroll-fade-in">
                 <CardHeader>
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mb-4">
-                    1
-                  </div>
-                  <CardTitle>Assessment Week</CardTitle>
+                  <CardTitle>Week 8: Assessment</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Final assessment and certificate award ceremony
+                  <p className="text-muted-foreground">
+                    Final written and oral assessments to demonstrate your learning, followed by certificate presentation.
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="scroll-fade-in">
+                <CardHeader>
+                  <CardTitle>Flexible Learning</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Access to class recordings, materials, and workbooks throughout the programme and beyond.
                   </p>
                 </CardContent>
               </Card>
@@ -229,60 +248,28 @@ export default function Schedule() {
         </div>
       </section>
 
-      {/* Important Notes */}
-      <section className="py-16 bg-muted">
-        <div className="container">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl font-display font-bold text-center mb-8">
-              Important Information
-            </h2>
-            <Card>
-              <CardContent className="pt-6 space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Class Format</h4>
-                  <p className="text-sm text-muted-foreground">
-                    All classes are conducted live via Zoom. You'll receive the meeting link upon enrollment.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Recordings Available</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Can't make a live session? All classes are recorded and available for 30 days after the course ends.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Attendance Policy</h4>
-                  <p className="text-sm text-muted-foreground">
-                    While we encourage live attendance, you can complete the course using recordings if needed. However, live participation enhances learning.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Certificate Requirements</h4>
-                  <p className="text-sm text-muted-foreground">
-                    To receive your certificate, you must complete the final assessment in Week 8.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
+      {/* CTA Section */}
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-display font-bold mb-4">
-              Ready to Join a Cohort?
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              Ready to Start Learning?
             </h2>
             <p className="text-lg mb-8 opacity-90">
-              Spots fill up quickly! Enroll today to secure your place in the next cohort.
+              Join our next cohort and begin your Edo language journey with expert instructors and a supportive community.
             </p>
-            <Link href="/register">
-              <Button size="lg" variant="secondary" className="px-8">
-                Enroll Now
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/register">
+                <Button size="lg" variant="secondary" className="text-lg px-8">
+                  Enroll Now
+                </Button>
+              </Link>
+              <Link href="/courses">
+                <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10">
+                  View Courses
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

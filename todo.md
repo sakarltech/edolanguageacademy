@@ -119,3 +119,11 @@
 - [ ] Update FAQs with new class duration, schedule, and access information
 - [ ] Remove learner's age field from registration form
 - [ ] Add WhatsApp group link automation in enrollment confirmation emails
+
+## Schedule & Cohort System Updates
+- [x] Implement dual time slots (11 AM GMT and 11 AM CST)
+- [x] Add automatic timezone conversions (UK, Nigeria, Europe, North America)
+- [x] Create automatic rolling cohort logic (Dec 6th start, then every 10 weeks)
+- [x] Update schedule page with new time slot information
+- [x] Clarify that learners only need to attend one time slot
+- [x] Remove age-specific class time differences (same for all ages)
