@@ -165,3 +165,13 @@
 - [x] Update admin interface to upload materials by module instead of week
 - [x] Create module-based content tabs in student dashboard
 - [x] Add progress percentage indicator based on module completion
+
+## Certificate Generation System
+- [x] Create PDF certificate template with Edo branding
+- [x] Build certificate generation function with student name, course level, completion date, and assessment scores
+- [x] Add admin procedure to trigger certificate generation for eligible students
+- [x] Store certificate URLs in database for dashboard access
+- [x] Add certificate management tab in admin panel
+- [x] Update student dashboard to display certificate download link
+- [x] Add certificate issuance tracking
+- [ ] Implement automatic email delivery of certificates to students (requires email service integration)

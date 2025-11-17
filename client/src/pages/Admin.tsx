@@ -195,9 +195,10 @@ export default function Admin() {
       <section className="py-8 bg-background">
         <div className="container">
           <Tabs defaultValue="enrollments" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="enrollments">Enrollments</TabsTrigger>
               <TabsTrigger value="materials">Materials</TabsTrigger>
+              <TabsTrigger value="certificates">Certificates</TabsTrigger>
               <TabsTrigger value="whatsapp">WhatsApp Groups</TabsTrigger>
               <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -448,6 +449,104 @@ export default function Admin() {
                         No materials uploaded yet
                       </p>
                     )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Certificates Tab */}
+            <TabsContent value="certificates" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Certificate Management</CardTitle>
+                  <CardDescription>
+                    Issue certificates to students who have completed all 4 modules and passed assessments
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {enrollments
+                      ?.filter((e) => e.enrollment.status === "paid")
+                      .map((item) => {
+                        const enrollment = item.enrollment;
+                        const progress = item as any; // Type assertion for progress data
+                        const completedModules = progress.completedModules?.split(",").filter(Boolean) || [];
+                        const allModulesCompleted = completedModules.length >= 4;
+                        const certificateIssued = progress.certificateIssued === 1;
+
+                        return (
+                          <div
+                            key={enrollment.id}
+                            className="flex items-center justify-between p-4 border rounded-lg"
+                          >
+                            <div className="flex-1">
+                              <div className="font-medium">{enrollment.learnerName}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {enrollment.courseLevel.charAt(0).toUpperCase() +
+                                  enrollment.courseLevel.slice(1)}{" "}
+                                Course
+                              </div>
+                              <div className="text-sm text-muted-foreground mt-1">
+                                Modules Completed: {completedModules.length}/4
+                                {progress.assessmentScore && (
+                                  <span className="ml-2">
+                                    • Assessment: {progress.assessmentScore}%
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {certificateIssued ? (
+                                <>
+                                  <Badge variant="default" className="bg-green-600">
+                                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                                    Issued
+                                  </Badge>
+                                  {progress.certificateUrl && (
+                                    <Button
+                                      asChild
+                                      variant="outline"
+                                      size="sm"
+                                    >
+                                      <a
+                                        href={progress.certificateUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        View Certificate
+                                      </a>
+                                    </Button>
+                                  )}
+                                </>
+                              ) : allModulesCompleted ? (
+                                <Button
+                                  size="sm"
+                                  onClick={async () => {
+                                    try {
+                                      const issueMutation = trpc.certificates.issueCertificate.useMutation();
+                                      const result = await issueMutation.mutateAsync({
+                                        enrollmentId: enrollment.id,
+                                      });
+                                      if (result.success) {
+                                        toast.success("Certificate issued successfully!");
+                                        window.location.reload();
+                                      } else {
+                                        toast.error(result.message);
+                                      }
+                                    } catch (error: any) {
+                                      toast.error(error.message || "Failed to issue certificate");
+                                    }
+                                  }}
+                                >
+                                  Issue Certificate
+                                </Button>
+                              ) : (
+                                <Badge variant="secondary">Not Eligible</Badge>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 </CardContent>
               </Card>

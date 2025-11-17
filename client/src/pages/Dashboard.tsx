@@ -145,6 +145,42 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* Certificate Section */}
+        {progress?.progress?.certificateIssued === 1 && progress?.progress?.certificateUrl && (
+          <Card className="mb-8 border-primary/50 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-6 w-6 text-primary" />
+                Certificate of Completion
+              </CardTitle>
+              <CardDescription>
+                Congratulations! You have successfully completed the {activeEnrollment.courseLevel.charAt(0).toUpperCase() + activeEnrollment.courseLevel.slice(1)} course.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between p-4 bg-background rounded-lg">
+                <div>
+                  <p className="font-medium mb-1">Your Certificate is Ready</p>
+                  <p className="text-sm text-muted-foreground">
+                    Download your official certificate of completion
+                  </p>
+                </div>
+                <Button asChild>
+                  <a
+                    href={progress.progress.certificateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Certificate
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Progress Overview */}
         <Card className="mb-8">
           <CardHeader>
