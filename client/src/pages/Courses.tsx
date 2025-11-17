@@ -152,13 +152,20 @@ export default function Courses() {
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-display font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-lg mb-8 opacity-90">
-              Choose your level and join our next cohort today.
+              Create an account to choose your level and join our next cohort.
             </p>
-            <Link href="/register">
-              <Button size="lg" variant="secondary" className="px-8">
-                Enroll Now
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/register">
+                <Button size="lg" variant="secondary" className="px-8">
+                  Register to Enrol
+                </Button>
+              </Link>
+              <Link href="/dashboard">
+                <Button size="lg" variant="outline" className="px-8 bg-transparent border-white text-white hover:bg-white hover:text-primary">
+                  Already have an account? Log in
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

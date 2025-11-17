@@ -10,4 +10,8 @@ export const ENV = {
   stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
   stripePublishableKey: process.env.VITE_STRIPE_PUBLISHABLE_KEY ?? "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+  stripePriceBeginner: process.env.STRIPE_PRICE_BEGINNER ?? "price_1STuz1H2oBnqcEomh4WSJRIl",
+  stripePriceIntermediary: process.env.STRIPE_PRICE_INTERMEDIARY ?? "price_1STuzuH2oBnqcEomhyAwrSzO",
+  stripePriceProficient: process.env.STRIPE_PRICE_PROFICIENT ?? "price_1STv0RH2oBnqcEomz8GFluWi",
+  stripePriceBundle: process.env.STRIPE_PRICE_BUNDLE ?? "price_1STv14H2oBnqcEomPdWXNq6H",
 };

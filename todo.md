@@ -175,3 +175,16 @@
 - [x] Update student dashboard to display certificate download link
 - [x] Add certificate issuance tracking
 - [ ] Implement automatic email delivery of certificates to students (requires email service integration)
+
+## Enrollment Flow Refactor (New User Requirements)
+- [x] Update Dashboard to show course catalog when user has no enrollment
+- [x] Add enrollment dialog to collect time slot and contact info before checkout
+- [x] Implement dashboard-based enrollment flow (user selects course from dashboard)
+- [x] Ensure Register page is simple account creation only (no course selection)
+- [x] Update all public page CTAs to point to /register (already done)
+- [x] Migrate Stripe integration to use environment variables for Price IDs
+- [ ] Update Stripe webhook to create enrollment AFTER payment success (already implemented)
+- [ ] Implement one-level-at-a-time enforcement in dashboard (UI message added, backend enforcement needed)
+- [ ] Test complete enrollment flow: Register → Login → Dashboard → Select Course → Pay → Unlock
+- [ ] Update enrollment success page to redirect to dashboard
+- [ ] Add success message in dashboard after enrollment

@@ -5,18 +5,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/Layout";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
-import { BookOpen, Video, FileText, Download, CheckCircle2, Circle, Award } from "lucide-react";
+import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users } from "lucide-react";
 import { toast } from "sonner";
 import { ALL_CURRICULA } from "@shared/curriculum";
+import { getNextCohortStartDate } from "@shared/scheduleUtils";
+import { useState } from "react";
 
 export default function Dashboard() {
   const { user, loading, isAuthenticated } = useAuth();
-  const { data: enrollments, isLoading: enrollmentsLoading } = trpc.student.getMyEnrollments.useQuery(undefined, {
+  const { data: enrollments, isLoading: enrollmentsLoading, refetch: refetchEnrollments } = trpc.student.getMyEnrollments.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+
+  const [enrollDialogOpen, setEnrollDialogOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | null>(null);
+  const [timeSlot, setTimeSlot] = useState<"11AM_GMT" | "11AM_CST">("11AM_GMT");
+  const [phone, setPhone] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
 
   const activeEnrollment = enrollments?.find((e) => e.status === "paid" || e.status === "active");
   
@@ -35,6 +47,43 @@ export default function Dashboard() {
       toast.success("Progress updated!");
     },
   });
+
+  const createCheckout = trpc.enrollment.createCheckoutSession.useMutation({
+    onSuccess: (data) => {
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create checkout session");
+    },
+  });
+
+  const handleOpenEnrollDialog = (courseLevel: "beginner" | "intermediary" | "proficient") => {
+    setSelectedCourse(courseLevel);
+    setEnrollDialogOpen(true);
+  };
+
+  const handleConfirmEnrollment = () => {
+    if (!user || !selectedCourse) return;
+    
+    if (!phone.trim()) {
+      toast.error("Please provide a phone number");
+      return;
+    }
+    
+    createCheckout.mutate({
+      courseLevel: selectedCourse,
+      learnerName: user.name || "",
+      parentName: "",
+      email: user.email || "",
+      phone: phone.trim(),
+      whatsappNumber: whatsappNumber.trim() || phone.trim(),
+      timeSlot,
+    });
+    
+    setEnrollDialogOpen(false);
+  };
 
   if (loading || enrollmentsLoading) {
     return (
@@ -66,28 +115,239 @@ export default function Dashboard() {
     );
   }
 
+  // State 1: No active enrollment - show course catalog
   if (!activeEnrollment) {
+    const courses = [
+      {
+        level: "Beginner",
+        courseLevel: "beginner" as const,
+        icon: BookOpen,
+        price: "£19.99",
+        description: "Perfect for absolute beginners. Learn the Edo alphabet, basic greetings, numbers, and everyday vocabulary through bi-weekly live classes.",
+        features: [
+          "4 modules over 8 weeks",
+          "60-minute live classes",
+          "Teaching notes & recordings",
+          "Certificate upon completion",
+        ],
+      },
+      {
+        level: "Intermediary",
+        courseLevel: "intermediary" as const,
+        icon: Users,
+        price: "£24.99",
+        description: "Build on your basics. Form sentences, ask questions, and explore Edo culture with advanced grammar and proverbs.",
+        features: [
+          "4 modules over 8 weeks",
+          "60-minute live classes",
+          "Teaching notes & recordings",
+          "Certificate upon completion",
+        ],
+      },
+      {
+        level: "Proficient",
+        courseLevel: "proficient" as const,
+        icon: Award,
+        price: "£29.99",
+        description: "Achieve fluency. Master advanced grammar, cultural expressions, and confident communication in reading, writing, and conversation.",
+        features: [
+          "4 modules over 8 weeks",
+          "60-minute live classes",
+          "Teaching notes & recordings",
+          "Certificate upon completion",
+        ],
+      },
+    ];
+
+    const nextCohort = getNextCohortStartDate();
+
     return (
       <Layout>
         <div className="container py-16">
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle>No Active Enrollment</CardTitle>
-              <CardDescription>
-                You don't have an active course enrollment yet. Enroll in a course to access learning materials.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild>
-                <a href="/courses">Browse Courses</a>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="max-w-6xl mx-auto">
+            {/* Welcome Message */}
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-display font-bold mb-4">
+                Welcome, {user?.name?.split(" ")[0] || "Learner"}!
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                You haven't enrolled in a course yet. Start by choosing your level below.
+              </p>
+            </div>
+
+            {/* Next Cohort Info */}
+            <Card className="mb-8 bg-primary/5 border-primary/20">
+              <CardContent className="flex items-center gap-4 py-4">
+                <Calendar className="h-8 w-8 text-primary" />
+                <div>
+                  <p className="font-semibold">Next Cohort Starts</p>
+                  <p className="text-sm text-muted-foreground">
+                    {nextCohort.toLocaleDateString("en-GB", { 
+                      weekday: "long", 
+                      year: "numeric", 
+                      month: "long", 
+                      day: "numeric" 
+                    })}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Course Catalog */}
+            <div className="grid md:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <Card key={course.courseLevel} className="flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <course.icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">Edo {course.level}</CardTitle>
+                        <p className="text-2xl font-bold text-primary">{course.price}</p>
+                      </div>
+                    </div>
+                    <CardDescription className="text-sm">
+                      {course.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <ul className="space-y-2 mb-6 flex-1">
+                      {course.features.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-2 text-sm">
+                          <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className="w-full" 
+                      onClick={() => handleOpenEnrollDialog(course.courseLevel)}
+                    >
+                      Enrol Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Class Schedule Info */}
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Class Schedule
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Choose your preferred time slot during enrollment. All classes are 60 minutes, twice per week for 8 weeks.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <p className="font-semibold mb-1">Time Slot 1</p>
+                    <p className="text-sm text-muted-foreground">11:00 AM GMT (UK Time)</p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <p className="font-semibold mb-1">Time Slot 2</p>
+                    <p className="text-sm text-muted-foreground">11:00 AM CST (US Central)</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
+
+        {/* Enrollment Dialog */}
+        <Dialog open={enrollDialogOpen} onOpenChange={setEnrollDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Complete Your Enrollment</DialogTitle>
+              <DialogDescription>
+                Please provide a few details to complete your enrollment in Edo {selectedCourse?.charAt(0).toUpperCase()}{selectedCourse?.slice(1)}.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-6 py-4">
+              {/* Time Slot Selection */}
+              <div className="space-y-3">
+                <Label>Preferred Class Time *</Label>
+                <RadioGroup value={timeSlot} onValueChange={(value) => setTimeSlot(value as "11AM_GMT" | "11AM_CST")}>
+                  <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                    <RadioGroupItem value="11AM_GMT" id="gmt" className="mt-1" />
+                    <div className="flex-1">
+                      <Label htmlFor="gmt" className="font-medium cursor-pointer">
+                        11:00 AM GMT (UK Time)
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Best for learners in UK, Nigeria, and Central Europe
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                    <RadioGroupItem value="11AM_CST" id="cst" className="mt-1" />
+                    <div className="flex-1">
+                      <Label htmlFor="cst" className="font-medium cursor-pointer">
+                        11:00 AM CST (US Central)
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Best for learners in North America
+                      </p>
+                    </div>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Phone Number */}
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+44 123 456 7890"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  We'll use this to contact you about class updates
+                </p>
+              </div>
+
+              {/* WhatsApp Number */}
+              <div className="space-y-2">
+                <Label htmlFor="whatsapp">WhatsApp Number (Optional)</Label>
+                <Input
+                  id="whatsapp"
+                  type="tel"
+                  placeholder="+44 123 456 7890"
+                  value={whatsappNumber}
+                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  If different from phone number. We'll send you the class WhatsApp group link.
+                </p>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEnrollDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleConfirmEnrollment}
+                disabled={createCheckout.isPending}
+              >
+                {createCheckout.isPending ? "Processing..." : "Continue to Payment"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </Layout>
     );
   }
 
+  // State 2: Has active enrollment - show enrolled course content
   const completedModules = progress?.progress?.completedModules?.split(",").filter(Boolean).map(Number) || [];
   const progressPercentage = (completedModules.length / 4) * 100;
   
@@ -100,267 +360,179 @@ export default function Dashboard() {
     }
     acc[material.moduleNumber].push(material);
     return acc;
-  }, {} as Record<number, typeof materials>);
-
-  const handleToggleModule = async (moduleNumber: number) => {
-    if (!activeEnrollment) return;
-    await toggleModuleCompletion.mutateAsync({
-      enrollmentId: activeEnrollment.id,
-      moduleNumber,
-    });
-  };
-
-  const getModuleIcon = (moduleNumber: number) => {
-    return completedModules.includes(moduleNumber) ? (
-      <CheckCircle2 className="h-5 w-5 text-green-600" />
-    ) : (
-      <Circle className="h-5 w-5 text-gray-400" />
-    );
-  };
-
-  const getMaterialIcon = (type: string) => {
-    switch (type) {
-      case "video":
-        return <Video className="h-4 w-4" />;
-      case "teaching_note":
-        return <FileText className="h-4 w-4" />;
-      case "pdf":
-      case "worksheet":
-        return <FileText className="h-4 w-4" />;
-      case "recording":
-        return <Video className="h-4 w-4" />;
-      default:
-        return <BookOpen className="h-4 w-4" />;
-    }
-  };
+  }, {} as Record<number, typeof materials>) || {};
 
   return (
     <Layout>
       <div className="container py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-display font-bold mb-2">My Learning Dashboard</h1>
-          <p className="text-muted-foreground">
-            {activeEnrollment.courseLevel.charAt(0).toUpperCase() + activeEnrollment.courseLevel.slice(1)} Level
-          </p>
-        </div>
-
-        {/* Certificate Section */}
-        {progress?.progress?.certificateIssued === 1 && progress?.progress?.certificateUrl && (
-          <Card className="mb-8 border-primary/50 bg-primary/5">
+        <div className="max-w-6xl mx-auto">
+          {/* Active Course Header */}
+          <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-6 w-6 text-primary" />
-                Certificate of Completion
-              </CardTitle>
-              <CardDescription>
-                Congratulations! You have successfully completed the {activeEnrollment.courseLevel.charAt(0).toUpperCase() + activeEnrollment.courseLevel.slice(1)} course.
-              </CardDescription>
+              <div className="flex items-start justify-between">
+                <div>
+                  <Badge className="mb-2">Active Course</Badge>
+                  <CardTitle className="text-2xl font-display">
+                    Edo {activeEnrollment.courseLevel.charAt(0).toUpperCase() + activeEnrollment.courseLevel.slice(1)}
+                  </CardTitle>
+                  <CardDescription>
+                    Complete all 4 modules to master this level
+                  </CardDescription>
+                </div>
+                {progress?.progress?.certificateUrl && (
+                  <Button asChild variant="outline">
+                    <a href={progress.progress.certificateUrl} target="_blank" rel="noopener noreferrer">
+                      <Award className="h-4 w-4 mr-2" />
+                      View Certificate
+                    </a>
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                <div>
-                  <p className="font-medium mb-1">Your Certificate is Ready</p>
-                  <p className="text-sm text-muted-foreground">
-                    Download your official certificate of completion
-                  </p>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">Course Progress</span>
+                  <span className="text-muted-foreground">
+                    {completedModules.length} of 4 modules completed
+                  </span>
                 </div>
-                <Button asChild>
-                  <a
-                    href={progress.progress.certificateUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Certificate
-                  </a>
-                </Button>
+                <Progress value={progressPercentage} className="h-2" />
               </div>
             </CardContent>
           </Card>
-        )}
 
-        {/* Progress Overview */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5" />
-              Course Progress
-            </CardTitle>
-            <CardDescription>
-              Complete all 4 modules to earn your certificate
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium">
-                  {completedModules.length} of 4 modules completed
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {Math.round(progressPercentage)}%
-                </span>
-              </div>
-              <Progress value={progressPercentage} className="h-3" />
-            </div>
-
-            {/* Module Completion Checklist */}
-            <div className="grid md:grid-cols-4 gap-4 pt-4">
-              {[1, 2, 3, 4].map((moduleNum) => {
-                const module = courseCurriculum.modules.find((m: any) => m.number === moduleNum);
-                const isCompleted = completedModules.includes(moduleNum);
-                return (
-                  <div
-                    key={moduleNum}
-                    className={`p-4 border rounded-lg ${
-                      isCompleted ? "bg-green-50 border-green-200" : "bg-gray-50"
-                    }`}
-                  >
-                    <div className="flex items-start gap-2">
-                      <Checkbox
-                        checked={isCompleted}
-                        onCheckedChange={() => handleToggleModule(moduleNum)}
-                        className="mt-1"
-                      />
-                      <div>
-                        <p className="font-medium text-sm">Module {moduleNum}</p>
-                        <p className="text-xs text-muted-foreground">{module?.title}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Weeks {module?.weeks.join(" & ")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Certificate Status */}
-            {progress?.progress?.certificateIssued === 1 && (
-              <div className="pt-4 border-t">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-yellow-600" />
-                    <span className="font-medium">Certificate Earned!</span>
-                  </div>
-                  {progress?.progress?.certificateUrl && (
-                    <Button asChild variant="outline" size="sm">
-                      <a href={progress.progress.certificateUrl} target="_blank" rel="noopener noreferrer">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Certificate
-                      </a>
-                    </Button>
+          {/* Course Content - Modules */}
+          <Tabs defaultValue="module-1" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4">
+              {[1, 2, 3, 4].map((moduleNum) => (
+                <TabsTrigger key={moduleNum} value={`module-${moduleNum}`} className="relative">
+                  <span>Module {moduleNum}</span>
+                  {completedModules.includes(moduleNum) && (
+                    <CheckCircle2 className="h-4 w-4 text-primary absolute -top-1 -right-1" />
                   )}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-        {/* Module Content Tabs */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Course Materials</CardTitle>
-            <CardDescription>
-              Access teaching notes, videos, and resources for each module. Materials are view-only and cannot be downloaded.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="1" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                {[1, 2, 3, 4].map((moduleNum) => {
-                  const isCompleted = completedModules.includes(moduleNum);
-                  return (
-                    <TabsTrigger key={moduleNum} value={moduleNum.toString()} className="flex items-center gap-2">
-                      {getModuleIcon(moduleNum)}
-                      Module {moduleNum}
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
+            {[1, 2, 3, 4].map((moduleNum) => {
+              const moduleInfo = courseCurriculum?.modules.find(m => m.moduleNumber === moduleNum);
+              const moduleMaterials = materialsByModule[moduleNum] || [];
+              const isCompleted = completedModules.includes(moduleNum);
 
-              {[1, 2, 3, 4].map((moduleNum) => {
-                const module = courseCurriculum.modules.find((m: any) => m.number === moduleNum);
-                const moduleMaterials = materialsByModule?.[moduleNum] || [];
-
-                return (
-                  <TabsContent key={moduleNum} value={moduleNum.toString()} className="space-y-4 mt-6">
-                    {/* Module Info */}
-                    <div className="mb-6">
-                      <h3 className="text-xl font-display font-bold mb-2">{module?.title}</h3>
-                      <p className="text-muted-foreground mb-2">{module?.description}</p>
-                      <Badge variant="outline">Weeks {module?.weeks.join(" & ")}</Badge>
-                    </div>
-
-                    {/* Learning Outcomes */}
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg">Learning Outcomes</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-2">
-                          {module?.learningOutcomes.map((outcome: string, idx: number) => (
+              return (
+                <TabsContent key={moduleNum} value={`module-${moduleNum}`} className="space-y-6">
+                  {/* Module Header */}
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <CardTitle className="flex items-center gap-2">
+                            {moduleInfo?.title}
+                            {isCompleted && (
+                              <Badge variant="secondary" className="ml-2">
+                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                Completed
+                              </Badge>
+                            )}
+                          </CardTitle>
+                          <CardDescription className="mt-2">
+                            Weeks {moduleInfo?.weeks.join(", ")}
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id={`module-${moduleNum}-complete`}
+                            checked={isCompleted}
+                            onCheckedChange={() => {
+                              if (activeEnrollment?.id) {
+                                toggleModuleCompletion.mutate({
+                                  enrollmentId: activeEnrollment.id,
+                                  moduleNumber: moduleNum,
+                                });
+                              }
+                            }}
+                          />
+                          <label
+                            htmlFor={`module-${moduleNum}-complete`}
+                            className="text-sm font-medium cursor-pointer"
+                          >
+                            Mark as complete
+                          </label>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div>
+                        <h4 className="font-semibold mb-2">Learning Outcomes:</h4>
+                        <ul className="space-y-1 text-sm text-muted-foreground">
+                          {moduleInfo?.learningOutcomes.map((outcome, idx) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                              <span className="text-sm">{outcome}</span>
+                              <Circle className="h-3 w-3 mt-1 flex-shrink-0" />
+                              <span>{outcome}</span>
                             </li>
                           ))}
                         </ul>
-                      </CardContent>
-                    </Card>
-
-                    {/* Materials */}
-                    {moduleMaterials.length > 0 ? (
-                      <div className="space-y-3">
-                        <h4 className="font-semibold">Course Materials</h4>
-                        {moduleMaterials.map((material: any) => (
-                          <Card key={material.id}>
-                            <CardContent className="p-4">
-                              <div className="flex items-start justify-between">
-                                <div className="flex items-start gap-3">
-                                  <div className="p-2 bg-primary/10 rounded-lg">
-                                    {getMaterialIcon(material.type)}
-                                  </div>
-                                  <div>
-                                    <h5 className="font-medium">{material.title}</h5>
-                                    {material.description && (
-                                      <p className="text-sm text-muted-foreground mt-1">
-                                        {material.description}
-                                      </p>
-                                    )}
-                                    <Badge variant="secondary" className="mt-2">
-                                      {material.type.replace("_", " ").toUpperCase()}
-                                    </Badge>
-                                  </div>
-                                </div>
-                                {material.fileUrl && (
-                                  <Button asChild size="sm" variant="outline">
-                                    <a href={material.fileUrl} target="_blank" rel="noopener noreferrer">
-                                      View
-                                    </a>
-                                  </Button>
-                                )}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
                       </div>
-                    ) : (
-                      <Card>
-                        <CardContent className="p-8 text-center text-muted-foreground">
-                          <BookOpen className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                          <p>No materials available yet for this module.</p>
-                          <p className="text-sm mt-1">Check back soon!</p>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </TabsContent>
-                );
-              })}
-            </Tabs>
-          </CardContent>
-        </Card>
+                    </CardContent>
+                  </Card>
+
+                  {/* Module Materials */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Course Materials</CardTitle>
+                      <CardDescription>
+                        Access teaching notes, videos, and worksheets for this module
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {moduleMaterials.length > 0 ? (
+                        <div className="space-y-3">
+                          {moduleMaterials.map((material) => (
+                            <div
+                              key={material.id}
+                              className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                            >
+                              <div className="flex items-center gap-3">
+                                {material.type === "video" && <Video className="h-5 w-5 text-primary" />}
+                                {material.type === "pdf" && <FileText className="h-5 w-5 text-primary" />}
+                                {material.type === "worksheet" && <BookOpen className="h-5 w-5 text-primary" />}
+                                <div>
+                                  <p className="font-medium">{material.title}</p>
+                                  {material.description && (
+                                    <p className="text-sm text-muted-foreground">{material.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                              <Button asChild variant="outline" size="sm">
+                                <a href={material.fileUrl || "#"} target="_blank" rel="noopener noreferrer">
+                                  View
+                                </a>
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-8">
+                          No materials available yet. Check back soon!
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              );
+            })}
+          </Tabs>
+
+          {/* One-level-at-a-time Notice */}
+          <Card className="mt-8 bg-muted/50">
+            <CardContent className="py-6">
+              <p className="text-sm text-center text-muted-foreground">
+                <strong>Note:</strong> You can only enrol in one level at a time. Complete this course to unlock the next level.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </Layout>
   );
