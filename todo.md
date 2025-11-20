@@ -203,3 +203,14 @@
 - [ ] Restart server to load updated environment variables
 - [ ] Verify new Price IDs are loaded correctly
 - [ ] Test checkout flow with user's Stripe Price IDs
+
+## Deployment Preparation & Updates
+- [x] Temporarily hardcode user's Stripe API keys (Option 3 workaround)
+- [x] Update email greeting from Ọ̀bọ́khian to Òb'okhian (welcome)
+- [x] Update email closing from Ọ̀vbokhan to Urhuese (thank you)
+- [x] Fix class frequency in email to "once per week" (attend one of two time slots)
+- [x] Add 2-week Christmas/New Year break to schedule
+- [x] Adjust cohort end dates to account for break
+- [x] Update subsequent cohort start dates after break
+- [ ] Test enrollment flow with user's Stripe account
+- [ ] Create deployment checkpoint

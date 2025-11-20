@@ -59,9 +59,16 @@ export const TIME_SLOTS: TimeSlot[] = [
 const FIRST_COHORT_START = new Date("2025-12-06");
 
 /**
- * Cohort duration in weeks
+ * Cohort duration in weeks (8 weeks of classes)
  */
 const COHORT_DURATION_WEEKS = 8;
+
+/**
+ * Christmas/New Year break dates (2 Saturdays: Dec 27, 2025 & Jan 3, 2026)
+ * Classes skip these dates, extending the cohort by 2 weeks
+ */
+const CHRISTMAS_BREAK_START = new Date("2025-12-27");
+const CHRISTMAS_BREAK_END = new Date("2026-01-03");
 
 /**
  * Interval between cohort starts in weeks
@@ -97,11 +104,31 @@ export function getNextCohortStartDate(): Date {
 }
 
 /**
+ * Check if a cohort overlaps with Christmas break
+ */
+function cohortOverlapsChristmasBreak(startDate: Date): boolean {
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + (COHORT_DURATION_WEEKS * 7));
+  
+  // Check if Christmas break falls within the cohort period
+  return (
+    (startDate <= CHRISTMAS_BREAK_END && endDate >= CHRISTMAS_BREAK_START)
+  );
+}
+
+/**
  * Get cohort end date based on start date
+ * Accounts for 2-week Christmas break if cohort overlaps with it
  */
 export function getCohortEndDate(startDate: Date): Date {
   const endDate = new Date(startDate);
   endDate.setDate(startDate.getDate() + (COHORT_DURATION_WEEKS * 7));
+  
+  // If cohort overlaps with Christmas break, add 2 weeks
+  if (cohortOverlapsChristmasBreak(startDate)) {
+    endDate.setDate(endDate.getDate() + 14); // Add 2 weeks
+  }
+  
   return endDate;
 }
 

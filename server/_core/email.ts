@@ -144,7 +144,7 @@ export async function sendEnrollmentConfirmationEmail(params: {
 </head>
 <body>
   <div class="header">
-    <h1>Ọ̀bọ́khian! 🎉</h1>
+    <h1>Òb'okhian! 🎉</h1>
     <p style="margin: 10px 0 0 0; font-size: 18px;">Welcome to Edo Language Academy</p>
   </div>
   
@@ -158,7 +158,7 @@ export async function sendEnrollmentConfirmationEmail(params: {
       <p><strong>Duration:</strong> 8 weeks (4 modules, 2 weeks per module)</p>
       <p><strong>Class Time:</strong> ${timeSlotDisplay}</p>
       <p><strong>Class Duration:</strong> 60 minutes per session</p>
-      <p><strong>Frequency:</strong> Twice per week</p>
+      <p><strong>Frequency:</strong> Once per week (attend one of the two scheduled time slots)</p>
     </div>
     
     ${whatsappGroupLink ? `
@@ -187,7 +187,7 @@ export async function sendEnrollmentConfirmationEmail(params: {
     
     <p style="margin-top: 30px;">We look forward to seeing you in class!</p>
     
-    <p><strong>Ọ̀vbokhan!</strong> (Thank you!)<br>
+    <p><strong>Urhuese!</strong> (Thank you!)<br>
     The Edo Language Academy Team</p>
   </div>
   

@@ -7,8 +7,10 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
-  stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
-  stripePublishableKey: process.env.VITE_STRIPE_PUBLISHABLE_KEY ?? "",
+  // TEMPORARY: Hardcoded Stripe keys until environment variable issue is resolved
+  // TODO: Remove hardcoding once Manus support fixes environment injection
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "sk_test_51RMpYEH2oBnqcEomgGTvkTtoxQCXPWwAlx3bIflzcRRg1pokm0LGVrsc0WBoTiTdZ3OAcJHr7fPVEmW8VPmiaLcR00cJaU5vQm",
+  stripePublishableKey: process.env.VITE_STRIPE_PUBLISHABLE_KEY ?? "pk_test_51RMpYEH2oBnqcEombmEtthj0nmO3H0UJI0zlXsUCOchvb5SqaOaNjgpW61gBvamPAAZ47kB8HHL6eVYQZQ2mWuWg00mDy7Scqn",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
   stripePriceBeginner: process.env.STRIPE_PRICE_BEGINNER ?? "price_1STuz1H2oBnqcEomh4WSJRIl",
   stripePriceIntermediary: process.env.STRIPE_PRICE_INTERMEDIARY ?? "price_1STuzuH2oBnqcEomhyAwrSzO",

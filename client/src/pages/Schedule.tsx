@@ -131,9 +131,17 @@ export default function Schedule() {
             <h2 className="text-3xl font-display font-bold text-center mb-4">
               Upcoming Cohorts
             </h2>
-            <p className="text-center text-muted-foreground mb-12">
+            <p className="text-center text-muted-foreground mb-8">
               New cohorts start every 10 weeks. Enroll now to secure your spot!
             </p>
+            
+            <Alert className="mb-12 max-w-3xl mx-auto">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <strong>Christmas & New Year Break:</strong> Please note that classes will not be held on December 27th, 2025 and January 3rd, 2026. 
+                The first cohort end date has been adjusted to account for this 2-week break.
+              </AlertDescription>
+            </Alert>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {upcomingCohorts.map((cohort, index) => (
