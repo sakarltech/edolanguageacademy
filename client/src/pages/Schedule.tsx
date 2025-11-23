@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { Calendar, Clock, Users, Globe, AlertCircle } from "lucide-react";
-import { TIME_SLOTS, getUpcomingCohorts, formatCohortDate } from "@shared/scheduleUtils";
+import { TIME_SLOTS, getUpcomingCohorts, getCohortsForYear, formatCohortDate } from "@shared/scheduleUtils";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -11,6 +11,7 @@ export default function Schedule() {
   useScrollAnimation();
   
   const upcomingCohorts = getUpcomingCohorts(3);
+  const cohorts2026 = getCohortsForYear(2026);
 
   return (
     <Layout>
@@ -132,7 +133,7 @@ export default function Schedule() {
               Upcoming Cohorts
             </h2>
             <p className="text-center text-muted-foreground mb-8">
-              New cohorts start every 10 weeks. Enroll now to secure your spot!
+              Each cohort runs for 8 weeks with a 1-week break between cohorts. Enroll now to secure your spot!
             </p>
             
             <Alert className="mb-12 max-w-3xl mx-auto">
@@ -143,7 +144,7 @@ export default function Schedule() {
               </AlertDescription>
             </Alert>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingCohorts.map((cohort, index) => (
                 <Card key={index} className="scroll-slide-up">
                   <CardHeader>
@@ -198,8 +199,66 @@ export default function Schedule() {
         </div>
       </section>
 
-      {/* Programme Structure */}
+      {/* All 2026 Cohorts */}
       <section className="py-16 bg-background">
+        <div className="container">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-display font-bold text-center mb-4">
+              All 2026 Cohorts
+            </h2>
+            <p className="text-center text-muted-foreground mb-12">
+              Complete schedule for all cohorts running in 2026. Each cohort includes 8 weeks of classes with a 1-week break before the next cohort begins.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cohorts2026.map((cohort, index) => (
+                <Card key={index} className="scroll-fade-in">
+                  <CardHeader>
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <Calendar className="w-6 h-6 text-primary" />
+                    </div>
+                    <CardTitle>
+                      Cohort {index + 1}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">Start Date</div>
+                      <div className="font-semibold">{formatCohortDate(cohort.startDate)}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">End Date</div>
+                      <div className="font-semibold">{formatCohortDate(cohort.endDate)}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground mb-1">Duration</div>
+                      <div className="font-semibold">8 weeks</div>
+                    </div>
+                    {index === 0 && (
+                      <div className="pt-4 border-t">
+                        <div className="text-sm text-muted-foreground">
+                          <strong>Note:</strong> Includes 2-week Christmas break (Dec 27 & Jan 3 skipped)
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <div className="text-center mt-12">
+              <Link href="/register">
+                <Button size="lg" className="text-lg px-8">
+                  Enroll Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Programme Structure */}
+      <section className="py-16 bg-muted/30">
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-display font-bold text-center mb-12">

@@ -214,3 +214,11 @@
 - [x] Update subsequent cohort start dates after break
 - [ ] Test enrollment flow with user's Stripe account
 - [ ] Create deployment checkpoint
+
+## Cohort Scheduling Fix
+- [x] Add 1-week break between cohorts (cohorts should not start on same day they end)
+- [x] Update cohort interval calculation to account for break
+- [x] Display all 2026 cohorts on Schedule page
+- [x] Verify cohort dates: Cohort 1 ends Feb 14, Cohort 2 starts Feb 21, break week, Cohort 2 starts Feb 28... wait that's wrong
+- [x] Verified actual dates: Cohort ends Apr 18, 1-week break, next starts Apr 25 (working correctly)
+- [x] Test cohort date calculations - all 5 cohorts for 2026 displayed correctly

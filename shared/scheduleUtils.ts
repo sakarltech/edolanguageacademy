@@ -71,13 +71,13 @@ const CHRISTMAS_BREAK_START = new Date("2025-12-27");
 const CHRISTMAS_BREAK_END = new Date("2026-01-03");
 
 /**
- * Interval between cohort starts in weeks
+ * Break between cohorts in weeks (1 week rest between cohorts)
  */
-const COHORT_INTERVAL_WEEKS = 10;
+const COHORT_BREAK_WEEKS = 1;
 
 /**
  * Calculate the next upcoming cohort start date
- * Cohorts start every 10 weeks from the first cohort date
+ * Iterates through cohorts to find the next one that hasn't started yet
  */
 export function getNextCohortStartDate(): Date {
   const now = new Date();
@@ -88,19 +88,18 @@ export function getNextCohortStartDate(): Date {
     return firstStart;
   }
   
-  // Calculate how many cohorts have started since the first one
-  const daysSinceFirst = Math.floor((now.getTime() - firstStart.getTime()) / (1000 * 60 * 60 * 24));
-  const weeksSinceFirst = Math.floor(daysSinceFirst / 7);
+  // Iterate through cohorts to find the next upcoming one
+  let currentStartDate = new Date(firstStart);
   
-  // Calculate the next cohort number
-  const cohortsCompleted = Math.floor(weeksSinceFirst / COHORT_INTERVAL_WEEKS);
-  const nextCohortNumber = cohortsCompleted + 1;
+  while (currentStartDate <= now) {
+    const endDate = getCohortEndDate(currentStartDate);
+    
+    // Next cohort starts 1 week after this cohort ends
+    currentStartDate = new Date(endDate);
+    currentStartDate.setDate(currentStartDate.getDate() + (COHORT_BREAK_WEEKS * 7));
+  }
   
-  // Calculate the next cohort start date
-  const nextCohortStart = new Date(firstStart);
-  nextCohortStart.setDate(firstStart.getDate() + (nextCohortNumber * COHORT_INTERVAL_WEEKS * 7));
-  
-  return nextCohortStart;
+  return currentStartDate;
 }
 
 /**
@@ -159,24 +158,58 @@ export function formatCohortDate(date: Date): string {
 }
 
 /**
- * Get all upcoming cohorts (next 3)
+ * Get all upcoming cohorts
+ * Each cohort starts 1 week after the previous cohort ends
  */
 export function getUpcomingCohorts(count: number = 3): Cohort[] {
   const cohorts: Cohort[] = [];
-  const firstStart = getNextCohortStartDate();
+  let currentStartDate = new Date(FIRST_COHORT_START);
   
   for (let i = 0; i < count; i++) {
-    const startDate = new Date(firstStart);
-    startDate.setDate(firstStart.getDate() + (i * COHORT_INTERVAL_WEEKS * 7));
-    
-    const endDate = getCohortEndDate(startDate);
+    const endDate = getCohortEndDate(currentStartDate);
     
     cohorts.push({
-      startDate,
-      endDate,
+      startDate: new Date(currentStartDate),
+      endDate: new Date(endDate),
       spotsRemaining: Math.floor(Math.random() * 5) + 3,
       status: "upcoming",
     });
+    
+    // Next cohort starts 1 week after this cohort ends
+    currentStartDate = new Date(endDate);
+    currentStartDate.setDate(currentStartDate.getDate() + (COHORT_BREAK_WEEKS * 7));
+  }
+  
+  return cohorts;
+}
+
+/**
+ * Get all cohorts for a specific year
+ */
+export function getCohortsForYear(year: number): Cohort[] {
+  const cohorts: Cohort[] = [];
+  let currentStartDate = new Date(FIRST_COHORT_START);
+  
+  // Generate cohorts until we're past the target year
+  while (currentStartDate.getFullYear() <= year) {
+    const endDate = getCohortEndDate(currentStartDate);
+    
+    // Only include cohorts that start in the target year
+    if (currentStartDate.getFullYear() === year) {
+      cohorts.push({
+        startDate: new Date(currentStartDate),
+        endDate: new Date(endDate),
+        spotsRemaining: Math.floor(Math.random() * 5) + 3,
+        status: "upcoming",
+      });
+    }
+    
+    // Next cohort starts 1 week after this cohort ends
+    currentStartDate = new Date(endDate);
+    currentStartDate.setDate(currentStartDate.getDate() + (COHORT_BREAK_WEEKS * 7));
+    
+    // Safety check to prevent infinite loop
+    if (currentStartDate.getFullYear() > year + 1) break;
   }
   
   return cohorts;
