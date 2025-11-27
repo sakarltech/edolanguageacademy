@@ -230,3 +230,22 @@
 - [x] Update All 2026 Cohorts section to show all cohorts starting from Cohort 1
 - [x] Verify dates: First cohort ends Feb 14, second cohort starts Feb 28 ✅
 - [x] Test Schedule page displays correctly with single upcoming cohort
+
+## Stripe Price ID Fix
+- [x] Check current hardcoded Price IDs in env.ts
+- [x] Get correct Price IDs from user's Stripe account
+- [x] Update hardcoded Price IDs to match user's account
+- [x] Force hardcoded values to override old sandbox environment variables
+- [x] Restart server to pick up new webhook secret and Price IDs
+- [x] Test enrollment flow with correct configuration - Stripe checkout working ✅
+- [ ] Verify webhook integration after publishing
+
+## Post-Payment Issues (Requires Publishing)
+- [x] Identified issue: Webhooks don't work in development mode
+- [ ] Publish website to get permanent URL
+- [ ] Update Stripe webhook endpoint to published URL
+- [ ] Configure SMTP credentials for email confirmation
+- [ ] Test complete payment flow on published site
+- [ ] Verify enrollment creation after payment
+- [ ] Verify email confirmation is sent
+- [ ] Verify dashboard updates after successful payment
