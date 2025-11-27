@@ -72,8 +72,10 @@ const CHRISTMAS_BREAK_END = new Date("2026-01-03");
 
 /**
  * Break between cohorts in weeks (1 week rest between cohorts)
+ * This means: cohort ends → 1 week passes → new cohort starts
+ * So we add 2 weeks total (1 week for the end week + 1 week break)
  */
-const COHORT_BREAK_WEEKS = 1;
+const COHORT_BREAK_WEEKS = 2;
 
 /**
  * Calculate the next upcoming cohort start date
@@ -94,7 +96,8 @@ export function getNextCohortStartDate(): Date {
   while (currentStartDate <= now) {
     const endDate = getCohortEndDate(currentStartDate);
     
-    // Next cohort starts 1 week after this cohort ends
+    // Next cohort starts 2 weeks after this cohort ends (1 week break)
+    // Example: Cohort ends Feb 14 → Break week Feb 21 → New cohort starts Feb 28
     currentStartDate = new Date(endDate);
     currentStartDate.setDate(currentStartDate.getDate() + (COHORT_BREAK_WEEKS * 7));
   }
@@ -175,7 +178,8 @@ export function getUpcomingCohorts(count: number = 3): Cohort[] {
       status: "upcoming",
     });
     
-    // Next cohort starts 1 week after this cohort ends
+    // Next cohort starts 2 weeks after this cohort ends (1 week break)
+    // Example: Cohort ends Feb 14 → Break week Feb 21 → New cohort starts Feb 28
     currentStartDate = new Date(endDate);
     currentStartDate.setDate(currentStartDate.getDate() + (COHORT_BREAK_WEEKS * 7));
   }
@@ -204,7 +208,8 @@ export function getCohortsForYear(year: number): Cohort[] {
       });
     }
     
-    // Next cohort starts 1 week after this cohort ends
+    // Next cohort starts 2 weeks after this cohort ends (1 week break)
+    // Example: Cohort ends Feb 14 → Break week Feb 21 → New cohort starts Feb 28
     currentStartDate = new Date(endDate);
     currentStartDate.setDate(currentStartDate.getDate() + (COHORT_BREAK_WEEKS * 7));
     

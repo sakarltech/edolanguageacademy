@@ -222,3 +222,11 @@
 - [x] Verify cohort dates: Cohort 1 ends Feb 14, Cohort 2 starts Feb 21, break week, Cohort 2 starts Feb 28... wait that's wrong
 - [x] Verified actual dates: Cohort ends Apr 18, 1-week break, next starts Apr 25 (working correctly)
 - [x] Test cohort date calculations - all 5 cohorts for 2026 displayed correctly
+
+## Cohort Scheduling Correction
+- [x] Fix cohort interval calculation: cohort ends, 1 week break, new cohort starts (2 weeks after end date)
+- [x] Example: Cohort ends Feb 14 → Break week Feb 21 → New cohort starts Feb 28
+- [x] Update Upcoming Cohorts section to show ONLY the next upcoming cohort (singular)
+- [x] Update All 2026 Cohorts section to show all cohorts starting from Cohort 1
+- [x] Verify dates: First cohort ends Feb 14, second cohort starts Feb 28 ✅
+- [x] Test Schedule page displays correctly with single upcoming cohort

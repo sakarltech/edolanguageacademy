@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 export default function Schedule() {
   useScrollAnimation();
   
-  const upcomingCohorts = getUpcomingCohorts(3);
+  const nextCohort = getUpcomingCohorts(1)[0]; // Get only the next upcoming cohort
   const cohorts2026 = getCohortsForYear(2026);
 
   return (
@@ -125,12 +125,12 @@ export default function Schedule() {
         </div>
       </section>
 
-      {/* Upcoming Cohorts */}
+      {/* Upcoming Cohort (Singular) */}
       <section className="py-16 bg-muted/30">
         <div className="container">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-display font-bold text-center mb-4">
-              Upcoming Cohorts
+              Next Upcoming Cohort
             </h2>
             <p className="text-center text-muted-foreground mb-8">
               Each cohort runs for 8 weeks with a 1-week break between cohorts. Enroll now to secure your spot!
@@ -144,48 +144,42 @@ export default function Schedule() {
               </AlertDescription>
             </Alert>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingCohorts.map((cohort, index) => (
-                <Card key={index} className="scroll-slide-up">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Calendar className="w-6 h-6 text-primary" />
+            <div className="max-w-md mx-auto">
+              <Card className="scroll-slide-up">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Calendar className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle>
+                    Next Cohort
+                  </CardTitle>
+                  <CardDescription>
+                    <span className="inline-flex items-center gap-1 text-accent font-semibold">
+                      <AlertCircle className="w-3 h-3" />
+                      Limited availability
+                    </span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Start Date</div>
+                    <div className="font-semibold">{formatCohortDate(nextCohort.startDate)}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">End Date</div>
+                    <div className="font-semibold">{formatCohortDate(nextCohort.endDate)}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Duration</div>
+                    <div className="font-semibold">8 weeks</div>
+                  </div>
+                  <div className="pt-4 border-t">
+                    <div className="text-sm text-accent font-semibold">
+                      Only {nextCohort.spotsRemaining} spots left!
                     </div>
-                    <CardTitle>
-                      {index === 0 ? "Next Cohort" : `Cohort ${index + 1}`}
-                    </CardTitle>
-                    <CardDescription>
-                      {index === 0 && (
-                        <span className="inline-flex items-center gap-1 text-accent font-semibold">
-                          <AlertCircle className="w-3 h-3" />
-                          Limited availability
-                        </span>
-                      )}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">Start Date</div>
-                      <div className="font-semibold">{formatCohortDate(cohort.startDate)}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">End Date</div>
-                      <div className="font-semibold">{formatCohortDate(cohort.endDate)}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">Duration</div>
-                      <div className="font-semibold">8 weeks</div>
-                    </div>
-                    {index === 0 && (
-                      <div className="pt-4 border-t">
-                        <div className="text-sm text-accent font-semibold">
-                          Only {cohort.spotsRemaining} spots left!
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             
             <div className="text-center mt-12">
