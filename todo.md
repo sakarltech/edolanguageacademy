@@ -267,3 +267,9 @@
 - [ ] Republish website with updated webhook secret (whsec_eCQgKHSruGpUV0BRhNAPLn1U851tktRr)
 - [ ] Test payment flow after republishing
 - [ ] Verify enrollment creation and email sending work
+
+## Webhook Secret Fix
+- [x] Hardcode webhook secret in env.ts (same approach as Stripe API keys)
+- [ ] Republish website with hardcoded webhook secret
+- [ ] Test payment flow and check Stripe Dashboard for successful webhook delivery
+- [ ] Verify enrollment creation and email sending work after webhook succeeds

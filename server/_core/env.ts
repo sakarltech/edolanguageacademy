@@ -12,7 +12,7 @@ export const ENV = {
   // Force use of user's Stripe account (51RMpYE) instead of old sandbox (51ST)
   stripeSecretKey: "sk_test_51RMpYEH2oBnqcEomgGTvkTtoxQCXPWwAlx3bIflzcRRg1pokm0LGVrsc0WBoTiTdZ3OAcJHr7fPVEmW8VPmiaLcR00cJaU5vQm",
   stripePublishableKey: "pk_test_51RMpYEH2oBnqcEombmEtthj0nmO3H0UJI0zlXsUCOchvb5SqaOaNjgpW61gBvamPAAZ47kB8HHL6eVYQZQ2mWuWg00mDy7Scqn",
-  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+  stripeWebhookSecret: "whsec_eCQgKHSruGpUV0BRhNAPLn1U851tktRr", // Hardcoded to match Stripe webhook
   stripePriceBeginner: "price_1SUVmKH2oBnqcEomj9AcvYTa",
   stripePriceIntermediary: "price_1SUVn0H2oBnqcEommR2RA2h7",
   stripePriceProficient: "price_1SUVnqH2oBnqcEomOwdbDwIo",
