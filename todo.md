@@ -249,3 +249,21 @@
 - [ ] Verify enrollment creation after payment
 - [ ] Verify email confirmation is sent
 - [ ] Verify dashboard updates after successful payment
+
+## Webhook & Email Configuration (Published Site)
+- [x] Website published at https://edolanguage-7zaznnwb.manus.space
+- [x] Stripe webhook endpoint updated to published URL
+- [x] SMTP credentials added to Management UI
+- [x] Webhook secret updated to match new webhook (whsec_eCQgKHSruGpUV0BRhNAPLn1U851tktRr)
+- [ ] Restart server to load new webhook secret and SMTP config
+- [ ] Test payment flow: payment → webhook → enrollment created → email sent → dashboard updated
+- [ ] Debug any remaining issues
+
+## Webhook Debugging
+- [x] Check webhook handler code in server/webhooks/stripe.ts - code looks correct
+- [x] Verify webhook is receiving events from Stripe - events are being sent but returning 400 errors
+- [x] Check Stripe Dashboard webhook logs - all events failing with 400 error
+- [x] Identified issue: Webhook secret mismatch causing signature verification to fail
+- [ ] Republish website with updated webhook secret (whsec_eCQgKHSruGpUV0BRhNAPLn1U851tktRr)
+- [ ] Test payment flow after republishing
+- [ ] Verify enrollment creation and email sending work
