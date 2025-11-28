@@ -280,3 +280,15 @@
 - [x] Add prominent "Go to Dashboard" button
 - [x] Show next steps and what to expect
 - [x] Test user flow from payment to dashboard
+
+## Scrolling Announcement System
+- [x] Create announcements table in database schema
+- [x] Add database migration for announcements
+- [x] Create tRPC router for announcement CRUD operations
+- [x] Build admin panel page for managing announcements
+- [x] Create announcement form with title, message, and expiration date
+- [x] Implement scrolling banner component for homepage
+- [x] Add auto-filtering to show only active announcements
+- [x] Add admin navigation route to /admin/announcements
+- [ ] Test announcement creation, editing, and expiration
+- [ ] Add link to announcements management in admin panel

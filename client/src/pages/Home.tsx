@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -60,7 +61,9 @@ export default function Home() {
   ];
 
   return (
-    <Layout>
+    <>
+      <AnnouncementBanner />
+      <Layout>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-muted to-background py-20 md:py-32">
         <div className="container">
@@ -237,5 +240,6 @@ export default function Home() {
         </div>
       </section>
     </Layout>
+    </>
   );
 }

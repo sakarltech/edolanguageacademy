@@ -10,6 +10,7 @@ import { forumRouter } from "./routers/forum";
 import { notificationsRouter } from "./routers/notifications";
 import { whatsappRouter } from "./routers/whatsapp";
 import { certificatesRouter } from "./routers/certificates";
+import { announcementRouter } from "./routers/announcement";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -48,6 +49,9 @@ export const appRouter = router({
   
   // Certificates router for generating and managing certificates
   certificates: certificatesRouter,
+  
+  // Announcement router for scrolling homepage banner
+  announcement: announcementRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -157,3 +157,20 @@ export const whatsappGroups = mysqlTable("whatsappGroups", {
 
 export type WhatsAppGroup = typeof whatsappGroups.$inferSelect;
 export type InsertWhatsAppGroup = typeof whatsappGroups.$inferInsert;
+
+/**
+ * Announcements table for scrolling homepage banner
+ */
+export const announcements = mysqlTable("announcements", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  isActive: int("isActive").default(1).notNull(), // 1 = active, 0 = inactive
+  expiresAt: timestamp("expiresAt").notNull(), // When announcement should stop showing
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  createdBy: int("createdBy").notNull(), // User ID of admin who created it
+});
+
+export type Announcement = typeof announcements.$inferSelect;
+export type InsertAnnouncement = typeof announcements.$inferInsert;
