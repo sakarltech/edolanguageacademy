@@ -34,16 +34,45 @@ export default function EnrollmentSuccess() {
             <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
               Welcome to Edo Language Academy!
             </h1>
-            <p className="text-lg text-muted-foreground mb-6">
+            <p className="text-lg text-muted-foreground mb-8">
               Your enrollment has been confirmed. We're excited to have you join our community!
             </p>
             {enrollmentStatus && (
-              <div className="bg-card border border-border rounded-lg p-6 text-left">
-                <p className="text-sm text-muted-foreground mb-2">Payment Status: <span className="font-semibold text-foreground capitalize">{enrollmentStatus.status}</span></p>
-                <p className="text-sm text-muted-foreground mb-2">Confirmation sent to: <span className="font-semibold text-foreground">{enrollmentStatus.customerEmail}</span></p>
-                <p className="text-sm text-muted-foreground">Amount Paid: <span className="font-semibold text-foreground">£{enrollmentStatus.amountTotal.toFixed(2)}</span></p>
-              </div>
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-center">Purchase Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center py-3 border-b">
+                      <span className="text-muted-foreground">Course Level</span>
+                      <span className="font-semibold text-foreground capitalize">{enrollmentStatus.courseLevel?.replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b">
+                      <span className="text-muted-foreground">Time Slot</span>
+                      <span className="font-semibold text-foreground">{enrollmentStatus.timeSlot?.replace('_', ' ')}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b">
+                      <span className="text-muted-foreground">Payment Status</span>
+                      <span className="font-semibold text-green-600 capitalize">{enrollmentStatus.status}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b">
+                      <span className="text-muted-foreground">Confirmation Email</span>
+                      <span className="font-semibold text-foreground">{enrollmentStatus.customerEmail}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-lg font-semibold">Amount Paid</span>
+                      <span className="text-2xl font-bold text-primary">£{enrollmentStatus.amountTotal.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
+            <Link href="/dashboard">
+              <Button size="lg" className="text-lg px-8 py-6 h-auto">
+                Go to Your Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -199,6 +228,11 @@ export default function EnrollmentSuccess() {
               Our team is here to help! Feel free to reach out if you have any questions about your enrollment or the course.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/dashboard">
+                <Button size="lg">
+                  Go to Dashboard
+                </Button>
+              </Link>
               <Link href="/contact">
                 <Button size="lg" variant="outline">
                   Contact Us
@@ -207,11 +241,6 @@ export default function EnrollmentSuccess() {
               <Link href="/faq">
                 <Button size="lg" variant="outline">
                   View FAQs
-                </Button>
-              </Link>
-              <Link href="/">
-                <Button size="lg">
-                  Return Home
                 </Button>
               </Link>
             </div>
