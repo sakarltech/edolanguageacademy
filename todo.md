@@ -314,3 +314,9 @@
 - [x] Added LogOut icon from lucide-react
 - [x] Integrated with existing useAuth logout function
 - [x] Test logout flow (sign out → redirect to login)
+
+## Logo Integration
+- [x] Copy EdoLanguageLogo.png to public folder as edo-logo.png
+- [x] Add large logo to homepage hero section (192px mobile, 256px desktop)
+- [x] Add large logo to About page header (192px mobile, 256px desktop)
+- [x] Optimize sizing for desktop and mobile views with responsive classes

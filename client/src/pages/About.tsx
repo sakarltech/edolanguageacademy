@@ -31,6 +31,14 @@ export default function About() {
       <section className="bg-gradient-to-b from-muted to-background py-16 md:py-24">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
+            {/* Logo */}
+            <div className="mb-8 flex justify-center">
+              <img 
+                src="/edo-logo.png" 
+                alt="Edo Language Academy Logo" 
+                className="w-48 h-48 md:w-64 md:h-64 object-contain"
+              />
+            </div>
             <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
               About Edo Language Academy
             </h1>

@@ -68,6 +68,14 @@ export default function Home() {
       <section className="relative bg-gradient-to-b from-muted to-background py-20 md:py-32">
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
+            {/* Logo */}
+            <div className="mb-8 flex justify-center">
+              <img 
+                src="/edo-logo.png" 
+                alt="Edo Language Academy Logo" 
+                className="w-48 h-48 md:w-64 md:h-64 object-contain"
+              />
+            </div>
             <div className="mb-6">
               <span className="text-4xl md:text-5xl font-display text-primary">Òb'okhian</span>
             </div>
