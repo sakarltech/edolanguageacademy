@@ -307,3 +307,10 @@
 - [x] Fix homepage Edo greeting from Ób'ókhían to Òb'okhian
 - [x] Verify no other instances of incorrect spelling across website
 - [x] Confirmed email template already uses correct Òb'okhian spelling
+
+## Logout/Sign Out Feature
+- [x] Add logout button to dashboard UI (both enrolled and unenrolled views)
+- [x] Implement logout mutation with redirect to login page
+- [x] Added LogOut icon from lucide-react
+- [x] Integrated with existing useAuth logout function
+- [x] Test logout flow (sign out → redirect to login)

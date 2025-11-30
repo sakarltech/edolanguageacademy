@@ -12,14 +12,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/Layout";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
-import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users } from "lucide-react";
+import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { ALL_CURRICULA } from "@shared/curriculum";
 import { getNextCohortStartDate } from "@shared/scheduleUtils";
 import { useState } from "react";
 
 export default function Dashboard() {
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading, isAuthenticated, logout } = useAuth();
   const { data: enrollments, isLoading: enrollmentsLoading, refetch: refetchEnrollments } = trpc.student.getMyEnrollments.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -167,6 +167,20 @@ export default function Dashboard() {
           <div className="max-w-6xl mx-auto">
             {/* Welcome Message */}
             <div className="text-center mb-12">
+              <div className="flex justify-end mb-4">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={async () => {
+                    await logout();
+                    window.location.href = getLoginUrl();
+                  }}
+                  className="gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
               <h1 className="text-4xl font-display font-bold mb-4">
                 Welcome, {user?.name?.split(" ")[0] || "Learner"}!
               </h1>
@@ -366,6 +380,22 @@ export default function Dashboard() {
     <Layout>
       <div className="container py-8">
         <div className="max-w-6xl mx-auto">
+          {/* Logout Button */}
+          <div className="flex justify-end mb-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={async () => {
+                await logout();
+                window.location.href = getLoginUrl();
+              }}
+              className="gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
+
           {/* Active Course Header */}
           <Card className="mb-8">
             <CardHeader>
