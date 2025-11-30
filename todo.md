@@ -292,3 +292,13 @@
 - [x] Add admin navigation route to /admin/announcements
 - [ ] Test announcement creation, editing, and expiration
 - [ ] Add link to announcements management in admin panel
+
+## Content Consistency & Typo Fixes
+- [x] Fix time duration on Courses page (60-75 minutes → 60 minutes)
+- [x] Fix time duration on Pricing page (all three course levels)
+- [x] Update chatbot knowledge base with correct duration and schedule
+- [x] Fix enrollment success page age group reference
+- [x] Scan all pages for typos and inconsistencies
+- [x] Verify all course information is consistent across pages
+- [x] Verify pricing consistency (all using £ GBP)
+- [x] Verify FAQ page information matches actual implementation

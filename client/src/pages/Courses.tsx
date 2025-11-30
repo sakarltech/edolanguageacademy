@@ -53,7 +53,7 @@ export default function Courses() {
   const features = [
     {
       icon: Clock,
-      title: "60-75 Minute Classes",
+      title: "60 Minute Classes",
       description: "Live Zoom sessions every Saturday with native instructors",
     },
     {

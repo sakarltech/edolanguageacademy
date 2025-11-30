@@ -25,7 +25,7 @@ Diaspora families want their children to retain Edo language and identity, but l
 ### Beginner Level (£19.99)
 Perfect for absolute beginners or those restarting from basics.
 - Duration: 8 weeks (6 weeks instruction + 1 week revision + 1 week assessment)
-- Session Length: 60-75 minutes weekly
+- Session Length: 60 minutes weekly
 - Format: Live Zoom classes every Saturday
 - Curriculum:
   * Weeks 1-2: Alphabets and Sounds in Edo
@@ -45,7 +45,7 @@ Perfect for absolute beginners or those restarting from basics.
 ### Intermediary Level (£24.99)
 Build on your basics and develop conversational skills.
 - Duration: 8 weeks (6 weeks instruction + 1 week revision + 1 week assessment)
-- Session Length: 60-75 minutes weekly
+- Session Length: 60 minutes weekly
 - Format: Live Zoom classes every Saturday
 - Curriculum:
   * Weeks 1-2: Advanced Alphabets and Pronunciations
@@ -65,7 +65,7 @@ Build on your basics and develop conversational skills.
 ### Proficient Level (£29.99)
 Achieve fluency and master advanced Edo language skills.
 - Duration: 8 weeks (6 weeks instruction + 1 week revision + 1 week assessment)
-- Session Length: 60-75 minutes weekly
+- Session Length: 60 minutes weekly
 - Format: Live Zoom classes every Saturday
 - Curriculum:
   * Weeks 1-2: Advanced Numbers in Edo (51-100)
@@ -91,10 +91,12 @@ Achieve fluency and master advanced Edo language skills.
 - Currency: Fees are payable in equivalent local currency
 
 ## Schedule
-All classes are held live on Zoom every Saturday:
-- Kids (5-12): 10:00 AM UK Time (4:00 AM CST) - 60 minutes
-- Teens (13-17): 12:00 PM UK Time (6:00 AM CST) - 75 minutes
-- Adults (18+): 2:00 PM UK Time (8:00 AM CST) - 75 minutes
+All classes are held live on Zoom every Saturday at two time options:
+- Time Slot 1: 11:00 AM GMT (5:00 AM CST)
+- Time Slot 2: 11:00 AM CST (5:00 PM GMT)
+- Duration: 60 minutes for all age groups
+- Students choose ONE time slot during enrollment
+- All age groups (Kids 5-12, Teens 13-17, Adults 18+) attend at the same time
 
 ## Programme Structure
 - 8 weeks per level
@@ -114,14 +116,15 @@ All classes are held live on Zoom every Saturday:
 - Retake available at 50% fee if not passed
 
 ## Enrollment Process
-1. Visit www.edolanguageacademy.com/register
-2. Choose your course level and age group
-3. Fill in learner and contact details
-4. Complete secure payment via Stripe
-5. Receive confirmation email with receipt
-6. Get added to WhatsApp class group within 24 hours
-7. Receive Zoom link and materials before first class
-8. Join live class on Saturday
+1. Create an account at www.edolanguageacademy.com/register
+2. Log in to your dashboard
+3. Select your desired course level from the course catalog
+4. Choose your preferred time slot (11 AM GMT or 11 AM CST)
+5. Provide contact information (phone and optional WhatsApp number)
+6. Complete secure payment via Stripe
+7. Receive confirmation email with WhatsApp group link
+8. Access course materials immediately in your dashboard
+9. Join live class on Saturday at your selected time
 
 ## Refund Policy
 - Full refund within the first week if not satisfied

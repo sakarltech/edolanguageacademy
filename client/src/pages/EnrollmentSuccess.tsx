@@ -168,7 +168,7 @@ export default function EnrollmentSuccess() {
                       <CardTitle className="text-xl mb-2">Attend Your First Class</CardTitle>
                       <CardContent className="p-0">
                         <p className="text-muted-foreground">
-                          Join us on Saturday for your first live Zoom class! Check the schedule page for your specific class time based on your age group.
+                          Join us on Saturday for your first live Zoom class! Check the schedule page for your selected time slot (11 AM GMT or 11 AM CST).
                         </p>
                       </CardContent>
                     </div>

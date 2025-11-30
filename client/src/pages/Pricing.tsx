@@ -13,7 +13,7 @@ export default function Pricing() {
       description: "Perfect for absolute beginners",
       features: [
         "8-week structured programme",
-        "60-75 minute weekly live classes",
+        "60 minute weekly live classes",
         "Alphabets and basic sounds",
         "Numbers 1-20",
         "Basic greetings and vocabulary",
@@ -29,7 +29,7 @@ export default function Pricing() {
       description: "Build on your foundation",
       features: [
         "8-week structured programme",
-        "60-75 minute weekly live classes",
+        "60 minute weekly live classes",
         "Advanced pronunciations",
         "Numbers 21-50",
         "Sentence formation",
@@ -46,7 +46,7 @@ export default function Pricing() {
       description: "Achieve fluency",
       features: [
         "8-week structured programme",
-        "60-75 minute weekly live classes",
+        "60 minute weekly live classes",
         "Numbers 51-100",
         "Advanced sentence structures",
         "Cultural expressions",
