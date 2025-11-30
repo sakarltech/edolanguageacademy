@@ -302,3 +302,8 @@
 - [x] Verify all course information is consistent across pages
 - [x] Verify pricing consistency (all using £ GBP)
 - [x] Verify FAQ page information matches actual implementation
+
+## Edo Greeting Spelling Fix
+- [x] Fix homepage Edo greeting from Ób'ókhían to Òb'okhian
+- [x] Verify no other instances of incorrect spelling across website
+- [x] Confirmed email template already uses correct Òb'okhian spelling

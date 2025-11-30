@@ -69,7 +69,7 @@ export default function Home() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6">
-              <span className="text-4xl md:text-5xl font-display text-primary">Ób'ókhían</span>
+              <span className="text-4xl md:text-5xl font-display text-primary">Òb'okhian</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
               Learn to Speak, Read,
