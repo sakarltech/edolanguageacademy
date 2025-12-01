@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { eq, and } from "drizzle-orm";
 import { protectedProcedure, router } from "../_core/trpc";
-import { getDb } from "../db";
+import { getDb, createAssessmentSubmission, getAssessmentSubmissionsByEnrollment, getAssessmentSubmissionsByModule } from "../db";
 import { enrollments, studentProgress, courseMaterials } from "../../drizzle/schema";
+import { storagePut } from "../storage";
 
 export const studentRouter = router({
   // Get student's enrollments
@@ -278,5 +279,139 @@ export const studentRouter = router({
         certificateUrl: progress[0].certificateUrl,
         assessmentScore: progress[0].assessmentScore,
       };
+    }),
+
+  // Upload assessment submission
+  uploadAssessment: protectedProcedure
+    .input(
+      z.object({
+        enrollmentId: z.number(),
+        moduleNumber: z.number().min(1).max(4),
+        fileName: z.string(),
+        fileData: z.string(), // Base64 encoded file data
+        fileType: z.string(),
+        fileSize: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Verify enrollment belongs to user
+      const enrollment = await db
+        .select()
+        .from(enrollments)
+        .where(
+          and(
+            eq(enrollments.id, input.enrollmentId),
+            eq(enrollments.userId, ctx.user.id)
+          )
+        )
+        .limit(1);
+
+      if (enrollment.length === 0) {
+        throw new Error("Enrollment not found");
+      }
+
+      // Validate file size (max 10MB)
+      if (input.fileSize > 10 * 1024 * 1024) {
+        throw new Error("File size exceeds 10MB limit");
+      }
+
+      // Validate file type
+      const allowedTypes = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
+      if (!allowedTypes.includes(input.fileType.toLowerCase())) {
+        throw new Error("Invalid file type. Allowed: PDF, DOC, DOCX, JPG, PNG");
+      }
+
+      // Decode base64 file data
+      const fileBuffer = Buffer.from(input.fileData, 'base64');
+
+      // Generate unique file key
+      const timestamp = Date.now();
+      const randomSuffix = Math.random().toString(36).substring(7);
+      const fileKey = `assessments/${ctx.user.id}/module-${input.moduleNumber}/${timestamp}-${randomSuffix}.${input.fileType}`;
+
+      // Upload to S3
+      const { url: fileUrl } = await storagePut(
+        fileKey,
+        fileBuffer,
+        `application/${input.fileType}`
+      );
+
+      // Save to database
+      await createAssessmentSubmission({
+        enrollmentId: input.enrollmentId,
+        userId: ctx.user.id,
+        courseLevel: enrollment[0].courseLevel,
+        moduleNumber: input.moduleNumber,
+        fileName: input.fileName,
+        fileUrl,
+        fileType: input.fileType,
+        fileSize: input.fileSize,
+        status: "submitted",
+      });
+
+      return { success: true, fileUrl };
+    }),
+
+  // Get assessment submissions for enrollment
+  getMyAssessments: protectedProcedure
+    .input(z.object({ enrollmentId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Verify enrollment belongs to user
+      const enrollment = await db
+        .select()
+        .from(enrollments)
+        .where(
+          and(
+            eq(enrollments.id, input.enrollmentId),
+            eq(enrollments.userId, ctx.user.id)
+          )
+        )
+        .limit(1);
+
+      if (enrollment.length === 0) {
+        throw new Error("Enrollment not found");
+      }
+
+      return await getAssessmentSubmissionsByEnrollment(input.enrollmentId);
+    }),
+
+  // Get assessment submissions for specific module
+  getModuleAssessments: protectedProcedure
+    .input(
+      z.object({
+        enrollmentId: z.number(),
+        moduleNumber: z.number().min(1).max(4),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Verify enrollment belongs to user
+      const enrollment = await db
+        .select()
+        .from(enrollments)
+        .where(
+          and(
+            eq(enrollments.id, input.enrollmentId),
+            eq(enrollments.userId, ctx.user.id)
+          )
+        )
+        .limit(1);
+
+      if (enrollment.length === 0) {
+        throw new Error("Enrollment not found");
+      }
+
+      return await getAssessmentSubmissionsByModule(
+        input.enrollmentId,
+        input.moduleNumber
+      );
     }),
 });

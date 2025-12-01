@@ -174,3 +174,28 @@ export const announcements = mysqlTable("announcements", {
 
 export type Announcement = typeof announcements.$inferSelect;
 export type InsertAnnouncement = typeof announcements.$inferInsert;
+
+/**
+ * Assessment submissions table for student workbook/assessment uploads
+ */
+export const assessmentSubmissions = mysqlTable("assessmentSubmissions", {
+  id: int("id").autoincrement().primaryKey(),
+  enrollmentId: int("enrollmentId").notNull(),
+  userId: int("userId").notNull(),
+  courseLevel: varchar("courseLevel", { length: 50 }).notNull(),
+  moduleNumber: int("moduleNumber").notNull(), // 1-4
+  fileName: varchar("fileName", { length: 255 }).notNull(),
+  fileUrl: varchar("fileUrl", { length: 500 }).notNull(),
+  fileType: varchar("fileType", { length: 50 }).notNull(), // pdf, doc, docx, jpg, png
+  fileSize: int("fileSize").notNull(), // in bytes
+  status: mysqlEnum("status", ["submitted", "reviewed", "graded"]).default("submitted").notNull(),
+  score: int("score"), // Optional score out of 100
+  feedback: text("feedback"), // Instructor feedback
+  reviewedBy: int("reviewedBy"), // Admin/instructor user ID
+  reviewedAt: timestamp("reviewedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AssessmentSubmission = typeof assessmentSubmissions.$inferSelect;
+export type InsertAssessmentSubmission = typeof assessmentSubmissions.$inferInsert;

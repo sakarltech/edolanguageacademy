@@ -320,3 +320,14 @@
 - [x] Add large logo to homepage hero section (192px mobile, 256px desktop)
 - [x] Add large logo to About page header (192px mobile, 256px desktop)
 - [x] Optimize sizing for desktop and mobile views with responsive classes
+
+## Student Assessment Upload Feature
+- [x] Add assessmentSubmissions table to database schema
+- [x] Create backend API for uploading assessment files (uploadAssessment, getMyAssessments, getModuleAssessments)
+- [x] Add file upload UI to dashboard for each module
+- [x] Display uploaded assessments with submission status (submitted, reviewed, graded)
+- [x] Add file type validation (PDF, DOC, DOCX, JPG, PNG - max 10MB)
+- [x] Store assessment files in S3 with organized folder structure
+- [x] Show submission history for each module with file details, dates, and scores
+- [x] Add feedback and score display for graded assessments
+- [x] Implement drag-and-drop style upload interface

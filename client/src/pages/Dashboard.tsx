@@ -12,11 +12,225 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/Layout";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
-import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, LogOut } from "lucide-react";
+import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, LogOut, Upload, File, X } from "lucide-react";
 import { toast } from "sonner";
 import { ALL_CURRICULA } from "@shared/curriculum";
 import { getNextCohortStartDate } from "@shared/scheduleUtils";
-import { useState } from "react";
+import { useState, useRef } from "react";
+
+// Assessment Upload Component
+function AssessmentUpload({ enrollmentId, moduleNumber }: { enrollmentId: number; moduleNumber: number }) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const utils = trpc.useUtils();
+
+  const uploadMutation = trpc.student.uploadAssessment.useMutation({
+    onSuccess: () => {
+      toast.success("Assessment uploaded successfully!");
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      utils.student.getModuleAssessments.invalidate({ enrollmentId, moduleNumber });
+      setUploading(false);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to upload assessment");
+      setUploading(false);
+    },
+  });
+
+  const { data: submissions, isLoading: loadingSubmissions } = trpc.student.getModuleAssessments.useQuery(
+    { enrollmentId, moduleNumber },
+    { enabled: enrollmentId > 0 }
+  );
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Invalid file type. Allowed: PDF, DOC, DOCX, JPG, PNG");
+      return;
+    }
+
+    setSelectedFile(file);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    setUploading(true);
+
+    // Convert file to base64
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64Data = e.target?.result as string;
+      const base64String = base64Data.split(',')[1]; // Remove data:type;base64, prefix
+
+      const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase() || 'pdf';
+
+      uploadMutation.mutate({
+        enrollmentId,
+        moduleNumber,
+        fileName: selectedFile.name,
+        fileData: base64String,
+        fileType: fileExtension,
+        fileSize: selectedFile.size,
+      });
+    };
+    reader.readAsDataURL(selectedFile);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Upload Section */}
+      <div className="border-2 border-dashed rounded-lg p-6 text-center">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          onChange={handleFileSelect}
+          className="hidden"
+          id={`file-upload-${moduleNumber}`}
+        />
+        
+        {!selectedFile ? (
+          <div>
+            <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+            <p className="text-sm text-muted-foreground mb-2">
+              Upload your completed assessment or workbook
+            </p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Supported formats: PDF, DOC, DOCX, JPG, PNG (Max 10MB)
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Choose File
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+              <div className="flex items-center gap-3">
+                <File className="h-5 w-5 text-primary" />
+                <div className="text-left">
+                  <p className="text-sm font-medium">{selectedFile.name}</p>
+                  <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedFile(null);
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleUpload}
+                disabled={uploading}
+                className="flex-1"
+              >
+                {uploading ? "Uploading..." : "Upload Assessment"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Change File
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Submission History */}
+      {loadingSubmissions ? (
+        <p className="text-sm text-muted-foreground text-center py-4">Loading submissions...</p>
+      ) : submissions && submissions.length > 0 ? (
+        <div>
+          <h4 className="text-sm font-semibold mb-3">Previous Submissions</h4>
+          <div className="space-y-2">
+            {submissions.map((submission) => (
+              <div
+                key={submission.id}
+                className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors"
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <File className="h-4 w-4 text-muted-foreground" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{submission.fileName}</p>
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      <span>{formatDate(submission.createdAt)}</span>
+                      <span>•</span>
+                      <span>{formatFileSize(submission.fileSize)}</span>
+                      <span>•</span>
+                      <Badge variant={submission.status === 'graded' ? 'default' : submission.status === 'reviewed' ? 'secondary' : 'outline'} className="text-xs">
+                        {submission.status}
+                      </Badge>
+                      {submission.score !== null && (
+                        <>
+                          <span>•</span>
+                          <span className="font-medium">Score: {submission.score}/100</span>
+                        </>
+                      )}
+                    </div>
+                    {submission.feedback && (
+                      <p className="text-xs text-muted-foreground mt-1 italic">
+                        Feedback: {submission.feedback}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <Button asChild variant="outline" size="sm">
+                  <a href={submission.fileUrl} target="_blank" rel="noopener noreferrer">
+                    View
+                  </a>
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground text-center py-4">
+          No submissions yet. Upload your first assessment above!
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { user, loading, isAuthenticated, logout } = useAuth();
@@ -504,6 +718,22 @@ export default function Dashboard() {
                           ))}
                         </ul>
                       </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Assessment Upload Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Submit Assessment</CardTitle>
+                      <CardDescription>
+                        Upload your completed workbook or assessment for Module {moduleNum}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <AssessmentUpload 
+                        enrollmentId={activeEnrollment?.id || 0}
+                        moduleNumber={moduleNum}
+                      />
                     </CardContent>
                   </Card>
 
