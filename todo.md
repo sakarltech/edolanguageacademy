@@ -344,3 +344,9 @@
 - [x] Add assessment statistics dashboard (total, pending, reviewed, graded, avg score)
 - [x] Add filters for status and course level in admin panel
 - [x] Add quick links to assessment review from main admin dashboard
+
+## Dashboard Error Fixes
+- [x] Identify Dashboard page errors (React hooks violation - useQuery in map loop)
+- [x] Fix errors by moving assessment query outside the loop
+- [x] Test Dashboard with enrolled and unenrolled states
+- [x] Verified module completion requirement works correctly

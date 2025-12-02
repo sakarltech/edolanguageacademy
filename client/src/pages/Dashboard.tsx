@@ -256,6 +256,12 @@ export default function Dashboard() {
     { enabled: !!activeEnrollment }
   );
 
+  // Fetch all assessments for this enrollment (to check module completion requirements)
+  const { data: allAssessments } = trpc.student.getMyAssessments.useQuery(
+    { enrollmentId: activeEnrollment?.id || 0 },
+    { enabled: !!activeEnrollment }
+  );
+
   const toggleModuleCompletion = trpc.student.toggleModuleCompletion.useMutation({
     onSuccess: () => {
       toast.success("Progress updated!");
@@ -664,12 +670,8 @@ export default function Dashboard() {
               const moduleMaterials = materialsByModule[moduleNum] || [];
               const isCompleted = completedModules.includes(moduleNum);
               
-              // Query module assessments to check if submitted
-              const { data: moduleSubmissions } = trpc.student.getModuleAssessments.useQuery(
-                { enrollmentId: activeEnrollment?.id || 0, moduleNumber: moduleNum },
-                { enabled: !!activeEnrollment?.id }
-              );
-              const hasSubmittedAssessment = moduleSubmissions && moduleSubmissions.length > 0;
+              // Check if this module has any submitted assessments
+              const hasSubmittedAssessment = allAssessments?.some(a => a.moduleNumber === moduleNum) || false;
 
               return (
                 <TabsContent key={moduleNum} value={`module-${moduleNum}`} className="space-y-6">
