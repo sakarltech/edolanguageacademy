@@ -331,3 +331,16 @@
 - [x] Show submission history for each module with file details, dates, and scores
 - [x] Add feedback and score display for graded assessments
 - [x] Implement drag-and-drop style upload interface
+
+## Assessment Workflow Enhancement
+- [x] Enforce assessment submission before module completion
+- [x] Update module completion checkbox to check for assessment submission
+- [x] Disable checkbox and show helper text when no assessment uploaded
+- [x] Build admin assessment review panel at /admin/assessments
+- [x] Add assessment grading interface for instructors with score and feedback
+- [x] Implement automated email notifications for graded assessments
+- [x] Add email template for assessment grading notifications with score and feedback
+- [x] Show validation message when trying to complete module without assessment
+- [x] Add assessment statistics dashboard (total, pending, reviewed, graded, avg score)
+- [x] Add filters for status and course level in admin panel
+- [x] Add quick links to assessment review from main admin dashboard

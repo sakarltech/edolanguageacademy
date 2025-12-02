@@ -8,7 +8,9 @@ import {
   studentProgress,
   courseMaterials,
   users,
+  assessmentSubmissions,
 } from "../../drizzle/schema";
+import { sendEmail } from "../_core/email";
 
 export const adminRouter = router({
   // Get all enrollments with student info
@@ -209,4 +211,160 @@ export const adminRouter = router({
 
       return { success: true };
     }),
+
+  // Get all assessment submissions
+  getAllAssessments: adminProcedure
+    .input(
+      z.object({
+        status: z.enum(["all", "submitted", "reviewed", "graded"]).optional(),
+        courseLevel: z.enum(["all", "beginner", "intermediary", "proficient"]).optional(),
+      }).optional()
+    )
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      let query = db
+        .select({
+          submission: assessmentSubmissions,
+          user: users,
+          enrollment: enrollments,
+        })
+        .from(assessmentSubmissions)
+        .leftJoin(users, eq(assessmentSubmissions.userId, users.id))
+        .leftJoin(enrollments, eq(assessmentSubmissions.enrollmentId, enrollments.id))
+        .orderBy(desc(assessmentSubmissions.createdAt));
+
+      const results = await query;
+
+      let filtered = results;
+
+      if (input?.status && input.status !== "all") {
+        filtered = filtered.filter((r) => r.submission.status === input.status);
+      }
+
+      if (input?.courseLevel && input.courseLevel !== "all") {
+        filtered = filtered.filter((r) => r.submission.courseLevel === input.courseLevel);
+      }
+
+      return filtered;
+    }),
+
+  // Grade assessment submission
+  gradeAssessment: adminProcedure
+    .input(
+      z.object({
+        submissionId: z.number(),
+        score: z.number().min(0).max(100),
+        feedback: z.string().optional(),
+        status: z.enum(["reviewed", "graded"]),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Get submission details for email
+      const submission = await db
+        .select({
+          submission: assessmentSubmissions,
+          user: users,
+          enrollment: enrollments,
+        })
+        .from(assessmentSubmissions)
+        .leftJoin(users, eq(assessmentSubmissions.userId, users.id))
+        .leftJoin(enrollments, eq(assessmentSubmissions.enrollmentId, enrollments.id))
+        .where(eq(assessmentSubmissions.id, input.submissionId))
+        .limit(1);
+
+      if (submission.length === 0) {
+        throw new Error("Submission not found");
+      }
+
+      // Update assessment
+      await db
+        .update(assessmentSubmissions)
+        .set({
+          score: input.score,
+          feedback: input.feedback || null,
+          status: input.status,
+          reviewedBy: ctx.user.id,
+          reviewedAt: new Date(),
+        })
+        .where(eq(assessmentSubmissions.id, input.submissionId));
+
+      // Send email notification
+      const studentEmail = submission[0].user?.email;
+      const studentName = submission[0].user?.name || submission[0].enrollment?.learnerName;
+      const moduleNumber = submission[0].submission.moduleNumber;
+      const courseLevel = submission[0].submission.courseLevel;
+
+      if (studentEmail) {
+        try {
+          await sendEmail({
+            to: studentEmail,
+            subject: `Assessment Graded - Module ${moduleNumber}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #d97706;">Assessment Graded</h2>
+                <p>Dear ${studentName},</p>
+                <p>Your assessment for <strong>Module ${moduleNumber}</strong> (${courseLevel.charAt(0).toUpperCase() + courseLevel.slice(1)} Level) has been reviewed and graded.</p>
+                
+                <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                  <h3 style="margin-top: 0; color: #1f2937;">Assessment Results</h3>
+                  <p style="font-size: 18px; margin: 10px 0;"><strong>Score:</strong> ${input.score}/100</p>
+                  ${input.feedback ? `
+                    <p style="margin: 10px 0;"><strong>Instructor Feedback:</strong></p>
+                    <p style="font-style: italic; color: #4b5563;">${input.feedback}</p>
+                  ` : ''}
+                </div>
+
+                <p>Keep up the great work! Continue to the next module in your dashboard.</p>
+                
+                <p style="margin-top: 30px;">
+                  <a href="https://www.edolanguageacademy.com/dashboard" 
+                     style="background-color: #d97706; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+                    View Dashboard
+                  </a>
+                </p>
+
+                <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+                  Òb'okhian,<br>
+                  Edo Language Academy Team
+                </p>
+              </div>
+            `,
+          });
+        } catch (error) {
+          console.error("Failed to send grading notification email:", error);
+          // Don't throw - grading was successful even if email failed
+        }
+      }
+
+      return { success: true };
+    }),
+
+  // Get assessment statistics
+  getAssessmentStats: adminProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    const allSubmissions = await db.select().from(assessmentSubmissions);
+
+    const stats = {
+      total: allSubmissions.length,
+      submitted: allSubmissions.filter((s) => s.status === "submitted").length,
+      reviewed: allSubmissions.filter((s) => s.status === "reviewed").length,
+      graded: allSubmissions.filter((s) => s.status === "graded").length,
+      averageScore:
+        allSubmissions.filter((s) => s.score !== null).length > 0
+          ? allSubmissions
+              .filter((s) => s.score !== null)
+              .reduce((sum, s) => sum + (s.score || 0), 0) /
+            allSubmissions.filter((s) => s.score !== null).length
+          : 0,
+    };
+
+    return stats;
+  }),
 });

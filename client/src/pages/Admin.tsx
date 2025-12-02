@@ -124,6 +124,20 @@ export default function Admin() {
               <p className="text-muted-foreground">
                 Manage enrollments, materials, and track academy performance
               </p>
+              <div className="flex gap-2 mt-4">
+                <Button asChild variant="outline" size="sm">
+                  <a href="/admin/assessments">
+                    <FileText className="h-4 w-4 mr-1" />
+                    Review Assessments
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/admin/announcements">
+                    <CheckCircle2 className="h-4 w-4 mr-1" />
+                    Manage Announcements
+                  </a>
+                </Button>
+              </div>
             </div>
             <BarChart3 className="w-16 h-16 text-primary opacity-20" />
           </div>

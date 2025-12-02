@@ -663,6 +663,13 @@ export default function Dashboard() {
               const moduleInfo = courseCurriculum?.modules.find(m => m.moduleNumber === moduleNum);
               const moduleMaterials = materialsByModule[moduleNum] || [];
               const isCompleted = completedModules.includes(moduleNum);
+              
+              // Query module assessments to check if submitted
+              const { data: moduleSubmissions } = trpc.student.getModuleAssessments.useQuery(
+                { enrollmentId: activeEnrollment?.id || 0, moduleNumber: moduleNum },
+                { enabled: !!activeEnrollment?.id }
+              );
+              const hasSubmittedAssessment = moduleSubmissions && moduleSubmissions.length > 0;
 
               return (
                 <TabsContent key={moduleNum} value={`module-${moduleNum}`} className="space-y-6">
@@ -684,25 +691,37 @@ export default function Dashboard() {
                             Weeks {moduleInfo?.weeks.join(", ")}
                           </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Checkbox
-                            id={`module-${moduleNum}-complete`}
-                            checked={isCompleted}
-                            onCheckedChange={() => {
-                              if (activeEnrollment?.id) {
-                                toggleModuleCompletion.mutate({
-                                  enrollmentId: activeEnrollment.id,
-                                  moduleNumber: moduleNum,
-                                });
-                              }
-                            }}
-                          />
-                          <label
-                            htmlFor={`module-${moduleNum}-complete`}
-                            className="text-sm font-medium cursor-pointer"
-                          >
-                            Mark as complete
-                          </label>
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`module-${moduleNum}-complete`}
+                              checked={isCompleted}
+                              disabled={!hasSubmittedAssessment}
+                              onCheckedChange={() => {
+                                if (activeEnrollment?.id) {
+                                  if (!hasSubmittedAssessment) {
+                                    toast.error("Please upload your assessment before marking this module as complete");
+                                    return;
+                                  }
+                                  toggleModuleCompletion.mutate({
+                                    enrollmentId: activeEnrollment.id,
+                                    moduleNumber: moduleNum,
+                                  });
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={`module-${moduleNum}-complete`}
+                              className={`text-sm font-medium cursor-pointer ${!hasSubmittedAssessment ? 'text-muted-foreground' : ''}`}
+                            >
+                              Mark as complete
+                            </label>
+                          </div>
+                          {!hasSubmittedAssessment && (
+                            <p className="text-xs text-muted-foreground italic">
+                              Upload assessment below to unlock completion
+                            </p>
+                          )}
                         </div>
                       </div>
                     </CardHeader>

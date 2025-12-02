@@ -19,6 +19,7 @@ import EnrollmentSuccess from "./pages/EnrollmentSuccess";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import AdminAnnouncements from "./pages/AdminAnnouncements";
+import AdminAssessments from "./pages/AdminAssessments";
 import Forum from "./pages/Forum";
 import ForumThread from "./pages/ForumThread";
 
@@ -40,6 +41,7 @@ function Router() {
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/admin"} component={Admin} />
       <Route path={"/admin/announcements"} component={AdminAnnouncements} />
+      <Route path={"/admin/assessments"} component={AdminAssessments} />
       <Route path={"/forum"} component={Forum} />
       <Route path={"/forum/:id"} component={ForumThread} />
       <Route path={"/404"} component={NotFound} />
