@@ -376,3 +376,10 @@
 - [x] Update Proficient course price ID (price_1RmcbUH2oBnqcEomNA9DUsE8)
 - [x] Update Bundle price ID (price_1Sa3rbH2oBnqcEomXYVOLFQQ)
 - [ ] Test enrollment with live price IDs (after publishing)
+
+## Webhook Endpoint Debugging
+- [x] Test webhook endpoint accessibility (found 404 error on live site)
+- [x] Added GET handler for webhook endpoint verification
+- [x] Added error handling to POST webhook handler
+- [x] Improved logging for debugging
+- [ ] Publish changes and confirm webhook test passes

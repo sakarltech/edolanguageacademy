@@ -32,12 +32,22 @@ async function startServer() {
   const server = createServer(app);
   
   // Stripe webhook MUST be registered BEFORE express.json() to preserve raw body
+  // Handle GET requests for webhook endpoint verification
+  app.get("/api/stripe/webhook", (req, res) => {
+    res.status(200).json({ status: "Webhook endpoint is active", method: "GET" });
+  });
+  
   app.post(
     "/api/stripe/webhook",
     express.raw({ type: "application/json" }),
     async (req, res) => {
-      const { handleStripeWebhook } = await import("../webhooks/stripe");
-      return handleStripeWebhook(req, res);
+      try {
+        const { handleStripeWebhook } = await import("../webhooks/stripe");
+        return handleStripeWebhook(req, res);
+      } catch (error) {
+        console.error("[Webhook] Error loading handler:", error);
+        return res.status(500).json({ error: "Internal server error" });
+      }
     }
   );
   
