@@ -350,3 +350,12 @@
 - [x] Fix errors by moving assessment query outside the loop
 - [x] Test Dashboard with enrolled and unenrolled states
 - [x] Verified module completion requirement works correctly
+
+## Stripe Webhook Fix for Custom Domain
+- [x] Check current webhook endpoint URL configuration
+- [x] Update webhook URL to custom domain (www.edolanguageacademy.com)
+- [x] Verify production webhook secret is correctly set
+- [x] Updated webhook secret to whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm
+- [x] Restarted server to apply new configuration
+- [ ] Test webhook with Stripe dashboard (after publishing)
+- [ ] Verify payment flow works end-to-end (after publishing)
