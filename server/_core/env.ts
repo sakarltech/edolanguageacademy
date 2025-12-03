@@ -7,12 +7,11 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
-  // TEMPORARY: Hardcoded Stripe configuration to override old sandbox values
-  // TODO: Remove hardcoding once Manus support fixes environment injection
-  // Force use of user's Stripe account (51RMpYE) instead of old sandbox (51ST)
-  stripeSecretKey: "sk_test_51RMpYEH2oBnqcEomgGTvkTtoxQCXPWwAlx3bIflzcRRg1pokm0LGVrsc0WBoTiTdZ3OAcJHr7fPVEmW8VPmiaLcR00cJaU5vQm",
-  stripePublishableKey: "pk_test_51RMpYEH2oBnqcEombmEtthj0nmO3H0UJI0zlXsUCOchvb5SqaOaNjgpW61gBvamPAAZ47kB8HHL6eVYQZQ2mWuWg00mDy7Scqn",
-  stripeWebhookSecret: "whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm", // Production webhook secret for custom domain
+  // LIVE MODE Stripe configuration for production
+  // Using live API keys and webhook secret for www.edolanguageacademy.com
+  stripeSecretKey: "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",
+  stripePublishableKey: "pk_live_51RMpYEH2oBnqcEom0vyUVImAHukimeVRc3aF62hlYLqA6tKaTjCtDaRzPJcnnt0lDgYIpFQT9TEHiz24K0xoD7SB00VragvuoE",
+  stripeWebhookSecret: "whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm", // Live mode webhook secret for custom domain
   stripePriceBeginner: "price_1SUVmKH2oBnqcEomj9AcvYTa",
   stripePriceIntermediary: "price_1SUVn0H2oBnqcEommR2RA2h7",
   stripePriceProficient: "price_1SUVnqH2oBnqcEomOwdbDwIo",

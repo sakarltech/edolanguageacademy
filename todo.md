@@ -359,3 +359,12 @@
 - [x] Restarted server to apply new configuration
 - [ ] Test webhook with Stripe dashboard (after publishing)
 - [ ] Verify payment flow works end-to-end (after publishing)
+
+## Stripe Live Mode Migration
+- [x] Update Stripe secret key from test (sk_test_) to live (sk_live_)
+- [x] Update Stripe publishable key from test (pk_test_) to live (pk_live_)
+- [x] Update webhook secret to live mode webhook secret (whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm)
+- [x] Price IDs remain the same (moved from test to live)
+- [x] Restarted server to apply live mode configuration
+- [ ] Test live webhook endpoint (after publishing)
+- [ ] Verify live payment processing works (after publishing)
