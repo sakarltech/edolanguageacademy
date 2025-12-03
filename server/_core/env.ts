@@ -12,10 +12,11 @@ export const ENV = {
   stripeSecretKey: "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",
   stripePublishableKey: "pk_live_51RMpYEH2oBnqcEom0vyUVImAHukimeVRc3aF62hlYLqA6tKaTjCtDaRzPJcnnt0lDgYIpFQT9TEHiz24K0xoD7SB00VragvuoE",
   stripeWebhookSecret: "whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm", // Live mode webhook secret for custom domain
-  stripePriceBeginner: "price_1SUVmKH2oBnqcEomj9AcvYTa",
-  stripePriceIntermediary: "price_1SUVn0H2oBnqcEommR2RA2h7",
-  stripePriceProficient: "price_1SUVnqH2oBnqcEomOwdbDwIo",
-  stripePriceBundle: "price_1SUVonH2oBnqcEom5Yf9cL45",
+  // Live mode price IDs for production courses
+  stripePriceBeginner: "price_1RmcT8H2oBnqcEomY7HNW8jJ",
+  stripePriceIntermediary: "price_1RmcXiH2oBnqcEomeTVJu1JD",
+  stripePriceProficient: "price_1RmcbUH2oBnqcEomNA9DUsE8",
+  stripePriceBundle: "price_1Sa3rbH2oBnqcEomXYVOLFQQ",
   // SMTP Email Configuration
   smtpHost: process.env.SMTP_HOST ?? "",
   smtpPort: parseInt(process.env.SMTP_PORT ?? "587", 10),

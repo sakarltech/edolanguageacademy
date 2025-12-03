@@ -368,3 +368,11 @@
 - [x] Restarted server to apply live mode configuration
 - [ ] Test live webhook endpoint (after publishing)
 - [ ] Verify live payment processing works (after publishing)
+
+## Update Live Mode Price IDs
+- [x] Get live mode price IDs from Stripe dashboard
+- [x] Update Beginner course price ID (price_1RmcT8H2oBnqcEomY7HNW8jJ)
+- [x] Update Intermediary course price ID (price_1RmcXiH2oBnqcEomeTVJu1JD)
+- [x] Update Proficient course price ID (price_1RmcbUH2oBnqcEomNA9DUsE8)
+- [x] Update Bundle price ID (price_1Sa3rbH2oBnqcEomXYVOLFQQ)
+- [ ] Test enrollment with live price IDs (after publishing)
