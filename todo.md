@@ -408,3 +408,9 @@
 - [x] Include call-to-action after video (Get Started Now & View FAQ)
 - [x] Added 4 key points covered cards (enrollment, materials, assessments, support)
 - [x] Included alternative video tag code for direct video file hosting
+
+## Update Homepage Video Embed
+- [x] Replace placeholder video URL with YouTube video ID UUpb6BTz-GQ
+- [x] Test video playback on homepage
+- [x] Verify video displays correctly on mobile and desktop
+- [x] Video successfully embedded and playing

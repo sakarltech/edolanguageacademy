@@ -121,7 +121,7 @@ export default function Home() {
               {/* Replace the src below with your actual YouTube/Vimeo embed URL or video file path */}
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE"
+                src="https://www.youtube.com/embed/UUpb6BTz-GQ"
                 title="Edo Language Academy Platform Walkthrough"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
