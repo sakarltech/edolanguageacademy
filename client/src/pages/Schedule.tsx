@@ -174,6 +174,9 @@ export default function Schedule() {
                     <div className="font-semibold">8 weeks</div>
                   </div>
                   <div className="pt-4 border-t">
+                    <div className="text-sm text-muted-foreground mb-3">
+                      <strong>Note:</strong> Includes 2-week Christmas break (Dec 27 & Jan 3 skipped)
+                    </div>
                     <div className="text-sm text-accent font-semibold">
                       Only {nextCohort.spotsRemaining} spots left!
                     </div>
@@ -228,13 +231,6 @@ export default function Schedule() {
                       <div className="text-sm text-muted-foreground mb-1">Duration</div>
                       <div className="font-semibold">8 weeks</div>
                     </div>
-                    {index === 0 && (
-                      <div className="pt-4 border-t">
-                        <div className="text-sm text-muted-foreground">
-                          <strong>Note:</strong> Includes 2-week Christmas break (Dec 27 & Jan 3 skipped)
-                        </div>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               ))}

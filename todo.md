@@ -414,3 +414,9 @@
 - [x] Test video playback on homepage
 - [x] Verify video displays correctly on mobile and desktop
 - [x] Video successfully embedded and playing
+
+## Fix Christmas Break Notation on Schedule
+- [x] Move Christmas break notation from Cohort 1 of 2026 to December 6th cohort
+- [x] Verify dates are correct (Dec 6, 2025 - Feb 14, 2026 with 2-week Christmas break)
+- [x] Removed Christmas break note from 2026 Cohort 1 card
+- [x] Added Christmas break note to Next Cohort (December 6th) card
