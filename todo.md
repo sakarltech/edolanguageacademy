@@ -399,3 +399,12 @@
 - [x] Added Òb'okhian greeting in dialog title
 - [x] Included class schedule information (11 AM GMT & 11 AM CST)
 - [x] Dialog appears on both enrolled and unenrolled dashboard views
+
+## Homepage Video Walkthrough Tutorial
+- [x] Add video tutorial section to homepage (after hero section)
+- [x] Create video embed placeholder (YouTube/Vimeo ready with iframe)
+- [x] Add chatbot Efosa reference for additional help
+- [x] Design responsive video player section with aspect-video
+- [x] Include call-to-action after video (Get Started Now & View FAQ)
+- [x] Added 4 key points covered cards (enrollment, materials, assessments, support)
+- [x] Included alternative video tag code for direct video file hosting

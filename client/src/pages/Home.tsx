@@ -103,6 +103,115 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Video Walkthrough Tutorial Section */}
+      <section className="py-16 md:py-24 bg-primary/5">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">
+                How to Navigate Our Platform
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Watch this quick tutorial to learn how to enroll, access courses, upload assessments, and make the most of your learning journey.
+              </p>
+            </div>
+            
+            {/* Video Player */}
+            <div className="relative aspect-video rounded-lg overflow-hidden shadow-2xl mb-8 bg-black">
+              {/* Replace the src below with your actual YouTube/Vimeo embed URL or video file path */}
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE"
+                title="Edo Language Academy Platform Walkthrough"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+              {/* Alternative: For direct video file, uncomment below and comment out iframe */}
+              {/* <video 
+                className="absolute inset-0 w-full h-full"
+                controls
+                poster="/video-thumbnail.jpg"
+              >
+                <source src="/walkthrough-tutorial.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video> */}
+            </div>
+
+            {/* Key Points Covered */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">1</div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Creating Your Account & Enrolling</h3>
+                      <p className="text-sm text-muted-foreground">Sign up, choose your level, and complete payment</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">2</div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Accessing Course Materials</h3>
+                      <p className="text-sm text-muted-foreground">Navigate modules, download resources, and watch recordings</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">3</div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Uploading Assessments & Tracking Progress</h3>
+                      <p className="text-sm text-muted-foreground">Submit workbooks and monitor your completion rate</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">4</div>
+                    <div>
+                      <h3 className="font-semibold mb-1">Joining WhatsApp Groups & Getting Support</h3>
+                      <p className="text-sm text-muted-foreground">Connect with instructors and fellow learners</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Chatbot Reference */}
+            <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-semibold mb-2">Need More Help?</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Our AI assistant <strong>Efosa</strong> is available 24/7 to answer your questions about enrollment, courses, schedules, and more. Click the chat icon in the bottom-right corner to get instant help!
+                  </p>
+                  <div className="flex justify-center gap-4">
+                    <Link href="/dashboard">
+                      <Button size="lg">
+                        Get Started Now
+                      </Button>
+                    </Link>
+                    <Link href="/faq">
+                      <Button size="lg" variant="outline">
+                        View FAQ
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
       <section className="py-16 md:py-24 bg-background">
         <div className="container">
