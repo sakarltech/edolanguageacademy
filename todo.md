@@ -389,3 +389,13 @@
 - [x] Changed redirect from res.redirect(302, "/") to res.redirect(302, "/dashboard")
 - [x] Verified server restarts successfully with changes
 - [x] Redirect works for both new signups and returning logins
+
+## Dashboard Welcome Message for First-Time Users
+- [x] Design welcome message content with platform tutorial
+- [x] Create welcome dialog component with shadcn/ui
+- [x] Add user preference tracking for welcome message dismissal (localStorage)
+- [x] Show welcome dialog only for first-time users
+- [x] Include navigation guide (6-step tutorial) and key features overview
+- [x] Added Òb'okhian greeting in dialog title
+- [x] Included class schedule information (11 AM GMT & 11 AM CST)
+- [x] Dialog appears on both enrolled and unenrolled dashboard views

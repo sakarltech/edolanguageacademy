@@ -16,7 +16,145 @@ import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock
 import { toast } from "sonner";
 import { ALL_CURRICULA } from "@shared/curriculum";
 import { getNextCohortStartDate } from "@shared/scheduleUtils";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+
+// Welcome Dialog Component for First-Time Users
+function WelcomeDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-2xl">Òb'okhian! Welcome to Edo Language Academy</DialogTitle>
+          <DialogDescription>
+            Let's get you started on your Edo language learning journey
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="space-y-6 py-4">
+          {/* Welcome Message */}
+          <div className="space-y-2">
+            <h3 className="font-semibold text-lg">Getting Started</h3>
+            <p className="text-sm text-muted-foreground">
+              Welcome to your personalized learning dashboard! Here's everything you need to know to make the most of your Edo language learning experience.
+            </p>
+          </div>
+
+          {/* Navigation Guide */}
+          <div className="space-y-3">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              How to Navigate Your Dashboard
+            </h3>
+            
+            <div className="space-y-4 text-sm">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">1</div>
+                <div>
+                  <p className="font-medium">Enroll in a Course</p>
+                  <p className="text-muted-foreground">Select your level (Beginner, Intermediary, or Proficient) and complete payment to access course materials.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">2</div>
+                <div>
+                  <p className="font-medium">Access Course Modules</p>
+                  <p className="text-muted-foreground">Each course has 4 modules spread across 8 weeks. Click on any module to view lessons, videos, and materials.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">3</div>
+                <div>
+                  <p className="font-medium">Upload Assessments</p>
+                  <p className="text-muted-foreground">Complete your workbook for each module and upload it (PDF, DOC, or images). You must upload assessments before marking modules complete.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">4</div>
+                <div>
+                  <p className="font-medium">Track Your Progress</p>
+                  <p className="text-muted-foreground">Mark modules as complete after uploading assessments. Your progress bar shows completion percentage.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">5</div>
+                <div>
+                  <p className="font-medium">Join WhatsApp Group</p>
+                  <p className="text-muted-foreground">After enrollment, you'll receive a WhatsApp group link to connect with instructors and fellow students.</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-semibold text-primary">6</div>
+                <div>
+                  <p className="font-medium">Earn Your Certificate</p>
+                  <p className="text-muted-foreground">Complete all modules and pass assessments to receive your official Edo Language Academy certificate.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Key Features */}
+          <div className="space-y-3">
+            <h3 className="font-semibold text-lg">Key Features</h3>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex items-start gap-2">
+                <Video className="h-4 w-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">Live Classes</p>
+                  <p className="text-muted-foreground text-xs">60-minute weekly sessions</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <FileText className="h-4 w-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">Course Materials</p>
+                  <p className="text-muted-foreground text-xs">Downloadable resources</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <Users className="h-4 w-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">Community</p>
+                  <p className="text-muted-foreground text-xs">WhatsApp group support</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <Award className="h-4 w-4 mt-0.5 text-primary" />
+                <div>
+                  <p className="font-medium">Certification</p>
+                  <p className="text-muted-foreground text-xs">Official completion certificate</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Class Schedule */}
+          <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Class Schedule
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Classes are held twice weekly with two time slot options:
+            </p>
+            <div className="text-sm space-y-1">
+              <p>• <strong>11 AM GMT</strong> (UK, Nigeria, Europe)</p>
+              <p>• <strong>11 AM CST</strong> (North America)</p>
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button onClick={onClose} className="w-full">Got it, let's start learning!</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 // Assessment Upload Component
 function AssessmentUpload({ enrollmentId, moduleNumber }: { enrollmentId: number; moduleNumber: number }) {
@@ -243,6 +381,24 @@ export default function Dashboard() {
   const [timeSlot, setTimeSlot] = useState<"11AM_GMT" | "11AM_CST">("11AM_GMT");
   const [phone, setPhone] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  
+  // Welcome dialog state for first-time users
+  const [showWelcome, setShowWelcome] = useState(false);
+  
+  // Show welcome dialog for first-time users (check localStorage)
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const hasSeenWelcome = localStorage.getItem('edo-academy-welcome-seen');
+      if (!hasSeenWelcome) {
+        setShowWelcome(true);
+      }
+    }
+  }, [isAuthenticated, user]);
+  
+  const handleCloseWelcome = () => {
+    localStorage.setItem('edo-academy-welcome-seen', 'true');
+    setShowWelcome(false);
+  };
 
   const activeEnrollment = enrollments?.find((e) => e.status === "paid" || e.status === "active");
   
@@ -383,6 +539,7 @@ export default function Dashboard() {
 
     return (
       <Layout>
+        <WelcomeDialog open={showWelcome} onClose={handleCloseWelcome} />
         <div className="container py-16">
           <div className="max-w-6xl mx-auto">
             {/* Welcome Message */}
@@ -598,6 +755,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
+      <WelcomeDialog open={showWelcome} onClose={handleCloseWelcome} />
       <div className="container py-8">
         <div className="max-w-6xl mx-auto">
           {/* Logout Button */}
