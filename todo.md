@@ -383,3 +383,9 @@
 - [x] Added error handling to POST webhook handler
 - [x] Improved logging for debugging
 - [ ] Publish changes and confirm webhook test passes
+
+## Post-Login Redirect to Dashboard
+- [x] Update OAuth callback to redirect to /dashboard instead of /
+- [x] Changed redirect from res.redirect(302, "/") to res.redirect(302, "/dashboard")
+- [x] Verified server restarts successfully with changes
+- [x] Redirect works for both new signups and returning logins
