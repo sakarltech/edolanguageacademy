@@ -542,25 +542,32 @@ export default function Dashboard() {
         <WelcomeDialog open={showWelcome} onClose={handleCloseWelcome} />
         <div className="container py-16">
           <div className="max-w-6xl mx-auto">
+            {/* Header with Name and Sign Out */}
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-display font-bold">
+                  Welcome, {user?.name?.split(" ")[0] || "Learner"}!
+                </h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Your learning dashboard
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={async () => {
+                  await logout();
+                  window.location.href = getLoginUrl();
+                }}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            </div>
+            
             {/* Welcome Message */}
             <div className="text-center mb-12">
-              <div className="flex justify-end mb-4">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={async () => {
-                    await logout();
-                    window.location.href = getLoginUrl();
-                  }}
-                  className="gap-2"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
-              </div>
-              <h1 className="text-4xl font-display font-bold mb-4">
-                Welcome, {user?.name?.split(" ")[0] || "Learner"}!
-              </h1>
               <p className="text-lg text-muted-foreground">
                 You haven't enrolled in a course yet. Start by choosing your level below.
               </p>
@@ -758,8 +765,16 @@ export default function Dashboard() {
       <WelcomeDialog open={showWelcome} onClose={handleCloseWelcome} />
       <div className="container py-8">
         <div className="max-w-6xl mx-auto">
-          {/* Logout Button */}
-          <div className="flex justify-end mb-4">
+          {/* Header with Name and Sign Out */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-display font-bold">
+                Welcome back, {user?.name?.split(" ")[0] || "Learner"}!
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {activeEnrollment.courseLevel.charAt(0).toUpperCase() + activeEnrollment.courseLevel.slice(1)} Course
+              </p>
+            </div>
             <Button 
               variant="outline" 
               size="sm"

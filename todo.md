@@ -430,3 +430,11 @@
 - [x] Added ring-2 ring-primary shadow-lg styling for recommended card
 - [x] Added checkmark with "Best time for your timezone" message
 - [x] Test with different timezones (UK, Nigeria, US, Europe)
+
+## Personalized Dashboard Name Display
+- [x] Add student name display at top left corner of dashboard
+- [x] Show greeting with student's name ("Welcome, [Name]!" for unenrolled, "Welcome back, [Name]!" for enrolled)
+- [x] Ensure name displays for both enrolled and unenrolled students
+- [x] Style with appropriate typography and spacing (text-2xl md:text-3xl)
+- [x] Added subtitle showing "Your learning dashboard" for unenrolled and course level for enrolled students
+- [x] Moved sign out button to top right for better UX
