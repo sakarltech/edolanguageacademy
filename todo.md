@@ -420,3 +420,13 @@
 - [x] Verify dates are correct (Dec 6, 2025 - Feb 14, 2026 with 2-week Christmas break)
 - [x] Removed Christmas break note from 2026 Cohort 1 card
 - [x] Added Christmas break note to Next Cohort (December 6th) card
+
+## Timezone Auto-Detection Feature
+- [x] Create timezone detection utility function (timezoneDetection.ts)
+- [x] Detect visitor's browser timezone using Intl API
+- [x] Map detected timezone to recommended class time slot (GMT or CST)
+- [x] Update Schedule page with auto-highlighting logic using useState and useEffect
+- [x] Add visual badge/indicator for "Recommended for You" time slot
+- [x] Added ring-2 ring-primary shadow-lg styling for recommended card
+- [x] Added checkmark with "Best time for your timezone" message
+- [x] Test with different timezones (UK, Nigeria, US, Europe)

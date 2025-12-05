@@ -6,19 +6,9 @@ import { Calendar, Clock, Users, Globe, AlertCircle } from "lucide-react";
 import { TIME_SLOTS, getUpcomingCohorts, getCohortsForYear, formatCohortDate } from "@shared/scheduleUtils";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { useState, useEffect } from "react";
-import { getRecommendedTimeSlot } from "@/lib/timezoneDetection";
 
 export default function Schedule() {
   useScrollAnimation();
-  
-  const [recommendedSlot, setRecommendedSlot] = useState<string | null>(null);
-  
-  useEffect(() => {
-    // Detect timezone on client side only
-    setRecommendedSlot(getRecommendedTimeSlot());
-  }, []);
   
   const nextCohort = getUpcomingCohorts(1)[0]; // Get only the next upcoming cohort
   const cohorts2026 = getCohortsForYear(2026);
@@ -67,27 +57,11 @@ export default function Schedule() {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {TIME_SLOTS.map((slot, index) => {
-                const isRecommended = recommendedSlot === slot.id;
-                return (
-                <Card 
-                  key={slot.id} 
-                  className={`scroll-fade-in transition-all ${
-                    isRecommended 
-                      ? 'ring-2 ring-primary shadow-lg' 
-                      : ''
-                  }`}
-                >
+              {TIME_SLOTS.map((slot, index) => (
+                <Card key={slot.id} className="scroll-fade-in">
                   <CardHeader>
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Globe className="w-6 h-6 text-primary" />
-                      </div>
-                      {isRecommended && (
-                        <Badge variant="default" className="bg-primary text-primary-foreground">
-                          Recommended for You
-                        </Badge>
-                      )}
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <Globe className="w-6 h-6 text-primary" />
                     </div>
                     <CardTitle className="text-2xl">
                       {slot.time} {slot.timezone}
@@ -95,11 +69,6 @@ export default function Schedule() {
                     <CardDescription>
                       Suitable for: {slot.suitableFor.join(", ")}
                     </CardDescription>
-                    {isRecommended && (
-                      <p className="text-sm text-primary font-medium mt-2">
-                        ✓ Best time for your timezone
-                      </p>
-                    )}
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
