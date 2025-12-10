@@ -72,20 +72,21 @@ export default function Home() {
             <div className="mb-8 flex justify-center">
               <img 
                 src="/edo-logo.png" 
-                alt="Edo Language Academy Logo" 
+                alt="Edo Language Academy - Learn Edo Language Online | Benin Language Courses" 
                 className="w-48 h-48 md:w-64 md:h-64 object-contain"
+                title="Edo Language Academy Logo - Master Benin Language"
               />
             </div>
             <div className="mb-6">
               <span className="text-4xl md:text-5xl font-display text-primary">Òb'okhian</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
-              Learn to Speak, Read,
+              Learn Edo Language Online:
               <br />
-              or Write in Edo
+              Speak, Read, & Write Benin Language
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              It's never too late to learn—let us help you bridge the gap! Reconnect with your heritage through live online classes, expert instructors, and a supportive community.
+              Master the Edo language (Bini) with live online classes taught by native speakers. Reconnect with your Nigerian heritage, preserve Edo culture, and communicate confidently with family and community. Beginner to proficient courses available.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/register">
