@@ -2,26 +2,27 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { Calendar, Clock, Users, Globe, AlertCircle } from "lucide-react";
-import { TIME_SLOTS, getUpcomingCohorts, getCohortsForYear, formatCohortDate } from "@shared/scheduleUtils";
+import { Calendar, Clock, Users, Globe, AlertCircle, BookOpen, Award, GraduationCap } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { useState, useEffect } from "react";
-import { getRecommendedTimeSlot } from "@/lib/timezoneDetection";
+import { getAllClassTimes, formatClassTime, type CourseLevel } from "@/lib/timezoneConversions";
 
 export default function Schedule() {
   useScrollAnimation();
   
-  const [recommendedSlot, setRecommendedSlot] = useState<string | null>(null);
-  
-  useEffect(() => {
-    // Detect timezone on client side only
-    setRecommendedSlot(getRecommendedTimeSlot());
-  }, []);
-  
-  const nextCohort = getUpcomingCohorts(1)[0]; // Get only the next upcoming cohort
-  const cohorts2026 = getCohortsForYear(2026);
+  const allClassTimes = getAllClassTimes();
+
+  const levelIcons: Record<CourseLevel, any> = {
+    beginner: BookOpen,
+    intermediary: Users,
+    proficient: Award,
+  };
+
+  const levelColors: Record<CourseLevel, string> = {
+    beginner: 'bg-green-500/10 text-green-600',
+    intermediary: 'bg-blue-500/10 text-blue-600',
+    proficient: 'bg-purple-500/10 text-purple-600',
+  };
 
   return (
     <Layout>
@@ -33,7 +34,7 @@ export default function Schedule() {
               Class Schedule
             </h1>
             <p className="text-lg text-muted-foreground">
-              All classes are held live on Zoom every Saturday. Choose the time slot that works best for your timezone.
+              Live online classes every Saturday on Zoom. Each level has its own dedicated time slot.
             </p>
           </div>
         </div>
@@ -46,110 +47,75 @@ export default function Schedule() {
             <Alert className="scroll-fade-in">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Two time options available:</strong> We offer classes at 11 AM GMT and 11 AM CST. 
-                You only need to attend <strong>one</strong> of these time slots, not both. Choose whichever time suits your timezone best.
-                All age groups (Kids, Teens, Adults) have the same class time and duration.
+                <strong>Level-Based Schedule:</strong> Each course level has a specific class time. 
+                You only attend the class for your enrolled level. All classes are 60 minutes and held every Saturday.
+                Pre-recorded videos for each module will be available in your dashboard soon!
               </AlertDescription>
             </Alert>
           </div>
         </div>
       </section>
 
-      {/* Class Times */}
+      {/* Class Times by Level */}
       <section className="py-16 bg-background">
         <div className="container">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-display font-bold text-center mb-4">
-              Weekly Class Times
+              Weekly Class Times by Level
             </h2>
             <p className="text-center text-muted-foreground mb-12">
-              All classes meet every Saturday • 60 minutes duration • Same time for all age groups
+              Every Saturday • 60 minutes per class • Times shown in your local timezone
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {TIME_SLOTS.map((slot, index) => {
-                const isRecommended = recommendedSlot === slot.id;
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {allClassTimes.map(({ level, classTime, conversions }) => {
+                const Icon = levelIcons[level];
+                const colorClass = levelColors[level];
+                
                 return (
-                <Card 
-                  key={slot.id} 
-                  className={`scroll-fade-in transition-all ${
-                    isRecommended 
-                      ? 'ring-2 ring-primary shadow-lg' 
-                      : ''
-                  }`}
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <Globe className="w-6 h-6 text-primary" />
+                  <Card key={level} className="scroll-fade-in">
+                    <CardHeader>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-12 h-12 rounded-lg ${colorClass} flex items-center justify-center`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-2xl capitalize">
+                            {level}
+                          </CardTitle>
+                          <CardDescription className="text-base font-semibold text-foreground mt-1">
+                            {formatClassTime(classTime.gmtHour)}
+                          </CardDescription>
+                        </div>
                       </div>
-                      {isRecommended && (
-                        <Badge variant="default" className="bg-primary text-primary-foreground">
-                          Recommended for You
-                        </Badge>
-                      )}
-                    </div>
-                    <CardTitle className="text-2xl">
-                      {slot.time} {slot.timezone}
-                    </CardTitle>
-                    <CardDescription>
-                      Suitable for: {slot.suitableFor.join(", ")}
-                    </CardDescription>
-                    {isRecommended && (
-                      <p className="text-sm text-primary font-medium mt-2">
-                        ✓ Best time for your timezone
-                      </p>
-                    )}
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold text-sm mb-3 text-muted-foreground">
-                        Timezone Conversions:
-                      </h4>
-                      <div className="space-y-2">
-                        <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <div className="text-sm">
-                            <strong>UK:</strong> {slot.conversions.uk}
-                          </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                          <Clock className="w-4 h-4" />
+                          <span>60 minutes • Every Saturday</span>
                         </div>
-                        <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <div className="text-sm">
-                            <strong>Nigeria:</strong> {slot.conversions.nigeria}
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <div className="text-sm">
-                            <strong>Central Europe:</strong> {slot.conversions.centralEurope}
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-2">
-                          <Clock className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                          <div className="text-sm">
-                            <strong>North America:</strong> {slot.conversions.northAmerica}
+                        
+                        <div className="border-t pt-4">
+                          <h4 className="text-sm font-semibold mb-3 text-foreground">
+                            Timezone Conversions:
+                          </h4>
+                          <div className="space-y-2">
+                            {conversions.map((tz) => (
+                              <div key={tz.timezone} className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">
+                                  {tz.timezone} ({tz.abbreviation})
+                                </span>
+                                <span className="font-medium text-foreground">
+                                  {tz.time}
+                                </span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="pt-4 border-t">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="w-4 h-4" />
-                        <span>Every Saturday</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-                        <Clock className="w-4 h-4" />
-                        <span>60 minutes</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-                        <Users className="w-4 h-4" />
-                        <span>All age groups (Kids, Teens, Adults)</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
@@ -157,178 +123,53 @@ export default function Schedule() {
         </div>
       </section>
 
-      {/* Upcoming Cohort (Singular) */}
-      <section className="py-16 bg-muted/30">
+      {/* Course Structure */}
+      <section className="py-16 bg-muted/50">
         <div className="container">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-display font-bold text-center mb-4">
-              Next Upcoming Cohort
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-display font-bold text-center mb-12">
+              Course Structure
             </h2>
-            <p className="text-center text-muted-foreground mb-8">
-              Each cohort runs for 8 weeks with a 1-week break between cohorts. Enroll now to secure your spot!
-            </p>
             
-            <Alert className="mb-12 max-w-3xl mx-auto">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                <strong>Christmas & New Year Break:</strong> Please note that classes will not be held on December 27th, 2025 and January 3rd, 2026. 
-                The first cohort end date has been adjusted to account for this 2-week break.
-              </AlertDescription>
-            </Alert>
-            
-            <div className="max-w-md mx-auto">
-              <Card className="scroll-slide-up">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="scroll-fade-in">
                 <CardHeader>
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <Calendar className="w-6 h-6 text-primary" />
                   </div>
-                  <CardTitle>
-                    Next Cohort
-                  </CardTitle>
-                  <CardDescription>
-                    <span className="inline-flex items-center gap-1 text-accent font-semibold">
-                      <AlertCircle className="w-3 h-3" />
-                      Limited availability
-                    </span>
-                  </CardDescription>
+                  <CardTitle>8-Week Program</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Start Date</div>
-                    <div className="font-semibold">{formatCohortDate(nextCohort.startDate)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">End Date</div>
-                    <div className="font-semibold">{formatCohortDate(nextCohort.endDate)}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Duration</div>
-                    <div className="font-semibold">8 weeks</div>
-                  </div>
-                  <div className="pt-4 border-t">
-                    <div className="text-sm text-muted-foreground mb-3">
-                      <strong>Note:</strong> Includes 2-week Christmas break (Dec 27 & Jan 3 skipped)
-                    </div>
-                    <div className="text-sm text-accent font-semibold">
-                      Only {nextCohort.spotsRemaining} spots left!
-                    </div>
-                  </div>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Each course runs for 8 weeks with one live class per week. Complete all modules at your own pace.
+                  </p>
                 </CardContent>
               </Card>
-            </div>
-            
-            <div className="text-center mt-12">
-              <Link href="/register">
-                <Button size="lg" className="text-lg px-8">
-                  Enroll Now
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* All 2026 Cohorts */}
-      <section className="py-16 bg-background">
-        <div className="container">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-display font-bold text-center mb-4">
-              All 2026 Cohorts
-            </h2>
-            <p className="text-center text-muted-foreground mb-12">
-              Complete schedule for all cohorts running in 2026. Each cohort includes 8 weeks of classes with a 1-week break before the next cohort begins.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cohorts2026.map((cohort, index) => (
-                <Card key={index} className="scroll-fade-in">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <Calendar className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle>
-                      Cohort {index + 1}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">Start Date</div>
-                      <div className="font-semibold">{formatCohortDate(cohort.startDate)}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">End Date</div>
-                      <div className="font-semibold">{formatCohortDate(cohort.endDate)}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">Duration</div>
-                      <div className="font-semibold">8 weeks</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="text-center mt-12">
-              <Link href="/register">
-                <Button size="lg" className="text-lg px-8">
-                  Enroll Now
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+              <Card className="scroll-fade-in">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <BookOpen className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle>4 Modules</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Structured learning with 4 comprehensive modules covering speaking, reading, writing, and cultural understanding.
+                  </p>
+                </CardContent>
+              </Card>
 
-      {/* Programme Structure */}
-      <section className="py-16 bg-muted/30">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-display font-bold text-center mb-12">
-              8-Week Programme Structure
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="scroll-fade-in">
                 <CardHeader>
-                  <CardTitle>Weeks 1-6: Core Learning</CardTitle>
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <GraduationCap className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle>Lifetime Access</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Four comprehensive modules covering all essential aspects of the Edo language,
-                    from alphabets and pronunciation to conversation and cultural understanding.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="scroll-fade-in">
-                <CardHeader>
-                  <CardTitle>Week 7: Revision</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Comprehensive review of all modules with practice sessions and assessment preparation.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="scroll-fade-in">
-                <CardHeader>
-                  <CardTitle>Week 8: Assessment</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Final written and oral assessments to demonstrate your learning, followed by certificate presentation.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="scroll-fade-in">
-                <CardHeader>
-                  <CardTitle>Flexible Learning</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Access to class recordings, materials, and workbooks throughout the programme and beyond.
+                    Access all course materials, recordings, and resources forever. Learn at your own pace even after completion.
                   </p>
                 </CardContent>
               </Card>
@@ -338,24 +179,25 @@ export default function Schedule() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary text-primary-foreground">
+      <section className="py-16 bg-background">
         <div className="container">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+          <div className="max-w-3xl mx-auto text-center scroll-fade-in">
+            <h2 className="text-3xl font-display font-bold mb-4">
               Ready to Start Learning?
             </h2>
-            <p className="text-lg mb-8 opacity-90">
-              Join our next cohort and begin your Edo language journey with expert instructors and a supportive community.
+            <p className="text-lg text-muted-foreground mb-8">
+              Choose your level and join the next available class. All courses include live instruction, 
+              course materials, and lifetime access to recordings.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/register">
-                <Button size="lg" variant="secondary" className="text-lg px-8">
+                <Button size="lg" className="text-lg px-8">
                   Enroll Now
                 </Button>
               </Link>
-              <Link href="/courses">
-                <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10">
-                  View Courses
+              <Link href="/pricing">
+                <Button size="lg" variant="outline" className="text-lg px-8">
+                  View Pricing
                 </Button>
               </Link>
             </div>

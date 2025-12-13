@@ -452,3 +452,24 @@
 - [x] Implement schema.org markup for educational content
 - [x] Optimized hero section with primary keywords
 - [x] Added meta keywords: Edo language, learn Edo, Benin language, Nigerian languages, Bini language
+
+## Homepage Content Update (Edo vs Bini Clarification)
+- [x] Remove "& Write Benin Language" from hero section
+- [x] Keep "Learn Edo Language Online: Speak, Read, & Write Edo Language" (Edo is the language, Bini are the people)
+- [x] Maintain SEO optimization as is
+
+## Class Schedule Restructure (Time-Based by Level)
+- [x] Update from cohort-based dual time slots to level-based single time slots:
+  - Beginner: 5pm GMT (suitable for all levels)
+  - Intermediary: 6pm GMT
+  - Proficient: 7pm GMT
+- [x] Show timezone conversions for each time (Nigeria WAT, US CST, Europe CET, UK GMT)
+- [x] Update Schedule page with new time-based structure
+- [x] Update Pricing page to show class times for each level
+- [x] Update FAQ with new schedule information
+- [x] Update enrollment dialog/flow (remove time slot selection - now determined by course level)
+- [x] Update database schema (timeSlot enum expanded to support new values: 5PM_GMT, 6PM_GMT, 7PM_GMT)
+- [ ] Update email templates with new schedule structure (to be done when emails are sent)
+- [x] Update chatbot knowledge base with new schedule
+- [x] Add messaging about pre-recorded videos coming to dashboard
+- [x] Update admin panel to reflect new schedule structure (dashboard shows new times)

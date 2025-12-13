@@ -21,7 +21,7 @@ export const enrollmentRouter = router({
         phone: z.string().min(1),
         whatsappNumber: z.string().optional(),
         courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle"]),
-        timeSlot: z.enum(["11AM_GMT", "11AM_CST"]),
+        timeSlot: z.enum(["11AM_GMT", "11AM_CST", "5PM_GMT", "6PM_GMT", "7PM_GMT"]),
       })
     )
     .mutation(async ({ input, ctx }) => {

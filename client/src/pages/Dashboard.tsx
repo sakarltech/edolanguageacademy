@@ -139,12 +139,16 @@ function WelcomeDialog({ open, onClose }: { open: boolean; onClose: () => void }
               Class Schedule
             </h3>
             <p className="text-sm text-muted-foreground">
-              Classes are held twice weekly with two time slot options:
+              Each level has its own dedicated class time every Saturday:
             </p>
             <div className="text-sm space-y-1">
-              <p>• <strong>11 AM GMT</strong> (UK, Nigeria, Europe)</p>
-              <p>• <strong>11 AM CST</strong> (North America)</p>
+              <p>• <strong>Beginner:</strong> 5:00 PM GMT</p>
+              <p>• <strong>Intermediary:</strong> 6:00 PM GMT</p>
+              <p>• <strong>Proficient:</strong> 7:00 PM GMT</p>
             </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Pre-recorded videos for each module coming soon to your dashboard!
+            </p>
           </div>
         </div>
 
@@ -378,7 +382,6 @@ export default function Dashboard() {
 
   const [enrollDialogOpen, setEnrollDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | null>(null);
-  const [timeSlot, setTimeSlot] = useState<"11AM_GMT" | "11AM_CST">("11AM_GMT");
   const [phone, setPhone] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   
@@ -455,7 +458,7 @@ export default function Dashboard() {
       email: user.email || "",
       phone: phone.trim(),
       whatsappNumber: whatsappNumber.trim() || phone.trim(),
-      timeSlot,
+      timeSlot: selectedCourse === 'beginner' ? '5PM_GMT' : selectedCourse === 'intermediary' ? '6PM_GMT' : '7PM_GMT',
     });
     
     setEnrollDialogOpen(false);
@@ -639,18 +642,25 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Choose your preferred time slot during enrollment. All classes are 60 minutes, twice per week for 8 weeks.
+                  Each level has its own dedicated class time. All classes are 60 minutes, every Saturday for 8 weeks.
                 </p>
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-3 gap-4">
                   <div className="p-4 border rounded-lg">
-                    <p className="font-semibold mb-1">Time Slot 1</p>
-                    <p className="text-sm text-muted-foreground">11:00 AM GMT (UK Time)</p>
+                    <p className="font-semibold mb-1">Beginner</p>
+                    <p className="text-sm text-muted-foreground">5:00 PM GMT</p>
                   </div>
                   <div className="p-4 border rounded-lg">
-                    <p className="font-semibold mb-1">Time Slot 2</p>
-                    <p className="text-sm text-muted-foreground">11:00 AM CST (US Central)</p>
+                    <p className="font-semibold mb-1">Intermediary</p>
+                    <p className="text-sm text-muted-foreground">6:00 PM GMT</p>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <p className="font-semibold mb-1">Proficient</p>
+                    <p className="text-sm text-muted-foreground">7:00 PM GMT</p>
                   </div>
                 </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  See <a href="/schedule" className="text-primary hover:underline">Schedule page</a> for timezone conversions
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -667,33 +677,14 @@ export default function Dashboard() {
             </DialogHeader>
             
             <div className="space-y-6 py-4">
-              {/* Time Slot Selection */}
-              <div className="space-y-3">
-                <Label>Preferred Class Time *</Label>
-                <RadioGroup value={timeSlot} onValueChange={(value) => setTimeSlot(value as "11AM_GMT" | "11AM_CST")}>
-                  <div className="flex items-start space-x-3 p-3 border rounded-lg">
-                    <RadioGroupItem value="11AM_GMT" id="gmt" className="mt-1" />
-                    <div className="flex-1">
-                      <Label htmlFor="gmt" className="font-medium cursor-pointer">
-                        11:00 AM GMT (UK Time)
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Best for learners in UK, Nigeria, and Central Europe
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3 p-3 border rounded-lg">
-                    <RadioGroupItem value="11AM_CST" id="cst" className="mt-1" />
-                    <div className="flex-1">
-                      <Label htmlFor="cst" className="font-medium cursor-pointer">
-                        11:00 AM CST (US Central)
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Best for learners in North America
-                      </p>
-                    </div>
-                  </div>
-                </RadioGroup>
+              {/* Class Time Info */}
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">
+                  Your Class Time: {selectedCourse === 'beginner' ? '5:00 PM GMT' : selectedCourse === 'intermediary' ? '6:00 PM GMT' : '7:00 PM GMT'}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Every Saturday • 60 minutes • See <a href="/schedule" className="text-primary hover:underline">Schedule page</a> for timezone conversions
+                </p>
               </div>
 
               {/* Phone Number */}

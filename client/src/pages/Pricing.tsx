@@ -14,6 +14,7 @@ export default function Pricing() {
       features: [
         "8-week structured programme",
         "60 minute weekly live classes",
+        "Every Saturday at 5:00 PM GMT",
         "Alphabets and basic sounds",
         "Numbers 1-20",
         "Basic greetings and vocabulary",
@@ -30,6 +31,7 @@ export default function Pricing() {
       features: [
         "8-week structured programme",
         "60 minute weekly live classes",
+        "Every Saturday at 6:00 PM GMT",
         "Advanced pronunciations",
         "Numbers 21-50",
         "Sentence formation",
@@ -47,6 +49,7 @@ export default function Pricing() {
       features: [
         "8-week structured programme",
         "60 minute weekly live classes",
+        "Every Saturday at 7:00 PM GMT",
         "Numbers 51-100",
         "Advanced sentence structures",
         "Cultural expressions",
@@ -214,57 +217,60 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Age Groups */}
+      {/* Class Schedule Info */}
       <section className="py-16 bg-background">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-display font-bold mb-4">
-              Age-Specific Classes
+              Level-Based Schedule
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              All pricing applies to each age group. Choose the cohort that best fits your age.
+              Each course level has its own dedicated time slot. All classes are held every Saturday on Zoom.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Kids</CardTitle>
-                  <CardDescription className="text-lg">
-                    Ages 5-12
+                  <CardTitle>Beginner</CardTitle>
+                  <CardDescription className="text-lg font-semibold text-foreground">
+                    5:00 PM GMT
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Fun, interactive lessons designed for young learners
+                    Perfect for absolute beginners starting their Edo language journey
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Teens</CardTitle>
-                  <CardDescription className="text-lg">
-                    Ages 13-17
+                  <CardTitle>Intermediary</CardTitle>
+                  <CardDescription className="text-lg font-semibold text-foreground">
+                    6:00 PM GMT
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Engaging curriculum tailored for teenage learners
+                    For learners building on their foundational knowledge
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Adults</CardTitle>
-                  <CardDescription className="text-lg">
-                    Ages 18+
+                  <CardTitle>Proficient</CardTitle>
+                  <CardDescription className="text-lg font-semibold text-foreground">
+                    7:00 PM GMT
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Comprehensive learning for adult students
+                    Advanced learners working towards fluency
                   </p>
                 </CardContent>
               </Card>
             </div>
+            <p className="text-sm text-muted-foreground mt-6">
+              See the <Link href="/schedule" className="text-primary hover:underline">Schedule page</Link> for timezone conversions
+            </p>
           </div>
         </div>
       </section>

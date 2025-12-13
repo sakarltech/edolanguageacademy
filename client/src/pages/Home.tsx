@@ -83,7 +83,7 @@ export default function Home() {
             <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
               Learn Edo Language Online:
               <br />
-              Speak, Read, & Write Benin Language
+              Speak, Read, & Write Edo Language
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Master the Edo language (Bini) with live online classes taught by native speakers. Reconnect with your Nigerian heritage, preserve Edo culture, and communicate confidently with family and community. Beginner to proficient courses available.

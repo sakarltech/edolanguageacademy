@@ -91,12 +91,13 @@ Achieve fluency and master advanced Edo language skills.
 - Currency: Fees are payable in equivalent local currency
 
 ## Schedule
-All classes are held live on Zoom every Saturday at two time options:
-- Time Slot 1: 11:00 AM GMT (5:00 AM CST)
-- Time Slot 2: 11:00 AM CST (5:00 PM GMT)
-- Duration: 60 minutes for all age groups
-- Students choose ONE time slot during enrollment
-- All age groups (Kids 5-12, Teens 13-17, Adults 18+) attend at the same time
+All classes are held live on Zoom every Saturday. Each course level has its own dedicated time:
+- Beginner: 5:00 PM GMT (12:00 PM EST, 11:00 AM CST, 6:00 PM WAT Nigeria)
+- Intermediary: 6:00 PM GMT (1:00 PM EST, 12:00 PM CST, 7:00 PM WAT Nigeria)
+- Proficient: 7:00 PM GMT (2:00 PM EST, 1:00 PM CST, 8:00 PM WAT Nigeria)
+- Duration: 60 minutes for all levels
+- Your class time is automatically assigned based on your enrolled level
+- Pre-recorded videos for each module will be added to your dashboard soon!
 
 ## Programme Structure
 - 8 weeks per level
@@ -119,12 +120,11 @@ All classes are held live on Zoom every Saturday at two time options:
 1. Create an account at www.edolanguageacademy.com/register
 2. Log in to your dashboard
 3. Select your desired course level from the course catalog
-4. Choose your preferred time slot (11 AM GMT or 11 AM CST)
-5. Provide contact information (phone and optional WhatsApp number)
-6. Complete secure payment via Stripe
-7. Receive confirmation email with WhatsApp group link
-8. Access course materials immediately in your dashboard
-9. Join live class on Saturday at your selected time
+4. Provide contact information (phone and optional WhatsApp number)
+5. Complete secure payment via Stripe
+6. Receive confirmation email with WhatsApp group link
+7. Access course materials immediately in your dashboard
+8. Join live class on Saturday at your level's designated time (Beginner 5pm GMT, Intermediary 6pm GMT, Proficient 7pm GMT)
 
 ## Refund Policy
 - Full refund within the first week if not satisfied
@@ -182,7 +182,7 @@ Q: Can I take all three levels at once?
 A: No, levels must be completed sequentially. However, you can purchase the bundle upfront.
 
 Q: What if I live in a different timezone?
-A: All classes are recorded, so you can learn at your own pace if you can't attend live.
+A: Each level has a fixed time (Beginner 5pm GMT, Intermediary 6pm GMT, Proficient 7pm GMT). Check our Schedule page for your local timezone conversion. All classes are also recorded and available through your dashboard, so you can review or catch up if needed.
 
 Q: How many students per class?
 A: We keep class sizes small for personalized attention.

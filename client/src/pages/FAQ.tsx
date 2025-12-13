@@ -19,7 +19,7 @@ export default function FAQ() {
         },
         {
           q: "What if I live in a different timezone?",
-          a: "We offer two convenient time slots: 11 AM GMT (suitable for UK, Nigeria, Europe) and 11 AM CST (suitable for North America). You only need to attend ONE of these time slots. All classes are also recorded and available through your dashboard, so you can review or catch up if needed.",
+          a: "Each course level has its own fixed time: Beginner at 5:00 PM GMT, Intermediary at 6:00 PM GMT, and Proficient at 7:00 PM GMT. Check our Schedule page for timezone conversions to see what time your class will be in your local timezone. All classes are also recorded and available through your dashboard, so you can review or catch up if needed.",
         },
       ],
     },
@@ -28,23 +28,23 @@ export default function FAQ() {
       questions: [
         {
           q: "When are classes held?",
-          a: "All classes are held live on Zoom every Saturday at two time options: 11 AM GMT or 11 AM CST. You choose the time slot that works best for your timezone during registration. All age groups (Kids, Teens, Adults) attend at the same time.",
+          a: "All classes are held live on Zoom every Saturday. Each level has its own dedicated time: Beginner at 5:00 PM GMT, Intermediary at 6:00 PM GMT, and Proficient at 7:00 PM GMT. See our Schedule page for your local timezone conversion.",
         },
         {
           q: "How long is each class?",
           a: "All classes are 60 minutes long, regardless of age group. This consistent duration ensures focused learning for everyone.",
         },
         {
-          q: "Do I need to attend both time slots?",
-          a: "No! You only need to attend ONE time slot per week. Choose either 11 AM GMT or 11 AM CST based on your timezone convenience. The same content is taught in both sessions.",
+          q: "Will pre-recorded videos be available?",
+          a: "Yes! We're working on adding pre-recorded videos for each module to your dashboard. This will allow you to review content at your own pace in addition to attending the live Saturday classes.",
         },
         {
           q: "What if I miss a class?",
           a: "No problem! All classes are recorded and available through your student dashboard. You can watch the recording anytime to catch up. However, we encourage live attendance for the best interactive learning experience.",
         },
         {
-          q: "When do new cohorts start?",
-          a: "New cohorts start every 10 weeks. The first cohort begins on December 6, 2025, with subsequent cohorts starting regularly. Check our Schedule page for upcoming cohort dates.",
+          q: "When can I start?",
+          a: "You can enroll at any time! Classes run continuously every Saturday, and you'll have access to all course materials immediately upon enrollment. The 8-week program structure allows you to progress through the 4 modules at a steady pace.",
         },
         {
           q: "How many students are in each class?",
@@ -128,7 +128,7 @@ export default function FAQ() {
         },
         {
           q: "What if I don't pass the assessment?",
-          a: "You can retake the same level in the next cohort at 50% of the regular fee. We're here to support your learning journey until you succeed.",
+          a: "You can retake the same level at 50% of the regular fee. We're here to support your learning journey until you succeed. You'll have lifetime access to all materials to help you prepare for reassessment.",
         },
         {
           q: "How do I receive my certificate?",
