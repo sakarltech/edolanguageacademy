@@ -62,6 +62,8 @@ export default function Campaigns() {
   const [showEditorDialog, setShowEditorDialog] = useState(false);
   const [showPreviewDialog, setShowPreviewDialog] = useState(false);
   const [showSendConfirmDialog, setShowSendConfirmDialog] = useState(false);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const [scheduleDateTime, setScheduleDateTime] = useState("");
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [aiGenerating, setAiGenerating] = useState(false);
@@ -256,6 +258,39 @@ export default function Campaigns() {
     );
   };
 
+  const handleScheduleCampaign = () => {
+    if (!selectedCampaign) return;
+    // Save first, then show schedule dialog
+    updateCampaignMutation.mutate(
+      { id: selectedCampaign.id, ...editorData },
+      {
+        onSuccess: () => {
+          setShowScheduleDialog(true);
+        },
+      }
+    );
+  };
+
+  const confirmSchedule = () => {
+    if (!selectedCampaign || !scheduleDateTime) return;
+    
+    updateCampaignMutation.mutate(
+      {
+        id: selectedCampaign.id,
+        status: "scheduled" as any,
+        scheduledAt: new Date(scheduleDateTime).toISOString(),
+      } as any,
+      {
+        onSuccess: () => {
+          toast.success(`Campaign scheduled for ${new Date(scheduleDateTime).toLocaleString()}`);
+          setShowScheduleDialog(false);
+          setShowEditorDialog(false);
+          utils.marketing.getCampaigns.invalidate();
+        },
+      }
+    );
+  };
+
   const openEditor = (campaign: any) => {
     setSelectedCampaign(campaign);
     setEditorData({
@@ -398,6 +433,18 @@ export default function Campaigns() {
                               <Send className="h-4 w-4" />
                               {campaign.sentCount} sent
                             </span>
+                            {(campaign.openedCount ?? 0) > 0 && (
+                              <span className="flex items-center gap-1 text-green-600">
+                                <Eye className="h-4 w-4" />
+                                {campaign.openedCount} opened ({(campaign.sentCount ?? 0) > 0 ? Math.round(((campaign.openedCount ?? 0) / (campaign.sentCount ?? 1)) * 100) : 0}%)
+                              </span>
+                            )}
+                            {(campaign.clickedCount ?? 0) > 0 && (
+                              <span className="flex items-center gap-1 text-blue-600">
+                                <CheckCircle2 className="h-4 w-4" />
+                                {campaign.clickedCount} clicked ({(campaign.sentCount ?? 0) > 0 ? Math.round(((campaign.clickedCount ?? 0) / (campaign.sentCount ?? 1)) * 100) : 0}%)
+                              </span>
+                            )}
                             {(campaign.failedCount ?? 0) > 0 && (
                               <span className="flex items-center gap-1 text-red-500">
                                 <XCircle className="h-4 w-4" />
@@ -761,22 +808,32 @@ export default function Campaigns() {
                   Save & Close
                 </Button>
                 {selectedCampaign?.status === "draft" && (
-                  <Button
-                    onClick={() => handleSendCampaign(false)}
-                    disabled={!editorData.subject || !editorData.bodyHtml || sendCampaignMutation.isPending}
-                  >
-                    {sendCampaignMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send Campaign
-                      </>
-                    )}
-                  </Button>
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleScheduleCampaign()}
+                      disabled={!editorData.subject || !editorData.bodyHtml}
+                    >
+                      <Clock className="h-4 w-4 mr-2" />
+                      Schedule for Later
+                    </Button>
+                    <Button
+                      onClick={() => handleSendCampaign(false)}
+                      disabled={!editorData.subject || !editorData.bodyHtml || sendCampaignMutation.isPending}
+                    >
+                      {sendCampaignMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4 mr-2" />
+                          Send Now
+                        </>
+                      )}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -807,6 +864,43 @@ export default function Campaigns() {
                 }}
               />
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Schedule Dialog */}
+        <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Schedule Campaign</DialogTitle>
+              <DialogDescription>
+                Choose when to send this campaign. It will be sent automatically at the scheduled time.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div>
+                <Label>Schedule Date & Time *</Label>
+                <Input
+                  type="datetime-local"
+                  value={scheduleDateTime}
+                  onChange={(e) => setScheduleDateTime(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Campaign will be sent at the specified time (your local timezone)
+                </p>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowScheduleDialog(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmSchedule}
+                disabled={!scheduleDateTime || updateCampaignMutation.isPending}
+              >
+                {updateCampaignMutation.isPending ? "Scheduling..." : "Schedule Campaign"}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
 

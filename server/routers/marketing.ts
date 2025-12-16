@@ -819,6 +819,20 @@ Important:
 
         for (const contact of batch) {
           try {
+            // Get the send record for tracking
+            const [sendRecord] = await db
+              .select()
+              .from(campaignSends)
+              .where(
+                and(
+                  eq(campaignSends.campaignId, input.campaignId),
+                  eq(campaignSends.contactId, contact.id)
+                )
+              )
+              .limit(1);
+
+            if (!sendRecord) continue;
+
             // Personalize email
             const firstName = contact.firstName || "there";
             const unsubscribeUrl = `${baseUrl}/unsubscribe/${contact.unsubscribeToken}`;
@@ -827,12 +841,25 @@ Important:
               .replace(/\{\{first_name\}\}/g, firstName)
               .replace(/\{\{email\}\}/g, contact.email);
 
+            // Add click tracking to CTA if present
+            if (c.ctaLink) {
+              const trackedCtaUrl = `${baseUrl}/api/track/click/${sendRecord.id}?url=${encodeURIComponent(c.ctaLink)}`;
+              personalizedHtml = personalizedHtml.replace(
+                new RegExp(c.ctaLink.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+                trackedCtaUrl
+              );
+            }
+
+            // Add tracking pixel for open tracking
+            const trackingPixel = `<img src="${baseUrl}/api/track/open/${sendRecord.id}" width="1" height="1" style="display:none" alt="" />`;
+
             // Add unsubscribe link
             personalizedHtml += `
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; font-size: 12px; color: #666;">
                 <p>You're receiving this email because you subscribed to Edo Language Academy updates.</p>
                 <p><a href="${unsubscribeUrl}" style="color: #666;">Unsubscribe</a></p>
               </div>
+              ${trackingPixel}
             `;
 
             const personalizedText = c.bodyText

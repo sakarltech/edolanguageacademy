@@ -553,3 +553,25 @@
 - [x] Make phone field required with format validation
 - [x] Add real-time validation feedback on frontend
 - [x] Update backend to enforce required fields
+
+## Email Campaign Scheduling & Tracking
+- [ ] Update database schema to track email opens and clicks
+- [ ] Add scheduled_for field to campaigns table
+- [ ] Implement cron job to check and send scheduled campaigns
+- [ ] Add tracking pixel to emails for open tracking
+- [ ] Add click tracking wrapper for CTA links
+- [ ] Create public endpoints for tracking opens and clicks
+- [ ] Update campaign UI with date/time picker for scheduling
+- [ ] Display metrics dashboard (sent, opened, clicked, open rate, click rate)
+- [ ] Update campaign status to include "scheduled" state
+
+## Email Campaign Scheduling & Tracking
+- [x] Update database schema to add tracking fields (openedAt, openCount, clickedAt, clickCount)
+- [x] Create scheduled campaign processor script
+- [x] Add tracking pixel to emails for open tracking
+- [x] Add click tracking wrapper for CTA links
+- [x] Create Express routes for tracking endpoints (/api/track/open/:sendId, /api/track/click/:sendId)
+- [x] Update campaign UI to show open rate and click rate metrics
+- [x] Add schedule dialog with date/time picker
+- [x] Add "Schedule for Later" button to campaign editor
+- [x] Update campaign status to support "scheduled"
