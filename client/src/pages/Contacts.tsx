@@ -54,6 +54,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
+  ArrowUpDown,
 } from "lucide-react";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
@@ -66,6 +67,7 @@ export default function Contacts() {
   const [tagFilter, setTagFilter] = useState<string>("all");
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [subscribedFilter, setSubscribedFilter] = useState<"all" | "subscribed" | "unsubscribed">("all");
+  const [sortBy, setSortBy] = useState<"created" | "name_asc" | "name_desc" | "email_asc" | "email_desc">("created");
   const [page, setPage] = useState(1);
   const [selectedContacts, setSelectedContacts] = useState<number[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -92,6 +94,7 @@ export default function Contacts() {
       tag: tagFilter === "all" ? undefined : tagFilter || undefined,
       source: sourceFilter === "all" ? undefined : sourceFilter || undefined,
       subscribed: subscribedFilter,
+      sortBy,
       page,
       limit: 50,
     },
@@ -409,6 +412,21 @@ export default function Contacts() {
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="subscribed">Subscribed</SelectItem>
                   <SelectItem value="unsubscribed">Unsubscribed</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Sort */}
+              <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+                <SelectTrigger className="w-[180px]">
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="created">Newest First</SelectItem>
+                  <SelectItem value="name_asc">Name (A-Z)</SelectItem>
+                  <SelectItem value="name_desc">Name (Z-A)</SelectItem>
+                  <SelectItem value="email_asc">Email (A-Z)</SelectItem>
+                  <SelectItem value="email_desc">Email (Z-A)</SelectItem>
                 </SelectContent>
               </Select>
 

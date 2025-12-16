@@ -544,3 +544,6 @@
 
 ## Bug Fixes
 - [x] Fix Select.Item empty value error in Contacts page when clicking upload
+
+## Contacts Page Enhancements
+- [x] Add alphabetical sorting functionality (by name A-Z, Z-A, by email A-Z, Z-A)

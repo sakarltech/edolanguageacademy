@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { router, adminProcedure, publicProcedure } from "../_core/trpc";
 import { getDb } from "../db";
-import { eq, desc, like, and, inArray, sql } from "drizzle-orm";
+import { eq, desc, asc, like, and, inArray, sql } from "drizzle-orm";
 import {
   marketingContacts,
   emailCampaigns,
@@ -29,6 +29,7 @@ export const marketingRouter = router({
         tag: z.string().optional(),
         source: z.string().optional(),
         subscribed: z.enum(["all", "subscribed", "unsubscribed"]).optional(),
+        sortBy: z.enum(["created", "name_asc", "name_desc", "email_asc", "email_desc"]).optional(),
         page: z.number().default(1),
         limit: z.number().default(50),
       }).optional()
@@ -68,12 +69,33 @@ export const marketingRouter = router({
 
       const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
+      // Determine sort order
+      let orderByClause;
+      switch (input?.sortBy) {
+        case "name_asc":
+          orderByClause = asc(marketingContacts.firstName);
+          break;
+        case "name_desc":
+          orderByClause = desc(marketingContacts.firstName);
+          break;
+        case "email_asc":
+          orderByClause = asc(marketingContacts.email);
+          break;
+        case "email_desc":
+          orderByClause = desc(marketingContacts.email);
+          break;
+        case "created":
+        default:
+          orderByClause = desc(marketingContacts.createdAt);
+          break;
+      }
+
       const [contacts, countResult] = await Promise.all([
         db
           .select()
           .from(marketingContacts)
           .where(whereClause)
-          .orderBy(desc(marketingContacts.createdAt))
+          .orderBy(orderByClause)
           .limit(limit)
           .offset(offset),
         db
