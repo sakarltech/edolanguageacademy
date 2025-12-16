@@ -11,14 +11,17 @@ const stripe = new Stripe(ENV.stripeSecretKey, {
   apiVersion: "2025-10-29.clover",
 });
 
+// Phone validation regex - supports international formats
+const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]{6,}$/;
+
 export const enrollmentRouter = router({
   createCheckoutSession: publicProcedure
     .input(
       z.object({
-        learnerName: z.string().min(1),
+        learnerName: z.string().min(1, "Learner name is required"),
         parentName: z.string().optional(),
-        email: z.string().email(),
-        phone: z.string().min(1),
+        email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
+        phone: z.string().min(1, "Phone number is required").regex(phoneRegex, "Please enter a valid phone number"),
         whatsappNumber: z.string().optional(),
         courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle"]),
         timeSlot: z.enum(["11AM_GMT", "11AM_CST", "5PM_GMT", "6PM_GMT", "7PM_GMT"]),

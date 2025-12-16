@@ -547,3 +547,9 @@
 
 ## Contacts Page Enhancements
 - [x] Add alphabetical sorting functionality (by name A-Z, Z-A, by email A-Z, Z-A)
+
+## Enrollment Registration Validation
+- [x] Make email field required with format validation
+- [x] Make phone field required with format validation
+- [x] Add real-time validation feedback on frontend
+- [x] Update backend to enforce required fields

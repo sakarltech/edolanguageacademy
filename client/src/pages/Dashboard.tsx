@@ -384,6 +384,20 @@ export default function Dashboard() {
   const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | null>(null);
   const [phone, setPhone] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  // Validation functions
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhone = (phoneNumber: string): boolean => {
+    // Supports international formats: +44 123 456 7890, (123) 456-7890, etc.
+    const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]{6,}$/;
+    return phoneRegex.test(phoneNumber.trim());
+  };
   
   // Welcome dialog state for first-time users
   const [showWelcome, setShowWelcome] = useState(false);
@@ -446,8 +460,32 @@ export default function Dashboard() {
   const handleConfirmEnrollment = () => {
     if (!user || !selectedCourse) return;
     
+    // Reset errors
+    setPhoneError("");
+    setEmailError("");
+    
+    let hasError = false;
+    
+    // Validate email
+    if (!user.email || !user.email.trim()) {
+      setEmailError("Email is required");
+      hasError = true;
+    } else if (!validateEmail(user.email)) {
+      setEmailError("Please enter a valid email address");
+      hasError = true;
+    }
+    
+    // Validate phone
     if (!phone.trim()) {
-      toast.error("Please provide a phone number");
+      setPhoneError("Phone number is required");
+      hasError = true;
+    } else if (!validatePhone(phone)) {
+      setPhoneError("Please enter a valid phone number (e.g., +44 123 456 7890)");
+      hasError = true;
+    }
+    
+    if (hasError) {
+      toast.error("Please correct the errors before continuing");
       return;
     }
     
@@ -687,6 +725,25 @@ export default function Dashboard() {
                 </p>
               </div>
 
+              {/* Email Address (from user account) */}
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={user?.email || ""}
+                  disabled
+                  className={emailError ? "border-destructive" : ""}
+                />
+                {emailError ? (
+                  <p className="text-xs text-destructive">{emailError}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    Email from your account. We'll send class updates and materials here.
+                  </p>
+                )}
+              </div>
+
               {/* Phone Number */}
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number *</Label>
@@ -695,12 +752,20 @@ export default function Dashboard() {
                   type="tel"
                   placeholder="+44 123 456 7890"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    if (phoneError) setPhoneError("");
+                  }}
+                  className={phoneError ? "border-destructive" : ""}
                   required
                 />
-                <p className="text-xs text-muted-foreground">
-                  We'll use this to contact you about class updates
-                </p>
+                {phoneError ? (
+                  <p className="text-xs text-destructive">{phoneError}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    We'll use this to contact you about class updates
+                  </p>
+                )}
               </div>
 
               {/* WhatsApp Number */}
