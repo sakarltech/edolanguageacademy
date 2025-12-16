@@ -487,3 +487,9 @@
 - [x] Add bulk delete button with count of selected items
 - [x] Add confirmation dialog for bulk deletion
 - [x] Test bulk delete functionality
+
+## Admin Export Enrollments to CSV Feature
+- [x] Add Export to CSV button in enrollments tab header
+- [x] Implement CSV generation with all enrollment fields
+- [x] Include proper date formatting and data sanitization
+- [x] Trigger automatic download with timestamped filename

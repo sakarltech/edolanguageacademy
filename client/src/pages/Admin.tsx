@@ -18,6 +18,7 @@ import {
   FileText,
   CheckCircle2,
   Trash2,
+  Download,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -139,6 +140,98 @@ export default function Admin() {
   const handleBulkDelete = () => {
     if (selectedEnrollments.length === 0) return;
     bulkDeleteEnrollmentsMutation.mutate({ enrollmentIds: selectedEnrollments });
+  };
+
+  // Export enrollments to CSV
+  const exportToCSV = () => {
+    if (!enrollments || enrollments.length === 0) {
+      toast.error("No enrollments to export");
+      return;
+    }
+
+    // Define CSV headers
+    const headers = [
+      "ID",
+      "Learner Name",
+      "Email",
+      "Phone",
+      "WhatsApp",
+      "Course Level",
+      "Time Slot",
+      "Status",
+      "Parent Name",
+      "Created At",
+      "Updated At"
+    ];
+
+    // Format time slot for display
+    const formatTimeSlot = (slot: string) => {
+      switch (slot) {
+        case "5PM_GMT": return "5:00 PM GMT";
+        case "6PM_GMT": return "6:00 PM GMT";
+        case "7PM_GMT": return "7:00 PM GMT";
+        case "11AM_GMT": return "11:00 AM GMT";
+        case "11AM_CST": return "11:00 AM CST";
+        default: return slot;
+      }
+    };
+
+    // Escape CSV field (handle commas, quotes, newlines)
+    const escapeCSV = (field: any): string => {
+      if (field === null || field === undefined) return "";
+      const str = String(field);
+      if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    // Format date
+    const formatDate = (date: Date | string | null) => {
+      if (!date) return "";
+      return new Date(date).toLocaleString("en-GB", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    };
+
+    // Build CSV rows
+    const rows = enrollments.map(({ enrollment }) => [
+      escapeCSV(enrollment.id),
+      escapeCSV(enrollment.learnerName),
+      escapeCSV(enrollment.email),
+      escapeCSV(enrollment.phone),
+      escapeCSV(enrollment.whatsappNumber),
+      escapeCSV(enrollment.courseLevel.charAt(0).toUpperCase() + enrollment.courseLevel.slice(1)),
+      escapeCSV(formatTimeSlot(enrollment.timeSlot)),
+      escapeCSV(enrollment.status.charAt(0).toUpperCase() + enrollment.status.slice(1)),
+      escapeCSV(enrollment.parentName),
+      escapeCSV(formatDate(enrollment.createdAt)),
+      escapeCSV(formatDate(enrollment.updatedAt))
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const timestamp = new Date().toISOString().split("T")[0];
+    link.href = url;
+    link.download = `edo-academy-enrollments-${timestamp}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success(`Exported ${enrollments.length} enrollment(s) to CSV`);
   };
 
   // Redirect if not admin
@@ -306,6 +399,10 @@ export default function Admin() {
                             Select All ({enrollments.length})
                           </Label>
                         </div>
+                        <Button variant="outline" size="sm" onClick={exportToCSV}>
+                          <Download className="h-4 w-4 mr-2" />
+                          Export CSV
+                        </Button>
                         {selectedEnrollments.length > 0 && (
                           <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
                             <AlertDialogTrigger asChild>
