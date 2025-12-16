@@ -541,3 +541,6 @@
 ### Admin Navigation
 - [x] Add Contacts menu item
 - [x] Add Campaigns menu item
+
+## Bug Fixes
+- [x] Fix Select.Item empty value error in Contacts page when clicking upload

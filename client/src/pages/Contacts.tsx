@@ -63,8 +63,8 @@ import { Link } from "wouter";
 export default function Contacts() {
   const { user, loading, isAuthenticated } = useAuth();
   const [search, setSearch] = useState("");
-  const [tagFilter, setTagFilter] = useState<string>("");
-  const [sourceFilter, setSourceFilter] = useState<string>("");
+  const [tagFilter, setTagFilter] = useState<string>("all");
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [subscribedFilter, setSubscribedFilter] = useState<"all" | "subscribed" | "unsubscribed">("all");
   const [page, setPage] = useState(1);
   const [selectedContacts, setSelectedContacts] = useState<number[]>([]);
@@ -89,8 +89,8 @@ export default function Contacts() {
   const { data: contactsData, isLoading: contactsLoading } = trpc.marketing.getContacts.useQuery(
     {
       search: search || undefined,
-      tag: tagFilter || undefined,
-      source: sourceFilter || undefined,
+      tag: tagFilter === "all" ? undefined : tagFilter || undefined,
+      source: sourceFilter === "all" ? undefined : sourceFilter || undefined,
       subscribed: subscribedFilter,
       page,
       limit: 50,
@@ -378,7 +378,7 @@ export default function Contacts() {
                   <SelectValue placeholder="All Tags" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Tags</SelectItem>
+                  <SelectItem value="all">All Tags</SelectItem>
                   {filters?.tags?.map((tag) => (
                     <SelectItem key={tag} value={tag}>
                       {tag}
@@ -392,7 +392,7 @@ export default function Contacts() {
                   <SelectValue placeholder="All Sources" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Sources</SelectItem>
+                  <SelectItem value="all">All Sources</SelectItem>
                   {filters?.sources?.map((source) => (
                     <SelectItem key={source} value={source}>
                       {source}
