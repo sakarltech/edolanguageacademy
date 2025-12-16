@@ -17,7 +17,19 @@ import {
   Upload,
   FileText,
   CheckCircle2,
+  Trash2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getLoginUrl } from "@/const";
@@ -71,6 +83,18 @@ export default function Admin() {
   const deleteMaterialMutation = trpc.admin.deleteCourseMaterial.useMutation({
     onSuccess: () => {
       toast.success("Material deleted!");
+    },
+  });
+
+  const utils = trpc.useUtils();
+  const deleteEnrollmentMutation = trpc.admin.deleteEnrollment.useMutation({
+    onSuccess: () => {
+      toast.success("Enrollment deleted successfully!");
+      utils.admin.getAllEnrollments.invalidate();
+      utils.admin.getAnalytics.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Failed to delete enrollment: " + error.message);
     },
   });
 
@@ -241,7 +265,10 @@ export default function Admin() {
                                       enrollment.courseLevel.slice(1)}
                                   </Badge>
                                   <Badge variant="outline">
-                                    {enrollment.timeSlot === "11AM_GMT" ? "11 AM GMT" : "11 AM CST"}
+                                    {enrollment.timeSlot === "5PM_GMT" ? "5 PM GMT" : 
+                                     enrollment.timeSlot === "6PM_GMT" ? "6 PM GMT" : 
+                                     enrollment.timeSlot === "7PM_GMT" ? "7 PM GMT" :
+                                     enrollment.timeSlot === "11AM_GMT" ? "11 AM GMT" : "11 AM CST"}
                                   </Badge>
                                   <Badge
                                     variant={
@@ -256,7 +283,7 @@ export default function Admin() {
                                   </Badge>
                                 </div>
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex gap-2 items-center">
                                 <Select
                                   defaultValue={enrollment.status}
                                   onValueChange={(value) =>
@@ -277,6 +304,32 @@ export default function Admin() {
                                     <SelectItem value="cancelled">Cancelled</SelectItem>
                                   </SelectContent>
                                 </Select>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="icon">
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Enrollment</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete the enrollment for <strong>{enrollment.learnerName}</strong>? 
+                                        This will also delete all related progress records and assessment submissions. 
+                                        This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => deleteEnrollmentMutation.mutate({ enrollmentId: enrollment.id })}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </div>
                             </div>
                           </CardContent>

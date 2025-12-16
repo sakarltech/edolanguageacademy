@@ -212,6 +212,29 @@ export const adminRouter = router({
       return { success: true };
     }),
 
+  // Delete enrollment
+  deleteEnrollment: adminProcedure
+    .input(
+      z.object({
+        enrollmentId: z.number(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // First delete related student progress records
+      await db.delete(studentProgress).where(eq(studentProgress.enrollmentId, input.enrollmentId));
+      
+      // Delete related assessment submissions
+      await db.delete(assessmentSubmissions).where(eq(assessmentSubmissions.enrollmentId, input.enrollmentId));
+      
+      // Finally delete the enrollment
+      await db.delete(enrollments).where(eq(enrollments.id, input.enrollmentId));
+
+      return { success: true };
+    }),
+
   // Get all assessment submissions
   getAllAssessments: adminProcedure
     .input(

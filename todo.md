@@ -473,3 +473,9 @@
 - [x] Update chatbot knowledge base with new schedule
 - [x] Add messaging about pre-recorded videos coming to dashboard
 - [x] Update admin panel to reflect new schedule structure (dashboard shows new times)
+
+## Admin Delete Enrollment Feature
+- [x] Add deleteEnrollment procedure to admin router
+- [x] Add delete button to enrollment list in admin dashboard
+- [x] Add confirmation dialog before deletion
+- [x] Test delete functionality
