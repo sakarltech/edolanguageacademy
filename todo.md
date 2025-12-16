@@ -479,3 +479,11 @@
 - [x] Add delete button to enrollment list in admin dashboard
 - [x] Add confirmation dialog before deletion
 - [x] Test delete functionality
+
+## Admin Bulk Delete Enrollments Feature
+- [x] Add bulkDeleteEnrollments procedure to admin router
+- [x] Add checkboxes to each enrollment card for selection
+- [x] Add "Select All" checkbox in header
+- [x] Add bulk delete button with count of selected items
+- [x] Add confirmation dialog for bulk deletion
+- [x] Test bulk delete functionality

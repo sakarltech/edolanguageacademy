@@ -31,6 +31,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { getLoginUrl } from "@/const";
 import { WhatsAppGroupsManager } from "@/components/WhatsAppGroupsManager";
@@ -46,6 +47,10 @@ export default function Admin() {
     type: "pdf",
     fileUrl: "",
   });
+
+  // Bulk delete state
+  const [selectedEnrollments, setSelectedEnrollments] = useState<number[]>([]);
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
 
   const { data: analytics } = trpc.admin.getAnalytics.useQuery(undefined, {
     enabled: isAuthenticated && user?.role === "admin",
@@ -97,6 +102,44 @@ export default function Admin() {
       toast.error("Failed to delete enrollment: " + error.message);
     },
   });
+
+  const bulkDeleteEnrollmentsMutation = trpc.admin.bulkDeleteEnrollments.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Successfully deleted ${data.deletedCount} enrollment(s)!`);
+      setSelectedEnrollments([]);
+      setShowBulkDeleteDialog(false);
+      utils.admin.getAllEnrollments.invalidate();
+      utils.admin.getAnalytics.invalidate();
+    },
+    onError: (error) => {
+      toast.error("Failed to delete enrollments: " + error.message);
+    },
+  });
+
+  // Toggle single enrollment selection
+  const toggleEnrollmentSelection = (enrollmentId: number) => {
+    setSelectedEnrollments(prev => 
+      prev.includes(enrollmentId) 
+        ? prev.filter(id => id !== enrollmentId)
+        : [...prev, enrollmentId]
+    );
+  };
+
+  // Toggle all enrollments selection
+  const toggleSelectAll = () => {
+    if (!enrollments) return;
+    if (selectedEnrollments.length === enrollments.length) {
+      setSelectedEnrollments([]);
+    } else {
+      setSelectedEnrollments(enrollments.map(e => e.enrollment.id));
+    }
+  };
+
+  // Handle bulk delete
+  const handleBulkDelete = () => {
+    if (selectedEnrollments.length === 0) return;
+    bulkDeleteEnrollmentsMutation.mutate({ enrollmentIds: selectedEnrollments });
+  };
 
   // Redirect if not admin
   if (!loading && (!isAuthenticated || user?.role !== "admin")) {
@@ -246,17 +289,70 @@ export default function Admin() {
             <TabsContent value="enrollments" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>All Enrollments</CardTitle>
-                  <CardDescription>Manage student enrollments and status</CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>All Enrollments</CardTitle>
+                      <CardDescription>Manage student enrollments and status</CardDescription>
+                    </div>
+                    {enrollments && enrollments.length > 0 && (
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="select-all"
+                            checked={selectedEnrollments.length === enrollments.length && enrollments.length > 0}
+                            onCheckedChange={toggleSelectAll}
+                          />
+                          <Label htmlFor="select-all" className="text-sm cursor-pointer">
+                            Select All ({enrollments.length})
+                          </Label>
+                        </div>
+                        {selectedEnrollments.length > 0 && (
+                          <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete Selected ({selectedEnrollments.length})
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete {selectedEnrollments.length} Enrollment(s)</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete {selectedEnrollments.length} enrollment(s)? 
+                                  This will also delete all related progress records and assessment submissions. 
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={handleBulkDelete}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  disabled={bulkDeleteEnrollmentsMutation.isPending}
+                                >
+                                  {bulkDeleteEnrollmentsMutation.isPending ? "Deleting..." : "Delete All"}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {enrollments && enrollments.length > 0 ? (
                       enrollments.map(({ enrollment, user }) => (
-                        <Card key={enrollment.id}>
+                        <Card key={enrollment.id} className={selectedEnrollments.includes(enrollment.id) ? "border-primary" : ""}>
                           <CardContent className="pt-6">
                             <div className="flex items-center justify-between">
-                              <div className="space-y-1">
+                              <div className="flex items-center gap-4">
+                                <Checkbox
+                                  checked={selectedEnrollments.includes(enrollment.id)}
+                                  onCheckedChange={() => toggleEnrollmentSelection(enrollment.id)}
+                                />
+                                <div className="space-y-1">
                                 <p className="font-semibold">{enrollment.learnerName}</p>
                                 <p className="text-sm text-muted-foreground">{enrollment.email}</p>
                                 <div className="flex gap-2 mt-2">
@@ -281,6 +377,7 @@ export default function Admin() {
                                   >
                                     {enrollment.status}
                                   </Badge>
+                                </div>
                                 </div>
                               </div>
                               <div className="flex gap-2 items-center">

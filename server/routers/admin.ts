@@ -235,6 +235,31 @@ export const adminRouter = router({
       return { success: true };
     }),
 
+  // Bulk delete enrollments
+  bulkDeleteEnrollments: adminProcedure
+    .input(
+      z.object({
+        enrollmentIds: z.array(z.number()).min(1),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const { inArray } = await import("drizzle-orm");
+      
+      // Delete related student progress records for all selected enrollments
+      await db.delete(studentProgress).where(inArray(studentProgress.enrollmentId, input.enrollmentIds));
+      
+      // Delete related assessment submissions for all selected enrollments
+      await db.delete(assessmentSubmissions).where(inArray(assessmentSubmissions.enrollmentId, input.enrollmentIds));
+      
+      // Finally delete all selected enrollments
+      await db.delete(enrollments).where(inArray(enrollments.id, input.enrollmentIds));
+
+      return { success: true, deletedCount: input.enrollmentIds.length };
+    }),
+
   // Get all assessment submissions
   getAllAssessments: adminProcedure
     .input(
