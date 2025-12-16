@@ -493,3 +493,51 @@
 - [x] Implement CSV generation with all enrollment fields
 - [x] Include proper date formatting and data sanitization
 - [x] Trigger automatic download with timestamped filename
+
+## Bulk Marketing Email Feature (Admin Only)
+
+### Database Schema
+- [x] Create contacts table (email, first_name, last_name, tags, source, consent_status, subscribed, created_at, updated_at)
+- [x] Create campaigns table (name, audience_type, audience_filter, subject, preheader, body_html, body_text, cta_text, cta_link, status, scheduled_at, sent_at, created_at)
+- [x] Create campaign_sends table (campaign_id, contact_id, status, sent_at, error_message)
+- [x] Create suppression_list table (email, reason, created_at)
+
+### Contacts Management
+- [x] CSV import with validation and upsert logic
+- [x] Preview summary (valid/invalid/duplicates)
+- [x] Contacts list view with search and filters
+- [x] Manual add/edit contact
+- [x] Export contacts to CSV
+- [x] Consent and suppression handling
+
+### Campaign Builder
+- [x] Create campaign form (name, audience selection, schedule)
+- [x] AI email generation from brief
+- [x] Generate 3 subject line options
+- [x] WYSIWYG editor with HTML toggle
+- [x] Desktop/mobile preview
+- [x] Personalization tokens ({{first_name}} with fallback)
+- [x] Test send to admin email
+- [x] Final confirmation before bulk send
+
+### Sending Logic
+- [x] Reuse existing email configuration
+- [x] Batch sending (100-200 per batch)
+- [x] Rate limiting/throttling
+- [x] Retry transient failures
+- [x] Log per-recipient send status
+- [x] Safety guard for large sends (>500)
+- [x] Exclude suppressed contacts
+
+### Unsubscribe Flow
+- [x] Unsubscribe link with secure token in emails
+- [x] Unsubscribe page and confirmation
+- [x] Update subscribed flag and suppression list
+
+### Reporting
+- [x] Campaign dashboard (targeted, sent, failed, unsubscribed counts)
+- [x] Campaign status tracking (draft/scheduled/sending/completed)
+
+### Admin Navigation
+- [x] Add Contacts menu item
+- [x] Add Campaigns menu item

@@ -22,6 +22,9 @@ import AdminAnnouncements from "./pages/AdminAnnouncements";
 import AdminAssessments from "./pages/AdminAssessments";
 import Forum from "./pages/Forum";
 import ForumThread from "./pages/ForumThread";
+import Contacts from "./pages/Contacts";
+import Campaigns from "./pages/Campaigns";
+import Unsubscribe from "./pages/Unsubscribe";
 
 function Router() {
   return (
@@ -44,6 +47,9 @@ function Router() {
       <Route path={"/admin/assessments"} component={AdminAssessments} />
       <Route path={"/forum"} component={Forum} />
       <Route path={"/forum/:id"} component={ForumThread} />
+      <Route path={"/admin/contacts"} component={Contacts} />
+      <Route path={"/admin/campaigns"} component={Campaigns} />
+      <Route path={"/unsubscribe/:token"} component={Unsubscribe} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -19,6 +19,8 @@ import {
   CheckCircle2,
   Trash2,
   Download,
+  Mail,
+  UserPlus,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -295,6 +297,18 @@ export default function Admin() {
                   <a href="/admin/announcements">
                     <CheckCircle2 className="h-4 w-4 mr-1" />
                     Manage Announcements
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/admin/contacts">
+                    <UserPlus className="h-4 w-4 mr-1" />
+                    Contacts
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/admin/campaigns">
+                    <Mail className="h-4 w-4 mr-1" />
+                    Email Campaigns
                   </a>
                 </Button>
               </div>

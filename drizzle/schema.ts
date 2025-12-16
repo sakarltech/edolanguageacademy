@@ -199,3 +199,82 @@ export const assessmentSubmissions = mysqlTable("assessmentSubmissions", {
 
 export type AssessmentSubmission = typeof assessmentSubmissions.$inferSelect;
 export type InsertAssessmentSubmission = typeof assessmentSubmissions.$inferInsert;
+
+
+/**
+ * Marketing contacts for bulk email campaigns
+ */
+export const marketingContacts = mysqlTable("marketingContacts", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  firstName: varchar("firstName", { length: 100 }),
+  lastName: varchar("lastName", { length: 100 }),
+  tags: varchar("tags", { length: 500 }), // Comma-separated tags
+  source: varchar("source", { length: 100 }), // Where contact came from (csv_import, manual, website)
+  subscribed: int("subscribed").default(1).notNull(), // 1 = subscribed, 0 = unsubscribed
+  unsubscribeToken: varchar("unsubscribeToken", { length: 64 }), // Secure token for unsubscribe links
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type MarketingContact = typeof marketingContacts.$inferSelect;
+export type InsertMarketingContact = typeof marketingContacts.$inferInsert;
+
+/**
+ * Email campaigns for bulk marketing
+ */
+export const emailCampaigns = mysqlTable("emailCampaigns", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  audienceType: mysqlEnum("audienceType", ["all", "by_tag", "by_source"]).default("all").notNull(),
+  audienceFilter: varchar("audienceFilter", { length: 255 }), // Tag or source value to filter by
+  subject: varchar("subject", { length: 255 }),
+  preheader: varchar("preheader", { length: 255 }),
+  bodyHtml: text("bodyHtml"),
+  bodyText: text("bodyText"),
+  ctaText: varchar("ctaText", { length: 100 }),
+  ctaLink: varchar("ctaLink", { length: 500 }),
+  status: mysqlEnum("status", ["draft", "scheduled", "sending", "completed", "cancelled"]).default("draft").notNull(),
+  scheduledAt: timestamp("scheduledAt"),
+  sentAt: timestamp("sentAt"),
+  targetedCount: int("targetedCount").default(0),
+  sentCount: int("sentCount").default(0),
+  failedCount: int("failedCount").default(0),
+  unsubscribedCount: int("unsubscribedCount").default(0),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+export type InsertEmailCampaign = typeof emailCampaigns.$inferInsert;
+
+/**
+ * Individual email sends for tracking per-recipient status
+ */
+export const campaignSends = mysqlTable("campaignSends", {
+  id: int("id").autoincrement().primaryKey(),
+  campaignId: int("campaignId").notNull(),
+  contactId: int("contactId").notNull(),
+  status: mysqlEnum("status", ["pending", "sent", "failed", "bounced"]).default("pending").notNull(),
+  sentAt: timestamp("sentAt"),
+  errorMessage: text("errorMessage"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type CampaignSend = typeof campaignSends.$inferSelect;
+export type InsertCampaignSend = typeof campaignSends.$inferInsert;
+
+/**
+ * Suppression list for emails that should never be contacted
+ */
+export const suppressionList = mysqlTable("suppressionList", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  reason: mysqlEnum("reason", ["unsubscribed", "hard_bounce", "complaint", "manual"]).notNull(),
+  campaignId: int("campaignId"), // Optional: which campaign caused the suppression
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SuppressionEntry = typeof suppressionList.$inferSelect;
+export type InsertSuppressionEntry = typeof suppressionList.$inferInsert;
