@@ -597,3 +597,7 @@
 - [x] Add template selection option in campaign builder
 - [x] Style with festive colors and holiday imagery
 - [x] Include personalization tokens ({{first_name}})
+
+## Bug Fixes
+- [x] Fix email campaign first name personalization not working properly
+- [x] Add fallback to "Hello there" when first name is missing or empty

@@ -52,7 +52,7 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
           <tr>
             <td style="padding: 40px 30px;">
               <p style="color: #1F2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Dear {{first_name}},
+                Hello {{first_name}},
               </p>
 
               <p style="color: #1F2937; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
@@ -158,7 +158,7 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     bodyText: `
 Season's Greetings from Edo Language Academy!
 
-Òb'okhian {{first_name}},
+Òb'okhian! Hello {{first_name}},
 
 As we celebrate this wonderful season of joy and reflection, we want to extend our warmest wishes to you and your loved ones. May your holidays be filled with happiness, peace, and the rich blessings of our Edo heritage.
 
