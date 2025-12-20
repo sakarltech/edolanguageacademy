@@ -590,3 +590,10 @@
 - [x] Store dismiss state in localStorage to persist across sessions
 - [x] Integrate banner at top of all pages
 - [x] Style with festive colors matching Christmas theme
+
+## Festive Email Template
+- [x] Create pre-designed Christmas/New Year email template
+- [x] Include holiday greetings and 20% discount promotion
+- [x] Add template selection option in campaign builder
+- [x] Style with festive colors and holiday imagery
+- [x] Include personalization tokens ({{first_name}})

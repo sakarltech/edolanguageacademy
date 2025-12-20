@@ -117,14 +117,31 @@ export default function Campaigns() {
       // Open editor for the new campaign
       utils.marketing.getCampaign.fetch({ id: data.campaignId }).then((campaign) => {
         setSelectedCampaign(campaign);
-        setEditorData({
-          subject: campaign.subject || "",
-          preheader: campaign.preheader || "",
-          bodyHtml: campaign.bodyHtml || "",
-          bodyText: campaign.bodyText || "",
-          ctaText: campaign.ctaText || "",
-          ctaLink: campaign.ctaLink || "",
-        });
+        
+        // Check if there's a pending template to apply
+        const pendingTemplate = (window as any).__pendingTemplate;
+        if (pendingTemplate) {
+          setEditorData({
+            subject: pendingTemplate.subject,
+            preheader: pendingTemplate.preheader,
+            bodyHtml: pendingTemplate.bodyHtml,
+            bodyText: pendingTemplate.bodyText,
+            ctaText: pendingTemplate.ctaText,
+            ctaLink: pendingTemplate.ctaLink,
+          });
+          // Clear pending template
+          delete (window as any).__pendingTemplate;
+        } else {
+          setEditorData({
+            subject: campaign.subject || "",
+            preheader: campaign.preheader || "",
+            bodyHtml: campaign.bodyHtml || "",
+            bodyText: campaign.bodyText || "",
+            ctaText: campaign.ctaText || "",
+            ctaLink: campaign.ctaLink || "",
+          });
+        }
+        
         setShowEditorDialog(true);
       });
     },
@@ -515,6 +532,32 @@ export default function Campaigns() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              <div>
+                <Label>Start from Template (Optional)</Label>
+                <Select
+                  onValueChange={(templateId) => {
+                    if (templateId === "blank") return;
+                    // Import and apply template
+                    import("../../../shared/emailTemplates").then(({ EMAIL_TEMPLATES }) => {
+                      const template = EMAIL_TEMPLATES.find(t => t.id === templateId);
+                      if (template) {
+                        setNewCampaign({ ...newCampaign, name: template.name });
+                        toast.success("Template loaded! Complete campaign creation to edit.");
+                        // Store template data to apply after campaign creation
+                        (window as any).__pendingTemplate = template;
+                      }
+                    });
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Start from scratch or choose a template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="blank">✨ Blank Campaign</SelectItem>
+                    <SelectItem value="holiday-2026">🎄 Holiday Greetings & New Year Promotion 2026</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div>
                 <Label>Campaign Name *</Label>
                 <Input
