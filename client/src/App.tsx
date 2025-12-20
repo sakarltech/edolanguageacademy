@@ -25,6 +25,7 @@ import ForumThread from "./pages/ForumThread";
 import Contacts from "./pages/Contacts";
 import Campaigns from "./pages/Campaigns";
 import Unsubscribe from "./pages/Unsubscribe";
+import ChristmasSnowfall from "./components/ChristmasSnowfall";
 
 function Router() {
   return (
@@ -62,6 +63,7 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
+          <ChristmasSnowfall />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

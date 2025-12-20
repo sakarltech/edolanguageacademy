@@ -575,3 +575,10 @@
 - [x] Add schedule dialog with date/time picker
 - [x] Add "Schedule for Later" button to campaign editor
 - [x] Update campaign status to support "scheduled"
+
+## Christmas Seasonal Holiday Feature
+- [x] Create snowflake animation component with festive theme
+- [x] Add date-based activation logic (automatically shows Dec 1 - Jan 1)
+- [x] Integrate into main App layout
+- [x] Ensure animations are subtle and don't distract from content
+- [x] Test automatic activation and deactivation based on date
