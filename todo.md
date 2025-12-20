@@ -601,3 +601,11 @@
 ## Bug Fixes
 - [x] Fix email campaign first name personalization not working properly
 - [x] Add fallback to "Hello there" when first name is missing or empty
+
+## Automated Enrollment Follow-up System
+- [x] Add followUpSentAt field to enrollments table
+- [x] Create follow-up email template for pending enrollments
+- [x] Create automated job to check pending enrollments older than 24 hours
+- [x] Send follow-up email with Efosa chatbot reference and reply option
+- [x] Mark enrollments as follow-up sent to avoid duplicate emails
+- [x] Set up cron job to run follow-up checker every hour

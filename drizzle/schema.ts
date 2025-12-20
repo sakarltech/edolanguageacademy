@@ -57,6 +57,7 @@ export const enrollments = mysqlTable("enrollments", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   paidAt: timestamp("paidAt"),
+  followUpSentAt: timestamp("followUpSentAt"), // Track when follow-up email was sent for pending enrollments
 });
 
 export type Enrollment = typeof enrollments.$inferSelect;
