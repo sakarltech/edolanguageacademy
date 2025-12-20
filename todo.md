@@ -582,3 +582,11 @@
 - [x] Integrate into main App layout
 - [x] Ensure animations are subtle and don't distract from content
 - [x] Test automatic activation and deactivation based on date
+
+## Holiday Discount Banner
+- [x] Create dismissible announcement banner component
+- [x] Display 20% discount promotion with code OLWIQASA
+- [x] Add date-based display logic (Dec 20 - Jan 31)
+- [x] Store dismiss state in localStorage to persist across sessions
+- [x] Integrate banner at top of all pages
+- [x] Style with festive colors matching Christmas theme

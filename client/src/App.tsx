@@ -26,6 +26,7 @@ import Contacts from "./pages/Contacts";
 import Campaigns from "./pages/Campaigns";
 import Unsubscribe from "./pages/Unsubscribe";
 import ChristmasSnowfall from "./components/ChristmasSnowfall";
+import HolidayDiscountBanner from "./components/HolidayDiscountBanner";
 
 function Router() {
   return (
@@ -64,6 +65,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <ChristmasSnowfall />
+          <HolidayDiscountBanner />
           <Router />
         </TooltipProvider>
       </ThemeProvider>
