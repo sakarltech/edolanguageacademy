@@ -24,22 +24,22 @@ export default function PrivateClasses() {
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between py-4">
           <Link href="/">
-            <a className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
               <img src={APP_LOGO} alt={APP_TITLE} className="h-10 w-10" />
               <span className="text-xl font-bold text-[#8B2500]">{APP_TITLE}</span>
-            </a>
+            </div>
           </Link>
           <nav className="flex items-center gap-6">
-            <Link href="/pricing">
-              <a className="text-gray-700 hover:text-[#8B2500] transition-colors">Pricing</a>
+            <Link href="/pricing" className="text-gray-700 hover:text-[#8B2500] transition-colors">
+              Pricing
             </Link>
-            <Link href="/schedule">
-              <a className="text-gray-700 hover:text-[#8B2500] transition-colors">Schedule</a>
+            <Link href="/schedule" className="text-gray-700 hover:text-[#8B2500] transition-colors">
+              Schedule
             </Link>
             {isAuthenticated ? (
-              <Link href="/dashboard">
-                <Button variant="default">Dashboard</Button>
-              </Link>
+              <Button variant="default" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
             ) : (
               <Button asChild variant="default">
                 <a href={getLoginUrl()}>Enroll Now</a>
@@ -65,21 +65,17 @@ export default function PrivateClasses() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {isAuthenticated ? (
-              <Link href="/dashboard">
-                <Button size="lg" className="text-lg px-8">
-                  Book Private Class
-                </Button>
-              </Link>
+              <Button size="lg" className="text-lg px-8" asChild>
+                <Link href="/dashboard">Book Private Class</Link>
+              </Button>
             ) : (
               <Button size="lg" className="text-lg px-8" asChild>
                 <a href={getLoginUrl()}>Get Started</a>
               </Button>
             )}
-            <Link href="/pricing">
-              <Button size="lg" variant="outline" className="text-lg px-8">
-                View All Pricing
-              </Button>
-            </Link>
+            <Button size="lg" variant="outline" className="text-lg px-8" asChild>
+              <Link href="/pricing">View All Pricing</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -124,11 +120,9 @@ export default function PrivateClasses() {
                 </div>
               </div>
               {isAuthenticated ? (
-                <Link href="/dashboard">
-                  <Button size="lg" className="w-full">
-                    Book Now
-                  </Button>
-                </Link>
+                <Button size="lg" className="w-full" asChild>
+                  <Link href="/dashboard">Book Now</Link>
+                </Button>
               ) : (
                 <Button size="lg" className="w-full" asChild>
                   <a href={getLoginUrl()}>Book Now</a>
@@ -356,11 +350,9 @@ export default function PrivateClasses() {
             Join students who are learning Edo on their own terms with personalized instruction.
           </p>
           {isAuthenticated ? (
-            <Link href="/dashboard">
-              <Button size="lg" variant="secondary" className="text-lg px-8">
-                Book Private Class Now
-              </Button>
-            </Link>
+            <Button size="lg" variant="secondary" className="text-lg px-8" asChild>
+              <Link href="/dashboard">Book Private Class Now</Link>
+            </Button>
           ) : (
             <Button size="lg" variant="secondary" className="text-lg px-8" asChild>
               <a href={getLoginUrl()}>Get Started Today</a>

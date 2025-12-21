@@ -633,3 +633,6 @@
 - [x] Add private class section to Pricing page
 - [x] Add /private-classes route to App.tsx
 - [x] Test complete booking flow
+
+## Bug Fixes
+- [x] Fix nested anchor tag error on /private-classes page
