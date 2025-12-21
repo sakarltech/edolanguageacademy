@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
-import { Check, BookOpen, Users, Award } from "lucide-react";
+import { Check, BookOpen, Users, Award, User, Clock } from "lucide-react";
 
 export default function Pricing() {
   const courses = [
@@ -133,6 +133,87 @@ export default function Pricing() {
                 </Card>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Private Classes */}
+      <section className="py-16 bg-background">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-display font-bold mb-4">
+              Private Classes
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Prefer one-on-one instruction? Get personalized lessons tailored to your schedule and goals.
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-[#C17817] shadow-xl">
+              <CardHeader className="text-center pb-8">
+                <div className="w-20 h-20 rounded-full bg-[#8B2500]/10 flex items-center justify-center mx-auto mb-4">
+                  <User className="w-10 h-10 text-[#8B2500]" />
+                </div>
+                <CardTitle className="text-3xl font-display">
+                  Private Class Package
+                </CardTitle>
+                <CardDescription className="text-lg">
+                  Flexible, personalized one-on-one instruction
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center mb-8">
+                  <div className="text-5xl font-bold text-[#8B2500] mb-2">
+                    £49.99
+                  </div>
+                  <p className="text-muted-foreground">
+                    8 one-hour private sessions
+                  </p>
+                </div>
+
+                <div className="bg-muted p-6 rounded-lg mb-8">
+                  <div className="flex items-start gap-3 mb-4">
+                    <Clock className="w-6 h-6 text-[#8B2500] flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-semibold mb-2">Choose Your Schedule</h4>
+                      <ul className="space-y-1 text-sm text-muted-foreground">
+                        <li>• 1 class per week = 8 weeks total</li>
+                        <li>• 2 classes per week = 4 weeks total</li>
+                        <li>• You decide the days and times!</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-background p-6 rounded-lg mb-8 border">
+                  <h4 className="font-semibold mb-4">What's Included:</h4>
+                  <ul className="space-y-3">
+                    {[
+                      "8 one-hour private sessions",
+                      "Flexible scheduling (1x or 2x per week)",
+                      "Personalized curriculum tailored to your goals",
+                      "Individual instructor attention",
+                      "All course materials included",
+                      "Learn at your own pace",
+                      "Perfect for all levels (beginner to proficient)",
+                    ].map((feature, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <Check className="w-5 h-5 text-[#8B2500] mt-0.5 flex-shrink-0" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="text-center">
+                  <Link href="/private-classes">
+                    <Button size="lg" className="w-full md:w-auto">
+                      Learn More About Private Classes
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

@@ -5,7 +5,7 @@ import { getDb } from "../db";
 import { enrollments } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifyOwner } from "../_core/notification";
-import { sendEnrollmentConfirmationEmail } from "../_core/email";
+import { sendEnrollmentConfirmationEmail, sendEmail } from "../_core/email";
 import { whatsappGroups } from "../../drizzle/schema";
 import { and } from "drizzle-orm";
 
@@ -134,27 +134,46 @@ Please add them to the appropriate WhatsApp group within 24 hours.
     .limit(1);
 
   if (enrollment) {
-    // Get WhatsApp group link
-    const [whatsappGroup] = await db
-      .select()
-      .from(whatsappGroups)
-      .where(
-        and(
-          eq(whatsappGroups.courseLevel, enrollment.courseLevel),
-          eq(whatsappGroups.timeSlot, enrollment.timeSlot),
-          eq(whatsappGroups.isActive, 1)
+    // Check if this is a private class enrollment
+    if (enrollment.courseLevel === 'private') {
+      // Send private class confirmation email (different template)
+      const { generatePrivateClassConfirmationEmail } = await import('../templates/privateClassConfirmation');
+      const emailContent = generatePrivateClassConfirmationEmail({
+        learnerName: enrollment.learnerName,
+        email: enrollment.email,
+        phone: enrollment.phone,
+      });
+      
+      await sendEmail({
+        to: enrollment.email,
+        subject: emailContent.subject,
+        html: emailContent.html,
+        text: emailContent.text,
+      });
+    } else {
+      // Regular group class enrollment
+      // Get WhatsApp group link
+      const [whatsappGroup] = await db
+        .select()
+        .from(whatsappGroups)
+        .where(
+          and(
+            eq(whatsappGroups.courseLevel, enrollment.courseLevel),
+            eq(whatsappGroups.timeSlot, enrollment.timeSlot),
+            eq(whatsappGroups.isActive, 1)
+          )
         )
-      )
-      .limit(1);
+        .limit(1);
 
-    // Send enrollment confirmation email
-    await sendEnrollmentConfirmationEmail({
-      to: enrollment.email,
-      learnerName: enrollment.learnerName,
-      courseLevel: enrollment.courseLevel,
-      timeSlot: enrollment.timeSlot,
-      whatsappGroupLink: whatsappGroup?.groupLink || undefined,
-      whatsappGroupName: whatsappGroup?.groupName || undefined,
-    });
+      // Send enrollment confirmation email
+      await sendEnrollmentConfirmationEmail({
+        to: enrollment.email,
+        learnerName: enrollment.learnerName,
+        courseLevel: enrollment.courseLevel,
+        timeSlot: enrollment.timeSlot,
+        whatsappGroupLink: whatsappGroup?.groupLink || undefined,
+        whatsappGroupName: whatsappGroup?.groupName || undefined,
+      });
+    }
   }
 }

@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/Layout";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
-import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, LogOut, Upload, File, X } from "lucide-react";
+import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, User, LogOut, Upload, File, X } from "lucide-react";
 import { toast } from "sonner";
 import { ALL_CURRICULA } from "@shared/curriculum";
 import { getNextCohortStartDate } from "@shared/scheduleUtils";
@@ -381,7 +381,7 @@ export default function Dashboard() {
   });
 
   const [enrollDialogOpen, setEnrollDialogOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | "private" | null>(null);
   const [phone, setPhone] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -452,7 +452,7 @@ export default function Dashboard() {
     },
   });
 
-  const handleOpenEnrollDialog = (courseLevel: "beginner" | "intermediary" | "proficient") => {
+  const handleOpenEnrollDialog = (courseLevel: "beginner" | "intermediary" | "proficient" | "private") => {
     setSelectedCourse(courseLevel);
     setEnrollDialogOpen(true);
   };
@@ -572,6 +572,19 @@ export default function Dashboard() {
           "60-minute live classes",
           "Teaching notes & recordings",
           "Certificate upon completion",
+        ],
+      },
+      {
+        level: "Private Class",
+        courseLevel: "private" as const,
+        icon: User,
+        price: "£49.99",
+        description: "Personalized one-on-one instruction tailored to your schedule, goals, and learning pace. Choose your frequency and timing.",
+        features: [
+          "8 one-hour private sessions",
+          "Flexible schedule (1x or 2x per week)",
+          "Customized curriculum",
+          "Individual instructor attention",
         ],
       },
     ];

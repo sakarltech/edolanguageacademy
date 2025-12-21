@@ -32,6 +32,7 @@ console.log("[Stripe Products] Loaded Price IDs:", {
   intermediary: ENV.stripePriceIntermediary,
   proficient: ENV.stripePriceProficient,
   bundle: ENV.stripePriceBundle,
+  private: ENV.stripePricePrivate,
 });
 
 export const COURSE_PRODUCTS: Record<string, CourseProduct> = {
@@ -62,6 +63,13 @@ export const COURSE_PRODUCTS: Record<string, CourseProduct> = {
     description: "All three levels (Beginner, Intermediary, Proficient) - Save £9.97!",
     price: 65.00,
     stripePriceId: ENV.stripePriceBundle,
+  },
+  private: {
+    id: "private",
+    name: "Private Edo Language Class",
+    description: "8 one-hour private sessions with flexible scheduling (1x or 2x per week) and personalized curriculum",
+    price: 49.99,
+    stripePriceId: ENV.stripePricePrivate,
   },
 };
 

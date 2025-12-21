@@ -25,6 +25,7 @@ import ForumThread from "./pages/ForumThread";
 import Contacts from "./pages/Contacts";
 import Campaigns from "./pages/Campaigns";
 import Unsubscribe from "./pages/Unsubscribe";
+import PrivateClasses from "./pages/PrivateClasses";
 import ChristmasSnowfall from "./components/ChristmasSnowfall";
 import HolidayDiscountBanner from "./components/HolidayDiscountBanner";
 
@@ -37,6 +38,7 @@ function Router() {
       <Route path={"/courses/intermediary"} component={CourseIntermediary} />
       <Route path={"/courses/proficient"} component={CourseProficient} />
       <Route path={"/pricing"} component={Pricing} />
+      <Route path={"/private-classes"} component={PrivateClasses} />
       <Route path={"/schedule"} component={Schedule} />
       <Route path={"/about"} component={About} />
       <Route path={"/faq"} component={FAQ} />

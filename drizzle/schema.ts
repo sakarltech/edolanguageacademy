@@ -43,7 +43,7 @@ export const enrollments = mysqlTable("enrollments", {
   whatsappNumber: varchar("whatsappNumber", { length: 50 }),
   
   // Course details
-  courseLevel: varchar("courseLevel", { length: 50 }).notNull(), // beginner, intermediary, proficient, bundle
+  courseLevel: varchar("courseLevel", { length: 50 }).notNull(), // beginner, intermediary, proficient, bundle, private
   timeSlot: varchar("timeSlot", { length: 20 }).notNull(), // "11AM_GMT" or "11AM_CST"
   
   // Payment information (Stripe IDs only)

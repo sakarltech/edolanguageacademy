@@ -17,6 +17,7 @@ export const ENV = {
   stripePriceIntermediary: "price_1RmcXiH2oBnqcEomeTVJu1JD",
   stripePriceProficient: "price_1RmcbUH2oBnqcEomNA9DUsE8",
   stripePriceBundle: "price_1Sa3rbH2oBnqcEomXYVOLFQQ",
+  stripePricePrivate: "price_1SMqMvH2oBnqcEomDuLxNs6v", // £49.99 for private classes
   // SMTP Email Configuration
   smtpHost: process.env.SMTP_HOST ?? "",
   smtpPort: parseInt(process.env.SMTP_PORT ?? "587", 10),

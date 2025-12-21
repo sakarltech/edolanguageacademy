@@ -23,7 +23,7 @@ export const enrollmentRouter = router({
         email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
         phone: z.string().min(1, "Phone number is required").regex(phoneRegex, "Please enter a valid phone number"),
         whatsappNumber: z.string().optional(),
-        courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle"]),
+        courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle", "private"]),
         timeSlot: z.enum(["11AM_GMT", "11AM_CST", "5PM_GMT", "6PM_GMT", "7PM_GMT"]),
       })
     )

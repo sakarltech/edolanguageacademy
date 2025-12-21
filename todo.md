@@ -609,3 +609,27 @@
 - [x] Send follow-up email with Efosa chatbot reference and reply option
 - [x] Mark enrollments as follow-up sent to avoid duplicate emails
 - [x] Set up cron job to run follow-up checker every hour
+
+## Private Classes Booking System
+- [ ] Add private class pricing to Stripe (per level: beginner, intermediary, proficient)
+- [ ] Create Private Classes information page explaining flexibility and benefits
+- [ ] Add "private" as courseLevel option in enrollment flow
+- [ ] Update enrollment dialog to show private class option
+- [ ] Create confirmation email template with scheduling instructions
+- [ ] Email should request: goals, preferred schedule, frequency (1x or 2x per week), timezone
+- [ ] Update Pricing page to include private classes section
+- [ ] Add FAQ entries about private classes
+- [ ] Update chatbot knowledge base with private class information
+- [ ] Add admin notification when private class is booked
+
+## Private Classes Booking System
+- [x] Add STRIPE_PRICE_PRIVATE to environment configuration
+- [x] Update database schema to support private courseLevel
+- [x] Update COURSE_PRODUCTS to include private class package
+- [x] Create Private Classes information page with benefits and booking flow
+- [x] Add private class option to Dashboard enrollment flow
+- [x] Create confirmation email template with scheduling instructions
+- [x] Update Stripe webhook to send private class confirmation email
+- [x] Add private class section to Pricing page
+- [x] Add /private-classes route to App.tsx
+- [x] Test complete booking flow
