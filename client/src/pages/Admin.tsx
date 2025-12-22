@@ -21,6 +21,7 @@ import {
   Download,
   Mail,
   UserPlus,
+  User,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -309,6 +310,12 @@ export default function Admin() {
                   <a href="/admin/campaigns">
                     <Mail className="h-4 w-4 mr-1" />
                     Email Campaigns
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/admin/private-classes">
+                    <User className="h-4 w-4 mr-1" />
+                    Private Classes
                   </a>
                 </Button>
               </div>

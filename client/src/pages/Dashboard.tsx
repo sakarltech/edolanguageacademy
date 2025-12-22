@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/Layout";
+import PrivateClassDashboard from "@/components/PrivateClassDashboard";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, User, LogOut, Upload, File, X } from "lucide-react";
@@ -814,7 +815,24 @@ export default function Dashboard() {
     );
   }
 
-  // State 2: Has active enrollment - show enrolled course content
+  // State 2: Has active enrollment - check if it's a private class
+  if (activeEnrollment.courseLevel === "private") {
+    return (
+      <Layout>
+        <WelcomeDialog open={showWelcome} onClose={handleCloseWelcome} />
+        <div className="container py-8">
+          <div className="max-w-6xl mx-auto">
+            <PrivateClassDashboard 
+              enrollmentId={activeEnrollment.id} 
+              learnerName={activeEnrollment.learnerName}
+            />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // State 3: Has active enrollment for regular course - show enrolled course content
   const completedModules = progress?.progress?.completedModules?.split(",").filter(Boolean).map(Number) || [];
   const progressPercentage = (completedModules.length / 4) * 100;
   

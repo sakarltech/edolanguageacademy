@@ -285,3 +285,43 @@ export const suppressionList = mysqlTable("suppressionList", {
 
 export type SuppressionEntry = typeof suppressionList.$inferSelect;
 export type InsertSuppressionEntry = typeof suppressionList.$inferInsert;
+
+/**
+ * Private class scheduling information
+ */
+export const privateClassScheduling = mysqlTable("privateClassScheduling", {
+  id: int("id").autoincrement().primaryKey(),
+  enrollmentId: int("enrollmentId").notNull().unique(),
+  schedulingStatus: mysqlEnum("schedulingStatus", ["pending", "coordinating", "scheduled", "completed"]).default("pending").notNull(),
+  studentGoals: text("studentGoals"),
+  preferredSchedule: text("preferredSchedule"),
+  timezone: varchar("timezone", { length: 100 }),
+  frequency: mysqlEnum("frequency", ["1x_per_week", "2x_per_week", "custom"]),
+  coordinationNotes: text("coordinationNotes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PrivateClassScheduling = typeof privateClassScheduling.$inferSelect;
+export type InsertPrivateClassScheduling = typeof privateClassScheduling.$inferInsert;
+
+/**
+ * Individual private class sessions
+ */
+export const privateClassSessions = mysqlTable("privateClassSessions", {
+  id: int("id").autoincrement().primaryKey(),
+  enrollmentId: int("enrollmentId").notNull(),
+  sessionNumber: int("sessionNumber").notNull(), // 1-8
+  scheduledDate: timestamp("scheduledDate"),
+  status: mysqlEnum("status", ["scheduled", "completed", "cancelled", "rescheduled"]).default("scheduled").notNull(),
+  duration: int("duration").default(60), // minutes
+  instructorNotes: text("instructorNotes"),
+  materialsUrl: text("materialsUrl"),
+  recordingUrl: text("recordingUrl"),
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type PrivateClassSession = typeof privateClassSessions.$inferSelect;
+export type InsertPrivateClassSession = typeof privateClassSessions.$inferInsert;

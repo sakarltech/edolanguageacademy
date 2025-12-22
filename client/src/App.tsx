@@ -26,6 +26,7 @@ import Contacts from "./pages/Contacts";
 import Campaigns from "./pages/Campaigns";
 import Unsubscribe from "./pages/Unsubscribe";
 import PrivateClasses from "./pages/PrivateClasses";
+import PrivateClassAdmin from "./pages/PrivateClassAdmin";
 import ChristmasSnowfall from "./components/ChristmasSnowfall";
 import HolidayDiscountBanner from "./components/HolidayDiscountBanner";
 
@@ -53,6 +54,7 @@ function Router() {
       <Route path={"/forum/:id"} component={ForumThread} />
       <Route path={"/admin/contacts"} component={Contacts} />
       <Route path={"/admin/campaigns"} component={Campaigns} />
+      <Route path={"/admin/private-classes"} component={PrivateClassAdmin} />
       <Route path={"/unsubscribe/:token"} component={Unsubscribe} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
