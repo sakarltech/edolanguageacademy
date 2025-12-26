@@ -646,3 +646,11 @@
 - [x] Update main Dashboard to conditionally render private vs regular dashboard
 - [x] Add admin interface for scheduling and managing private class sessions
 - [x] Add session completion tracking and certificate eligibility
+
+## Boxing Day Sales Promotion
+- [x] Create countdown timer component for expiration tracking
+- [x] Add Boxing Day sales banner with countdown timer (expires Dec 31, 2025)
+- [x] Display 40% total discount messaging (20% OLWIQASA + 20% BOXSALES25)
+- [x] Create Boxing Day email template for Christmas campaign
+- [x] Include both discount codes in email (OLWIQASA and BOXSALES25)
+- [x] Test banner display and countdown timer functionality

@@ -554,6 +554,7 @@ export default function Campaigns() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="blank">✨ Blank Campaign</SelectItem>
+                    <SelectItem value="boxing-day-2025">🎁 Boxing Day MEGA SALE - 40% OFF (Stack Both Codes)</SelectItem>
                     <SelectItem value="holiday-2026">🎄 Holiday Greetings & New Year Promotion 2026</SelectItem>
                   </SelectContent>
                 </Select>
