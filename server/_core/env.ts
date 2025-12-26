@@ -7,11 +7,10 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
-  // LIVE MODE Stripe configuration for production
-  // Using live API keys and webhook secret for www.edolanguageacademy.com
-  stripeSecretKey: "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",
-  stripePublishableKey: "pk_live_51RMpYEH2oBnqcEom0vyUVImAHukimeVRc3aF62hlYLqA6tKaTjCtDaRzPJcnnt0lDgYIpFQT9TEHiz24K0xoD7SB00VragvuoE",
-  stripeWebhookSecret: "whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm", // Live mode webhook secret for custom domain
+  // Stripe configuration - reads from environment variables (Management UI Secrets)
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
+  stripePublishableKey: process.env.VITE_STRIPE_PUBLISHABLE_KEY ?? "",
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
   // Live mode price IDs for production courses
   stripePriceBeginner: "price_1RmcT8H2oBnqcEomY7HNW8jJ",
   stripePriceIntermediary: "price_1RmcXiH2oBnqcEomeTVJu1JD",

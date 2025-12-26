@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
-import HolidayDiscountBanner from "@/components/HolidayDiscountBanner";
 import BoxingDayBanner from "@/components/BoxingDayBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,7 +64,6 @@ export default function Home() {
   return (
     <>
       <AnnouncementBanner />
-      <HolidayDiscountBanner />
       <BoxingDayBanner />
       <Layout>
       {/* Hero Section */}
