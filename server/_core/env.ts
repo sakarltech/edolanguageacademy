@@ -9,14 +9,14 @@ export const ENV = {
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   // LIVE MODE Stripe configuration for production
   // Using live API keys and webhook secret for www.edolanguageacademy.com
-  stripeSecretKey: "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",
-  stripePublishableKey: "pk_live_51RMpYEH2oBnqcEom0vyUVImAHukimeVRc3aF62hlYLqA6tKaTjCtDaRzPJcnnt0lDgYIpFQT9TEHiz24K0xoD7SB00VragvuoE",
-  stripeWebhookSecret: "whsec_dsI6krK1ohnpkMhWFVjU2ayk7VsMcPWm", // Live mode webhook secret for custom domain
+  stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+  stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET, // Live mode webhook secret for custom domain
   // Live mode price IDs for production courses
-  stripePriceBeginner: "price_1RmcT8H2oBnqcEomY7HNW8jJ",
-  stripePriceIntermediary: "price_1RmcXiH2oBnqcEomeTVJu1JD",
-  stripePriceProficient: "price_1RmcbUH2oBnqcEomNA9DUsE8",
-  stripePriceBundle: "price_1Sa3rbH2oBnqcEomXYVOLFQQ",
+  stripePriceBeginner: process.env.STRIPE_PRICE_BEGINNER,
+  stripePriceIntermediary: process.env.STRIPE_PRICE_INTERMEDIARY,
+  stripePriceProficient: process.env.STRIPE_PRICE_PROFICIENT,
+  stripePriceBundle: process.env.STRIPE_PRICE_BUNDLE,
   // SMTP Email Configuration
   smtpHost: process.env.SMTP_HOST ?? "",
   smtpPort: parseInt(process.env.SMTP_PORT ?? "587", 10),
