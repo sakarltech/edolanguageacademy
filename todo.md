@@ -654,3 +654,100 @@
 - [x] Create Boxing Day email template for Christmas campaign
 - [x] Include both discount codes in email (OLWIQASA and BOXSALES25)
 - [x] Test banner display and countdown timer functionality
+
+## Automatic Discount Implementation (Stripe Single Coupon Limitation)
+- [x] Update Stripe checkout to automatically apply 20% OLWIQASA discount
+- [x] Allow users to enter BOXSALES25 for additional 20% off (total 40%)
+- [x] Update Boxing Day banner messaging to show single code entry
+- [x] Update Boxing Day email template to reflect single code workflow
+- [x] Test checkout flow with automatic discount + BOXSALES25 code
+
+## Stripe Checkout Error Fix & Banner Conflict
+- [x] Fix Stripe error: remove allow_promotion_codes when using discounts parameter
+- [x] Hide New Year banner during Boxing Day period (Dec 26-31)
+- [x] Show New Year banner again after Boxing Day period ends
+- [x] Test checkout flow with auto-applied discount only
+
+## Stripe Coupon ID Fix
+- [x] Change discount from promotion code (OLWIQASA) to coupon ID (EARLYBIRD0108)
+- [x] Test checkout with correct coupon ID
+
+## Use Actual Stripe Coupon ID
+- [x] Update from EARLYBIRD0108 (name) to q2wFKZQ1 (actual ID)
+- [x] Test checkout with correct coupon ID
+
+## Date-Based Coupon Switching
+- [x] Implement logic to use 40% coupon (3ZrAd7nP) during Boxing Day period (Dec 26-31)
+- [x] Revert to 20% coupon (q2wFKZQ1) after Dec 31st
+- [x] Update banner messaging to match active discount percentage
+- [x] Test coupon switching at date boundaries
+
+## Boxing Day Email Template with Countdown
+- [x] Create urgent Boxing Day email template with countdown timer
+- [x] Include 40% auto-applied discount messaging
+- [x] Add clear CTAs for all course levels
+- [x] Add template to Campaigns page
+
+## Rebrand to End of Year Sales
+- [x] Update BoxingDayBanner component to EndOfYearBanner
+- [x] Change all "Boxing Day" references to "End of Year"
+- [x] Update email template name and content
+- [x] Update banner messaging and styling
+- [x] Test all changes across website
+
+## Email Template Display Issue
+- [x] Investigate why End of Year template not showing in Campaigns dashboard
+- [x] Fix template loading in Campaigns page
+- [x] Verify template appears correctly
+
+## Last 24 Hours Urgency Email Template
+- [x] Create Last 24 Hours email template with extreme urgency messaging
+- [x] Include countdown to midnight December 31st
+- [x] Emphasize final chance for 40% discount
+- [x] Add template to Campaigns dropdown
+
+## New Year Email Template with Grace Period
+- [x] Create New Year, New Skills email template
+- [x] Announce ongoing 20% discount (OLWIQASA)
+- [x] Offer 1-week grace period for missed 40% discount via email/WhatsApp
+- [x] Add contact information for grace period requests
+- [x] Add template to Campaigns dropdown
+
+## Bundle Purchase User Journey & Dashboard
+- [x] Add Complete Bundle tile to landing dashboard with payment button
+- [x] Ensure bundle tile shows savings and all 3 levels included
+- [x] Create BundleDashboard component for bundle purchasers
+- [x] Show unified progress tracker across all 3 levels (Beginner → Intermediary → Proficient)
+- [x] Display current level, completed levels, and upcoming levels
+- [x] Add "Continue Learning" button for active level
+- [x] Show completion percentage and estimated time remaining
+- [x] Unlock next level automatically when previous is completed
+- [x] Update Dashboard routing to detect bundle enrollment and show BundleDashboard
+- [x] Test complete bundle purchase flow from landing to specialized dashboard
+
+## Bundle Dashboard Backend Integration
+- [ ] Create tRPC procedure to fetch bundle progress across all 3 levels
+- [ ] Query database for progress records for beginner, intermediary, and proficient levels
+- [ ] Calculate completion percentage for each level (completed modules / 4)
+- [ ] Determine current active level based on progress (first incomplete level)
+- [ ] Implement level unlocking logic (level unlocks when previous level is 100% complete)
+- [ ] Update BundleDashboard component to fetch real data via tRPC
+- [ ] Replace hardcoded progress with live database data
+- [ ] Test bundle progress tracking with actual student enrollments
+
+## Phone Number Validation & OTP Verification System
+- [x] Add country code dropdown with flag icons (separate from phone number field)
+- [x] Implement real-time phone number validation based on country-specific length
+- [x] Create OTP verification database schema (store OTP codes, expiry, verification status)
+- [x] Build backend API for sending OTP via SMS
+- [x] Build backend API for verifying OTP code
+- [x] Integrate SMS service (Twilio or similar) for OTP delivery
+- [x] Update enrollment form UI with country code selector and phone validation
+- [x] Add OTP verification step before payment (modal or inline)
+- [x] Auto-populate WhatsApp number field with verified phone number
+- [x] Lock WhatsApp number field (make it read-only after verification)
+- [x] Block Stripe checkout until phone number is verified
+- [x] Add visual indicators for verified phone numbers (checkmark icon)
+- [x] Implement resend OTP functionality with rate limiting
+- [x] Add error handling for invalid OTP attempts
+- [x] Test complete phone verification flow before payment

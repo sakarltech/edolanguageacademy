@@ -1,0 +1,1 @@
+ALTER TABLE `studentProgress` ADD `courseLevel` varchar(50);

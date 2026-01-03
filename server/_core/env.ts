@@ -7,16 +7,16 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
-  // Stripe configuration - reads from environment variables (Management UI Secrets)
+  // Stripe configuration
   stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
   stripePublishableKey: process.env.VITE_STRIPE_PUBLISHABLE_KEY ?? "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
-  // Live mode price IDs for production courses
-  stripePriceBeginner: "price_1RmcT8H2oBnqcEomY7HNW8jJ",
-  stripePriceIntermediary: "price_1RmcXiH2oBnqcEomeTVJu1JD",
-  stripePriceProficient: "price_1RmcbUH2oBnqcEomNA9DUsE8",
-  stripePriceBundle: "price_1Sa3rbH2oBnqcEomXYVOLFQQ",
-  stripePricePrivate: "price_1SMqMvH2oBnqcEomDuLxNs6v", // £49.99 for private classes
+  // Stripe price IDs
+  stripePriceBeginner: process.env.STRIPE_PRICE_BEGINNER ?? "",
+  stripePriceIntermediary: process.env.STRIPE_PRICE_INTERMEDIARY ?? "",
+  stripePriceProficient: process.env.STRIPE_PRICE_PROFICIENT ?? "",
+  stripePriceBundle: process.env.STRIPE_PRICE_BUNDLE ?? "",
+  stripePricePrivate: process.env.STRIPE_PRICE_PRIVATE ?? "",
   // SMTP Email Configuration
   smtpHost: process.env.SMTP_HOST ?? "",
   smtpPort: parseInt(process.env.SMTP_PORT ?? "587", 10),
@@ -24,4 +24,8 @@ export const ENV = {
   smtpPassword: process.env.SMTP_PASSWORD ?? "",
   smtpFromEmail: process.env.SMTP_FROM_EMAIL ?? "",
   smtpFromName: process.env.SMTP_FROM_NAME ?? "Edo Language Academy",
+  // Twilio SMS Configuration for OTP verification
+  twilioAccountSid: process.env.TWILIO_ACCOUNT_SID ?? "",
+  twilioAuthToken: process.env.TWILIO_AUTH_TOKEN ?? "",
+  twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER ?? "", // Format: +1234567890
 };

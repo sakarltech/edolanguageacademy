@@ -39,7 +39,10 @@ export const enrollments = mysqlTable("enrollments", {
   learnerName: varchar("learnerName", { length: 255 }).notNull(),
   parentName: varchar("parentName", { length: 255 }),
   email: varchar("email", { length: 320 }).notNull(),
+  countryCode: varchar("countryCode", { length: 10 }).notNull(), // e.g., "+234", "+44", "+1"
   phone: varchar("phone", { length: 50 }).notNull(),
+  phoneVerified: int("phoneVerified").default(0).notNull(), // 1 = verified, 0 = not verified
+  phoneVerifiedAt: timestamp("phoneVerifiedAt"),
   whatsappNumber: varchar("whatsappNumber", { length: 50 }),
   
   // Course details
@@ -90,6 +93,7 @@ export const studentProgress = mysqlTable("studentProgress", {
   id: int("id").autoincrement().primaryKey(),
   enrollmentId: int("enrollmentId").notNull(),
   userId: int("userId").notNull(),
+  courseLevel: varchar("courseLevel", { length: 50 }), // For bundle enrollments: beginner, intermediary, or proficient
   currentModule: int("currentModule").default(1).notNull(), // 1-4
   completedModules: varchar("completedModules", { length: 255 }), // Comma-separated: "1,2,3,4"
   currentWeek: int("currentWeek").default(1).notNull(),
@@ -285,6 +289,25 @@ export const suppressionList = mysqlTable("suppressionList", {
 
 export type SuppressionEntry = typeof suppressionList.$inferSelect;
 export type InsertSuppressionEntry = typeof suppressionList.$inferInsert;
+
+/**
+ * OTP verification for phone numbers during enrollment
+ */
+export const otpVerifications = mysqlTable("otpVerifications", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  countryCode: varchar("countryCode", { length: 10 }).notNull(),
+  phoneNumber: varchar("phoneNumber", { length: 50 }).notNull(),
+  otpCode: varchar("otpCode", { length: 10 }).notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  verified: int("verified").default(0).notNull(), // 1 = verified, 0 = not verified
+  verifiedAt: timestamp("verifiedAt"),
+  attempts: int("attempts").default(0).notNull(), // Track failed verification attempts
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type OtpVerification = typeof otpVerifications.$inferSelect;
+export type InsertOtpVerification = typeof otpVerifications.$inferInsert;
 
 /**
  * Private class scheduling information

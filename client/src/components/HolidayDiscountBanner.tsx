@@ -21,17 +21,21 @@ export default function HolidayDiscountBanner() {
   const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    // Check if we're in the promotion period (Dec 20 - Jan 31)
+    // Check if we're in the promotion period (Dec 20 - Jan 31, excluding Boxing Day period)
     const checkPromoPeriod = () => {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth(); // 0-11
       const day = now.getDate();
 
-      // Active from December 20th to January 31st
+      // Hide during Boxing Day period (Dec 26-31) when Boxing Day banner is active
+      const isBoxingDayPeriod = month === 11 && day >= 26 && day <= 31;
+
+      // Active from December 20th to January 31st, but NOT during Boxing Day period
       const isInPromoPeriod =
-        (month === 11 && day >= 20) || // December 20-31
-        (month === 0 && day <= 31); // January 1-31
+        ((month === 11 && day >= 20 && day < 26) || // December 20-25
+        (month === 0 && day <= 31)) && // January 1-31
+        !isBoxingDayPeriod;
 
       setIsActive(isInPromoPeriod);
     };

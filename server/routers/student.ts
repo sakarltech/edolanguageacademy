@@ -6,6 +6,109 @@ import { enrollments, studentProgress, courseMaterials } from "../../drizzle/sch
 import { storagePut } from "../storage";
 
 export const studentRouter = router({
+  // Get bundle progress across all 3 levels
+  getBundleProgress: protectedProcedure
+    .input(z.object({ enrollmentId: z.number() }))
+    .query(async ({ input, ctx }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Verify enrollment belongs to user and is a bundle
+      const enrollment = await db
+        .select()
+        .from(enrollments)
+        .where(
+          and(
+            eq(enrollments.id, input.enrollmentId),
+            eq(enrollments.userId, ctx.user.id),
+            eq(enrollments.courseLevel, "bundle")
+          )
+        )
+        .limit(1);
+
+      if (enrollment.length === 0) {
+        throw new Error("Bundle enrollment not found");
+      }
+
+      // Get or create progress records for all 3 levels
+      const levels = ["beginner", "intermediary", "proficient"] as const;
+      const progressData = [];
+
+      for (const level of levels) {
+        // Check if progress record exists for this level using courseLevel field
+        let progress = await db
+          .select()
+          .from(studentProgress)
+          .where(
+            and(
+              eq(studentProgress.enrollmentId, input.enrollmentId),
+              eq(studentProgress.userId, ctx.user.id),
+              eq(studentProgress.courseLevel, level)
+            )
+          )
+          .limit(1);
+
+        if (progress.length === 0) {
+          // Create initial progress record for this level
+          await db.insert(studentProgress).values({
+            enrollmentId: input.enrollmentId,
+            userId: ctx.user.id,
+            courseLevel: level,
+            currentModule: 1,
+            completedModules: "",
+            currentWeek: 1,
+            completedWeeks: "",
+            attendanceCount: 0,
+          });
+
+          progressData.push({
+            level,
+            currentModule: 1,
+            completedModules: [],
+            completionPercentage: 0,
+            isUnlocked: level === "beginner", // Only beginner is unlocked initially
+          });
+        } else {
+          const levelProgress = progress[0];
+          const completedModules = levelProgress.completedModules
+            ? levelProgress.completedModules.split(",").map(Number)
+            : [];
+          const completionPercentage = (completedModules.length / 4) * 100;
+
+          progressData.push({
+            level,
+            currentModule: levelProgress.currentModule,
+            completedModules,
+            completionPercentage,
+            isUnlocked: true, // Will determine this based on previous level completion
+          });
+        }
+      }
+
+      // Determine which levels are unlocked
+      // Beginner is always unlocked
+      progressData[0].isUnlocked = true;
+      // Intermediary unlocks when beginner is 100% complete
+      progressData[1].isUnlocked = progressData[0].completionPercentage === 100;
+      // Proficient unlocks when intermediary is 100% complete
+      progressData[2].isUnlocked = progressData[1].completionPercentage === 100;
+
+      // Determine current active level (first incomplete level)
+      let currentLevel = "beginner" as "beginner" | "intermediary" | "proficient";
+      if (progressData[0].completionPercentage === 100) {
+        currentLevel = "intermediary";
+      }
+      if (progressData[1].completionPercentage === 100) {
+        currentLevel = "proficient";
+      }
+
+      return {
+        enrollment: enrollment[0],
+        levels: progressData,
+        currentLevel,
+      };
+    }),
+
   // Get student's enrollments
   getMyEnrollments: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
@@ -99,6 +202,7 @@ export const studentRouter = router({
       z.object({
         enrollmentId: z.number(),
         moduleNumber: z.number().min(1).max(4),
+        courseLevel: z.enum(["beginner", "intermediary", "proficient"]).optional(), // For bundle enrollments
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -121,11 +225,20 @@ export const studentRouter = router({
         throw new Error("Enrollment not found");
       }
 
+     
       // Get current progress
+      // For bundle enrollments, we need to specify the courseLevel
+      const progressWhere = input.courseLevel
+        ? and(
+            eq(studentProgress.enrollmentId, input.enrollmentId),
+            eq(studentProgress.courseLevel, input.courseLevel)
+          )
+        : eq(studentProgress.enrollmentId, input.enrollmentId);
+
       const progress = await db
         .select()
         .from(studentProgress)
-        .where(eq(studentProgress.enrollmentId, input.enrollmentId))
+        .where(progressWhere)
         .limit(1);
 
       if (progress.length === 0) {

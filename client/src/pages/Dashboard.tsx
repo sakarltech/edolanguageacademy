@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Layout from "@/components/Layout";
 import PrivateClassDashboard from "@/components/PrivateClassDashboard";
+import BundleDashboard from "@/components/BundleDashboard";
+import PhoneVerification from "@/components/PhoneVerification";
 import { trpc } from "@/lib/trpc";
 import { getLoginUrl } from "@/const";
 import { BookOpen, Video, FileText, Award, CheckCircle2, Circle, Calendar, Clock, Users, User, LogOut, Upload, File, X } from "lucide-react";
@@ -382,8 +384,10 @@ export default function Dashboard() {
   });
 
   const [enrollDialogOpen, setEnrollDialogOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | "private" | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<"beginner" | "intermediary" | "proficient" | "bundle" | "private" | null>(null);
+  const [countryCode, setCountryCode] = useState("+234"); // Default to Nigeria
   const [phone, setPhone] = useState("");
+  const [phoneVerified, setPhoneVerified] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -453,7 +457,7 @@ export default function Dashboard() {
     },
   });
 
-  const handleOpenEnrollDialog = (courseLevel: "beginner" | "intermediary" | "proficient" | "private") => {
+  const handleOpenEnrollDialog = (courseLevel: "beginner" | "intermediary" | "proficient" | "bundle" | "private") => {
     setSelectedCourse(courseLevel);
     setEnrollDialogOpen(true);
   };
@@ -480,8 +484,14 @@ export default function Dashboard() {
     if (!phone.trim()) {
       setPhoneError("Phone number is required");
       hasError = true;
-    } else if (!validatePhone(phone)) {
-      setPhoneError("Please enter a valid phone number (e.g., +44 123 456 7890)");
+    } else if (phone.trim().length < 8) {
+      setPhoneError("Please enter a valid phone number");
+      hasError = true;
+    }
+    
+    // Check phone verification
+    if (!phoneVerified) {
+      setPhoneError("Please verify your phone number before proceeding");
       hasError = true;
     }
     
@@ -495,8 +505,10 @@ export default function Dashboard() {
       learnerName: user.name || "",
       parentName: "",
       email: user.email || "",
+      countryCode,
       phone: phone.trim(),
-      whatsappNumber: whatsappNumber.trim() || phone.trim(),
+      phoneVerified: true,
+      whatsappNumber: whatsappNumber.trim() || `${countryCode}${phone.trim()}`,
       timeSlot: selectedCourse === 'beginner' ? '5PM_GMT' : selectedCourse === 'intermediary' ? '6PM_GMT' : '7PM_GMT',
     });
     
@@ -573,6 +585,19 @@ export default function Dashboard() {
           "60-minute live classes",
           "Teaching notes & recordings",
           "Certificate upon completion",
+        ],
+      },
+      {
+        level: "Complete Bundle",
+        courseLevel: "bundle" as const,
+        icon: Award,
+        price: "£65.00",
+        description: "Get all three levels (Beginner, Intermediary, Proficient) and save £9.97! Complete your journey from basics to fluency.",
+        features: [
+          "All 3 levels included",
+          "12 modules over 24 weeks",
+          "Save £9.97 vs buying separately",
+          "3 certificates upon completion",
         ],
       },
       {
@@ -729,15 +754,35 @@ export default function Dashboard() {
             </DialogHeader>
             
             <div className="space-y-6 py-4">
-              {/* Class Time Info */}
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium mb-1">
-                  Your Class Time: {selectedCourse === 'beginner' ? '5:00 PM GMT' : selectedCourse === 'intermediary' ? '6:00 PM GMT' : '7:00 PM GMT'}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Every Saturday • 60 minutes • See <a href="/schedule" className="text-primary hover:underline">Schedule page</a> for timezone conversions
-                </p>
-              </div>
+              {/* Class Time Info or Bundle Info */}
+              {selectedCourse === 'bundle' ? (
+                <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                  <p className="text-sm font-medium mb-1">
+                    Complete Bundle - All 3 Levels
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    You'll attend all three class times: Beginner (5 PM), Intermediary (6 PM), and Proficient (7 PM) GMT • Every Saturday
+                  </p>
+                </div>
+              ) : selectedCourse === 'private' ? (
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium mb-1">
+                    Private Class - Flexible Schedule
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    We'll contact you after payment to schedule your 8 one-hour sessions at times that work for you.
+                  </p>
+                </div>
+              ) : (
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm font-medium mb-1">
+                    Your Class Time: {selectedCourse === 'beginner' ? '5:00 PM GMT' : selectedCourse === 'intermediary' ? '6:00 PM GMT' : '7:00 PM GMT'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Every Saturday • 60 minutes • See <a href="/schedule" className="text-primary hover:underline">Schedule page</a> for timezone conversions
+                  </p>
+                </div>
+              )}
 
               {/* Email Address (from user account) */}
               <div className="space-y-2">
@@ -758,42 +803,47 @@ export default function Dashboard() {
                 )}
               </div>
 
-              {/* Phone Number */}
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number *</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+44 123 456 7890"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    if (phoneError) setPhoneError("");
-                  }}
-                  className={phoneError ? "border-destructive" : ""}
-                  required
-                />
-                {phoneError ? (
-                  <p className="text-xs text-destructive">{phoneError}</p>
-                ) : (
-                  <p className="text-xs text-muted-foreground">
-                    We'll use this to contact you about class updates
-                  </p>
-                )}
-              </div>
+              {/* Phone Number with Verification */}
+              <PhoneVerification
+                countryCode={countryCode}
+                phoneNumber={phone}
+                isVerified={phoneVerified}
+                onCountryCodeChange={(code) => {
+                  setCountryCode(code);
+                  setPhoneVerified(false); // Reset verification if country code changes
+                  if (phoneError) setPhoneError("");
+                }}
+                onPhoneNumberChange={(number) => {
+                  setPhone(number);
+                  setPhoneVerified(false); // Reset verification if phone changes
+                  // Auto-populate WhatsApp number
+                  setWhatsappNumber(`${countryCode}${number}`);
+                  if (phoneError) setPhoneError("");
+                }}
+                onVerificationComplete={(verified) => {
+                  setPhoneVerified(verified);
+                  // Auto-populate WhatsApp number with verified phone
+                  if (verified) {
+                    setWhatsappNumber(`${countryCode}${phone}`);
+                  }
+                }}
+              />
+              {phoneError && (
+                <p className="text-xs text-destructive mt-1">{phoneError}</p>
+              )}
 
-              {/* WhatsApp Number */}
+              {/* WhatsApp Number (Auto-populated and locked) */}
               <div className="space-y-2">
-                <Label htmlFor="whatsapp">WhatsApp Number (Optional)</Label>
+                <Label htmlFor="whatsapp">WhatsApp Number</Label>
                 <Input
                   id="whatsapp"
                   type="tel"
-                  placeholder="+44 123 456 7890"
                   value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  disabled
+                  className="bg-muted"
                 />
                 <p className="text-xs text-muted-foreground">
-                  If different from phone number. We'll send you the class WhatsApp group link.
+                  Auto-populated with your verified phone number. We'll send you the class WhatsApp group link.
                 </p>
               </div>
             </div>
@@ -823,6 +873,23 @@ export default function Dashboard() {
         <div className="container py-8">
           <div className="max-w-6xl mx-auto">
             <PrivateClassDashboard 
+              enrollmentId={activeEnrollment.id} 
+              learnerName={activeEnrollment.learnerName}
+            />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // State 2.5: Has active enrollment - check if it's a bundle
+  if (activeEnrollment.courseLevel === "bundle") {
+    return (
+      <Layout>
+        <WelcomeDialog open={showWelcome} onClose={handleCloseWelcome} />
+        <div className="container py-8">
+          <div className="max-w-6xl mx-auto">
+            <BundleDashboard 
               enrollmentId={activeEnrollment.id} 
               learnerName={activeEnrollment.learnerName}
             />

@@ -1,6 +1,6 @@
 import Layout from "@/components/Layout";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
-import BoxingDayBanner from "@/components/BoxingDayBanner";
+import EndOfYearBanner from "@/components/EndOfYearBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -64,7 +64,7 @@ export default function Home() {
   return (
     <>
       <AnnouncementBanner />
-      <BoxingDayBanner />
+      <EndOfYearBanner />
       <Layout>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-muted to-background py-20 md:py-32">

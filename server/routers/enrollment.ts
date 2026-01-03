@@ -21,7 +21,9 @@ export const enrollmentRouter = router({
         learnerName: z.string().min(1, "Learner name is required"),
         parentName: z.string().optional(),
         email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
-        phone: z.string().min(1, "Phone number is required").regex(phoneRegex, "Please enter a valid phone number"),
+        countryCode: z.string().regex(/^\+\d{1,4}$/, "Please select a valid country code"),
+        phone: z.string().min(8).max(15, "Phone number must be 8-15 digits"),
+        phoneVerified: z.boolean().refine(val => val === true, "Please verify your phone number before proceeding"),
         whatsappNumber: z.string().optional(),
         courseLevel: z.enum(["beginner", "intermediary", "proficient", "bundle", "private"]),
         timeSlot: z.enum(["11AM_GMT", "11AM_CST", "5PM_GMT", "6PM_GMT", "7PM_GMT"]),
@@ -44,7 +46,10 @@ export const enrollmentRouter = router({
         learnerName: input.learnerName,
         parentName: input.parentName || null,
         email: input.email,
+        countryCode: input.countryCode,
         phone: input.phone,
+        phoneVerified: input.phoneVerified ? 1 : 0,
+        phoneVerifiedAt: input.phoneVerified ? new Date() : null,
         whatsappNumber: input.whatsappNumber || null,
         courseLevel: input.courseLevel,
         timeSlot: input.timeSlot,
@@ -56,6 +61,8 @@ export const enrollmentRouter = router({
       // Create Stripe checkout session
       const origin = ctx.req.headers.origin || "http://localhost:3000";
       
+      // Automatically apply 20% New Year discount (OLWIQASA)
+      // Users can then enter BOXSALES25 for an additional 20% off (total 40%)
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
         payment_method_types: ["card"],
@@ -63,6 +70,25 @@ export const enrollmentRouter = router({
           {
             price: product.stripePriceId, // Use the actual Stripe Price ID
             quantity: 1,
+          },
+        ],
+        discounts: [
+          {
+            coupon: (() => {
+              // Date-based coupon switching
+              const now = new Date();
+              const month = now.getMonth(); // 0-11
+              const day = now.getDate();
+              
+              // Boxing Day period (Dec 26-31): 40% discount
+              const isBoxingDayPeriod = month === 11 && day >= 26 && day <= 31;
+              
+              if (isBoxingDayPeriod) {
+                return "3ZrAd7nP"; // 40% Boxing Day coupon
+              } else {
+                return "q2wFKZQ1"; // 20% New Year coupon
+              }
+            })(),
           },
         ],
         customer_email: input.email,
@@ -77,7 +103,8 @@ export const enrollmentRouter = router({
         },
         success_url: `${origin}/enrollment/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/register?cancelled=true`,
-        allow_promotion_codes: true,
+        // Note: Cannot use allow_promotion_codes when discounts parameter is set
+        // The auto-applied OLWIQASA discount provides the 20% off
       });
 
       // Update enrollment with checkout session ID
